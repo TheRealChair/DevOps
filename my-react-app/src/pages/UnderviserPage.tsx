@@ -10,11 +10,13 @@ function generateCode() {
 }
 
 
+
 interface UnderviserPageProps {
   onBack?: () => void;
+  onPagesManager?: () => void;
 }
 
-const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
+const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager }) => {
   const [code, setCode] = useState(generateCode());
 
   const handleGenerate = () => {
@@ -28,7 +30,8 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
         <input type="text" value={code} readOnly style={{ padding: '0.5rem', fontSize: '1.2rem', width: '180px', textAlign: 'center', letterSpacing: '0.2em' }} />
       </div>
       <button onClick={handleGenerate} style={{ padding: '0.75rem 2rem', fontSize: '1rem', cursor: 'pointer' }}>Generate New Code</button>
-      <button onClick={onBack} style={{ marginTop: '2rem', padding: '0.5rem 1.5rem', fontSize: '1rem', cursor: 'pointer' }}>Back</button>
+      <button onClick={onPagesManager} style={{ marginTop: '1.5rem', padding: '0.5rem 1.5rem', fontSize: '1rem', cursor: 'pointer' }}>Manage Pages</button>
+      <button onClick={onBack} style={{ marginTop: '1rem', padding: '0.5rem 1.5rem', fontSize: '1rem', cursor: 'pointer' }}>Back</button>
     </div>
   );
 };
