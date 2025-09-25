@@ -12,10 +12,10 @@ const App: React.FC = () => {
   const [page, setPage] = React.useState<'home' | 'studerende' | 'underviser'>('home');
 
   if (page === 'studerende') {
-    return <StuderendePage />;
+    return <StuderendePage onBack={() => setPage('home')} />;
   }
   if (page === 'underviser') {
-    return <UnderviserPage />;
+    return <UnderviserPage onBack={() => setPage('home')} />;
   }
   return <HomePage onStuderendeClick={() => setPage('studerende')} onUnderviserClick={() => setPage('underviser')} />;
 };
