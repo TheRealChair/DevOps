@@ -1,8 +1,123 @@
 
+
+const DragAndDropEditor: React.FC<{
+  page: Extract<PageData, { type: 'dragAndDrop' }>;
+  onChange: (page: PageData) => void;
+}> = ({ page, onChange }) => {
+  const handleItemChange = (id: number, field: keyof DragAndDropItem, value: string) => {
+    onChange({
+      ...page,
+      items: page.items.map(item =>
+        item.id === id ? { ...item, [field]: value } : item
+      ),
+    });
+  };
+  const handleAddItem = () => {
+    const newItem: DragAndDropItem = {
+      id: Date.now(),
+      label: '',
+      imageUrl: '',
+    };
+    onChange({ ...page, items: [...page.items, newItem], correctOrder: [...page.correctOrder, newItem.id] });
+  };
+  const handleRemoveItem = (id: number) => {
+    onChange({
+      ...page,
+      items: page.items.filter(item => item.id !== id),
+      correctOrder: page.correctOrder.filter(itemId => itemId !== id),
+    });
+  };
+  const handleOrderChange = (idx: number, direction: 'up' | 'down') => {
+    const currentOrder = [...page.correctOrder];
+    if (direction === 'up' && idx > 0) {
+      [currentOrder[idx - 1], currentOrder[idx]] = [currentOrder[idx], currentOrder[idx - 1]];
+    } else if (direction === 'down' && idx < currentOrder.length - 1) {
+      [currentOrder[idx + 1], currentOrder[idx]] = [currentOrder[idx], currentOrder[idx + 1]];
+    }
+    onChange({ ...page, correctOrder: currentOrder });
+  };
+  return (
+    <div style={{ marginLeft: 260, padding: 32, width: '100%' }}>
+      <h2>Edit Drag and Drop Page</h2>
+      <input
+        type="text"
+        value={page.title}
+        onChange={e => onChange({ ...page, title: e.target.value })}
+        placeholder="Title/Explanation"
+        style={{ fontSize: '1.2rem', marginBottom: 12, width: '100%' }}
+      />
+      <input
+        type="text"
+        value={page.imageUrl}
+        onChange={e => onChange({ ...page, imageUrl: e.target.value })}
+        placeholder="Image URL or description"
+        style={{ width: '100%', marginBottom: 12 }}
+      />
+      {page.imageUrl && <img src={page.imageUrl} alt="Preview" style={{ maxWidth: 300, display: 'block', marginTop: 8 }} />}
+      <h3>Draggable Items</h3>
+      {page.items.map((item, idx) => (
+        <div key={item.id} style={{ border: '1px solid #ccc', borderRadius: 8, padding: 8, marginBottom: 8 }}>
+          <div>Item {idx + 1}</div>
+          <input
+            type="text"
+            value={item.label}
+            onChange={e => handleItemChange(item.id, 'label', e.target.value)}
+            placeholder="Item label"
+            style={{ width: '100%', marginBottom: 6 }}
+          />
+          <input
+            type="text"
+            value={item.imageUrl || ''}
+            onChange={e => handleItemChange(item.id, 'imageUrl', e.target.value)}
+            placeholder="Image URL (optional)"
+            style={{ width: '100%', marginBottom: 6 }}
+          />
+          {item.imageUrl && <img src={item.imageUrl} alt="item" style={{ maxWidth: 80, marginBottom: 6 }} />}
+          <button onClick={() => handleRemoveItem(item.id)} style={{ fontSize: 12 }}>Remove</button>
+        </div>
+      ))}
+      <button onClick={handleAddItem} style={{ marginTop: 8 }}>+ Add Item</button>
+      <h3 style={{ marginTop: 24 }}>Correct Order</h3>
+      <div style={{ marginBottom: 8, color: '#555', fontSize: '1rem' }}>
+        <strong>Set the correct order for the answer below.</strong><br />
+        This is the order students must arrange the items to solve the question. Use the arrows to move items up or down.
+      </div>
+      <ol style={{ padding: 0, listStyle: 'none' }}>
+        {page.correctOrder.map((itemId, idx) => {
+          const item = page.items.find(i => i.id === itemId);
+          if (!item) return null;
+          return (
+            <li key={itemId} style={{ marginBottom: 4, background: 'inherit', border: '1px solid #bbb', borderRadius: 6, padding: 8, display: 'flex', alignItems: 'center' }}>
+              <span style={{ fontWeight: 600, marginRight: 8 }}>#{idx + 1}</span>
+              {item.label || 'Item'}
+              <button onClick={() => handleOrderChange(idx, 'up')} disabled={idx === 0} style={{ marginLeft: 8 }}>↑</button>
+              <button onClick={() => handleOrderChange(idx, 'down')} disabled={idx === page.correctOrder.length - 1} style={{ marginLeft: 4 }}>↓</button>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+};
+
 import React, { useState } from 'react';
 
 
-type PageType = 'multipleChoice' | 'inputAnswer';
+type PageType = 'multipleChoice' | 'inputAnswer' | 'progressiveQuestions' | 'dragAndDrop';
+interface DragAndDropItem {
+  id: number;
+  label: string;
+  imageUrl?: string;
+}
+
+interface DragAndDropPageData {
+  id: number;
+  type: 'dragAndDrop';
+  title: string;
+  imageUrl: string;
+  items: DragAndDropItem[];
+  correctOrder: number[]; // array of item ids in correct order
+}
 
 interface MultipleChoiceOption {
   id: number;
@@ -12,22 +127,122 @@ interface MultipleChoiceOption {
 }
 
 
-interface InputAnswerPageData {
+
+interface ProgressiveQuestion {
   id: number;
-  type: 'inputAnswer';
-  title: string;
-  imageUrl: string;
+  prompt: string;
   answer: string;
 }
 
+interface ProgressiveQuestionsPageData {
+  id: number;
+  type: 'progressiveQuestions';
+  title: string;
+  imageUrl: string;
+  questions: ProgressiveQuestion[];
+  finalBarLabel: string;
+  finalAnswer: string;
+}
 type PageData =
-  | ({ type: 'multipleChoice' } & {
+  | {
       id: number;
+      type: 'multipleChoice';
       title: string;
       imageUrl: string;
       options: MultipleChoiceOption[];
-    })
-  | InputAnswerPageData;
+    }
+  | {
+      id: number;
+      type: 'inputAnswer';
+      title: string;
+      imageUrl: string;
+      answer: string;
+    }
+  | ProgressiveQuestionsPageData
+  | DragAndDropPageData;
+const ProgressiveQuestionsEditor: React.FC<{
+  page: Extract<PageData, { type: 'progressiveQuestions' }>;
+  onChange: (page: PageData) => void;
+}> = ({ page, onChange }) => {
+  const handleQuestionChange = (id: number, field: 'prompt' | 'answer', value: string) => {
+    onChange({
+      ...page,
+      questions: page.questions.map(q =>
+        q.id === id ? { ...q, [field]: value } : q
+      ),
+    });
+  };
+  const handleAddQuestion = () => {
+    onChange({
+      ...page,
+      questions: [...page.questions, { id: Date.now(), prompt: '', answer: '' }],
+    });
+  };
+  const handleRemoveQuestion = (id: number) => {
+    onChange({
+      ...page,
+      questions: page.questions.filter(q => q.id !== id),
+    });
+  };
+  return (
+    <div style={{ marginLeft: 260, padding: 32, width: '100%' }}>
+      <h2>Edit Progressive Questions Page</h2>
+      <input
+        type="text"
+        value={page.title}
+        onChange={e => onChange({ ...page, title: e.target.value })}
+        placeholder="Title/Explanation"
+        style={{ fontSize: '1.2rem', marginBottom: 12, width: '100%' }}
+      />
+      <input
+        type="text"
+        value={page.imageUrl}
+        onChange={e => onChange({ ...page, imageUrl: e.target.value })}
+        placeholder="Image URL or description"
+        style={{ width: '100%', marginBottom: 12 }}
+      />
+      {page.imageUrl && <img src={page.imageUrl} alt="Preview" style={{ maxWidth: 300, display: 'block', marginTop: 8 }} />}
+      <h3>Questions</h3>
+      {page.questions.map((q, idx) => (
+        <div key={q.id} style={{ border: '1px solid #ccc', borderRadius: 8, padding: 8, marginBottom: 8 }}>
+          <div>Question {idx + 1}</div>
+          <input
+            type="text"
+            value={q.prompt}
+            onChange={e => handleQuestionChange(q.id, 'prompt', e.target.value)}
+            placeholder="Prompt"
+            style={{ width: '100%', marginBottom: 6 }}
+          />
+          <input
+            type="text"
+            value={q.answer}
+            onChange={e => handleQuestionChange(q.id, 'answer', e.target.value)}
+            placeholder="Correct answer"
+            style={{ width: '100%', marginBottom: 6 }}
+          />
+          <button onClick={() => handleRemoveQuestion(q.id)} style={{ fontSize: 12 }}>Remove</button>
+        </div>
+      ))}
+      <button onClick={handleAddQuestion} style={{ marginTop: 8 }}>+ Add Question</button>
+      <h3 style={{ marginTop: 24 }}>Final Answer Bar Label</h3>
+      <input
+        type="text"
+        value={page.finalBarLabel}
+        onChange={e => onChange({ ...page, finalBarLabel: e.target.value })}
+        placeholder="Final answer bar label (e.g. 'Final Code')"
+        style={{ width: '100%', marginBottom: 12 }}
+      />
+      <h3>Final Answer</h3>
+      <input
+        type="text"
+        value={(page as any).finalAnswer || ''}
+        onChange={e => onChange({ ...page, finalAnswer: e.target.value })}
+        placeholder="Final answer (e.g. 'ESCAPE')"
+        style={{ width: '100%', marginBottom: 12 }}
+      />
+    </div>
+  );
+};
 
 
 const UnderviserPagesMenu: React.FC<{
@@ -178,13 +393,32 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
         imageUrl: '',
         options: [],
       };
-    } else {
+    } else if (templateType === 'inputAnswer') {
       newPage = {
         id: Date.now(),
         type: 'inputAnswer',
         title: '',
         imageUrl: '',
         answer: '',
+      };
+    } else if (templateType === 'progressiveQuestions') {
+      newPage = {
+        id: Date.now(),
+        type: 'progressiveQuestions',
+        title: '',
+        imageUrl: '',
+        questions: [{ id: Date.now(), prompt: '', answer: '' }],
+        finalBarLabel: '',
+        finalAnswer: '',
+      };
+    } else {
+      newPage = {
+        id: Date.now(),
+        type: 'dragAndDrop',
+        title: '',
+        imageUrl: '',
+        items: [],
+        correctOrder: [],
       };
     }
     setPages(p => [...p, newPage]);
@@ -211,15 +445,21 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
         <select value={templateType} onChange={e => setTemplateType(e.target.value as PageType)} style={{ marginLeft: 8, marginBottom: 16 }}>
           <option value="multipleChoice">Multiple Choice</option>
           <option value="inputAnswer">Input Answer</option>
+          <option value="progressiveQuestions">Progressive Questions</option>
+          <option value="dragAndDrop">Drag and Drop</option>
         </select>
         <button onClick={handleAddPage} style={{ marginLeft: 8, marginBottom: 16 }}>Add Page</button>
         <button onClick={() => setShowMenu(true)} style={{ marginLeft: 8, marginBottom: 16 }}>Show Menu</button>
         {selectedPage ? (
           selectedPage.type === 'multipleChoice' ? (
             <MultipleChoiceEditor page={selectedPage} onChange={handleChange} />
-          ) : (
+          ) : selectedPage.type === 'inputAnswer' ? (
             <InputAnswerEditor page={selectedPage} onChange={handleChange} />
-          )
+          ) : selectedPage.type === 'progressiveQuestions' ? (
+            <ProgressiveQuestionsEditor page={selectedPage} onChange={handleChange} />
+          ) : selectedPage.type === 'dragAndDrop' ? (
+            <DragAndDropEditor page={selectedPage} onChange={handleChange} />
+          ) : null
         ) : (
           <p>Select or add a page to edit.</p>
         )}
