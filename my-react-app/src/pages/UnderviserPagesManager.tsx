@@ -103,14 +103,14 @@ const DragAndDropEditor: React.FC<{
 import React, { useState } from 'react';
 
 
-type PageType = 'multipleChoice' | 'inputAnswer' | 'progressiveQuestions' | 'dragAndDrop';
-interface DragAndDropItem {
+export type PageType = 'multipleChoice' | 'inputAnswer' | 'progressiveQuestions' | 'dragAndDrop';
+export interface DragAndDropItem {
   id: number;
   label: string;
   imageUrl?: string;
 }
 
-interface DragAndDropPageData {
+export interface DragAndDropPageData {
   id: number;
   type: 'dragAndDrop';
   title: string;
@@ -119,22 +119,20 @@ interface DragAndDropPageData {
   correctOrder: number[]; // array of item ids in correct order
 }
 
-interface MultipleChoiceOption {
+export interface MultipleChoiceOption {
   id: number;
   text: string;
   imageUrl: string;
   correct: boolean;
 }
 
-
-
-interface ProgressiveQuestion {
+export interface ProgressiveQuestion {
   id: number;
   prompt: string;
   answer: string;
 }
 
-interface ProgressiveQuestionsPageData {
+export interface ProgressiveQuestionsPageData {
   id: number;
   type: 'progressiveQuestions';
   title: string;
@@ -143,7 +141,7 @@ interface ProgressiveQuestionsPageData {
   finalBarLabel: string;
   finalAnswer: string;
 }
-type PageData =
+export type PageData =
   | {
       id: number;
       type: 'multipleChoice';
