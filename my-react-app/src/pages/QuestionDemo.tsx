@@ -237,32 +237,37 @@ const QuestionDemo: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         )}
         {page.type === 'progressiveQuestions' && (
           <div style={{ width: '100%' }}>
-            {page.questions.map((q: { id: number; prompt: string }, idx: number) => (
-              <div key={q.id} style={{ marginBottom: 14 }}>
-                <div style={{ fontWeight: 500, color: '#374151', marginBottom: 4 }}>{q.prompt}</div>
-                <input
-                  type="text"
-                  placeholder="Answer..."
-                  style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 16 }}
-                  value={progAnswers[idx] || ''}
-                  onChange={e => {
-                    const arr = [...progAnswers];
-                    arr[idx] = e.target.value;
-                    setProgAnswers(arr);
-                  }}
-                  disabled={progFeedback !== null}
-                />
-              </div>
-            ))}
+            {page.questions.map((q: { id: number; prompt: string }, idx: number) => {
+              // Only allow input if all previous answers are correct
+              const prevCorrect = idx === 0 || progAnswers[idx - 1]?.trim().toLowerCase() === page.questions[idx - 1].answer.trim().toLowerCase();
+              const isDisabled = progFeedback !== null || !prevCorrect;
+              return (
+                <div key={q.id} style={{ marginBottom: 14 }}>
+                  <div style={{ fontWeight: 500, color: '#374151', marginBottom: 4 }}>{q.prompt}</div>
+                  <input
+                    type="text"
+                    placeholder="Answer..."
+                    style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 16, background: isDisabled ? '#f3f4f6' : undefined }}
+                    value={progAnswers[idx] || ''}
+                    onChange={e => {
+                      const arr = [...progAnswers];
+                      arr[idx] = e.target.value;
+                      setProgAnswers(arr);
+                    }}
+                    disabled={isDisabled}
+                  />
+                </div>
+              );
+            })}
             <div style={{ marginTop: 18 }}>
               <strong style={{ color: '#6366f1' }}>{page.finalBarLabel}:</strong>
               <input
                 type="text"
                 placeholder="Final answer..."
-                style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 16, marginTop: 4 }}
+                style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 16, marginTop: 4, background: (progAnswers.length === 0 || progAnswers[progAnswers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()) ? '#f3f4f6' : undefined }}
                 value={progFinal}
                 onChange={e => setProgFinal(e.target.value)}
-                disabled={progFeedback !== null}
+                disabled={progFeedback !== null || progAnswers.length === 0 || progAnswers[progAnswers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()}
               />
             </div>
             <button onClick={handleProgCheck} style={{ width: '100%', padding: 12, borderRadius: 8, background: '#6366f1', color: '#fff', fontWeight: 600, fontSize: 16, border: 'none', marginTop: 16, cursor: progFeedback === null ? 'pointer' : 'default' }} disabled={progFeedback !== null}>Check</button>
