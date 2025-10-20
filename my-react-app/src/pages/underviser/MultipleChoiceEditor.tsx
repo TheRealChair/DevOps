@@ -1,10 +1,18 @@
+// MultipleChoiceEditor
+// --------------------
+// Editor for multiple-choice question pages in the teacher/manager interface.
+// Uses utility classes for consistent UI (.uv-btn, .uv-input, .uv-label, .uv-heading).
+// Handles question, options, and correct answer logic.
+// Last updated: 2025-10-20
 import React from 'react';
 import type { PageData, MultipleChoiceOption } from '../UnderviserPagesManager';
 
+// Main editor component for multiple-choice questions
 const MultipleChoiceEditor: React.FC<{
   page: Extract<PageData, { type: 'multipleChoice' }>;
   onChange: (page: PageData) => void;
 }> = ({ page, onChange }) => {
+  // Update a field of a specific option (text, imageUrl, correct)
   const handleOptionChange = (id: number, field: keyof MultipleChoiceOption, value: string | boolean) => {
     onChange({
       ...page,
@@ -13,6 +21,7 @@ const MultipleChoiceEditor: React.FC<{
       ),
     });
   };
+  // Add a new answer button option
   const handleAddOption = () => {
     const newOption: MultipleChoiceOption = {
       id: Date.now(),
@@ -22,58 +31,79 @@ const MultipleChoiceEditor: React.FC<{
     };
     onChange({ ...page, options: [...page.options, newOption] });
   };
+  // Remove an answer button option
   const handleRemoveOption = (id: number) => {
     onChange({ ...page, options: page.options.filter(opt => opt.id !== id) });
   };
   return (
     <div className="uv-editor">
-      <h2>Edit Multiple Choice Page</h2>
+      {/* Page title and explanation input */}
+      <h2 className="uv-heading">Edit Multiple Choice Page</h2>
+      <label className="uv-label" htmlFor="mc-title">Title/Explanation</label>
       <input
+        id="mc-title"
+        className="uv-input"
         type="text"
         value={page.title}
         onChange={e => onChange({ ...page, title: e.target.value })}
         placeholder="Title/Explanation"
-        style={{ fontSize: '1.2rem', marginBottom: 12, width: '100%' }}
       />
+      {/* Optional image for the question */}
+      <label className="uv-label" htmlFor="mc-image">Image URL or description</label>
       <input
+        id="mc-image"
+        className="uv-input"
         type="text"
         value={page.imageUrl}
         onChange={e => onChange({ ...page, imageUrl: e.target.value })}
         placeholder="Image URL or description"
-        style={{ width: '100%', marginBottom: 12 }}
       />
+      {/* Show image preview if imageUrl is set */}
       {page.imageUrl && <img src={page.imageUrl} alt="Preview" style={{ maxWidth: 300, display: 'block', marginTop: 8 }} />}
-      <h3>Answer Buttons</h3>
+      {/* Section for answer buttons */}
+      <h3 className="uv-label" style={{ marginTop: 24 }}>Answer Buttons</h3>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
+        {/* Render each answer button option */}
         {page.options.map((opt, idx) => (
-          <div key={opt.id} style={{ border: '1px solid #ccc', borderRadius: 8, padding: 8, minWidth: 180, background: '#fafafa', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div key={opt.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 8, minWidth: 180, background: '#fafafa', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Button text input */}
+            <label className="uv-label" htmlFor={`mc-opt-text-${opt.id}`}>{`Button ${idx + 1} text`}</label>
             <input
+              id={`mc-opt-text-${opt.id}`}
+              className="uv-input"
               type="text"
               value={opt.text}
               onChange={e => handleOptionChange(opt.id, 'text', e.target.value)}
               placeholder={`Button ${idx + 1} text`}
-              style={{ marginBottom: 6, width: '90%' }}
             />
+            {/* Optional image for the button */}
+            <label className="uv-label" htmlFor={`mc-opt-img-${opt.id}`}>Image URL (optional)</label>
             <input
+              id={`mc-opt-img-${opt.id}`}
+              className="uv-input"
               type="text"
               value={opt.imageUrl}
               onChange={e => handleOptionChange(opt.id, 'imageUrl', e.target.value)}
               placeholder="Image URL (optional)"
-              style={{ marginBottom: 6, width: '90%' }}
             />
+            {/* Show button image preview if imageUrl is set */}
             {opt.imageUrl && <img src={opt.imageUrl} alt="btn" style={{ maxWidth: 80, marginBottom: 6 }} />}
-            <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            {/* Checkbox to mark as correct answer */}
+            <label className="uv-label" style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 6 }}>
               <input
                 type="checkbox"
                 checked={opt.correct}
                 onChange={e => handleOptionChange(opt.id, 'correct', e.target.checked)}
+                style={{ marginRight: 4 }}
               />
               Correct answer
             </label>
-            <button onClick={() => handleRemoveOption(opt.id)} style={{ marginTop: 6, fontSize: 12 }}>Remove</button>
+            {/* Remove button for this option */}
+            <button className="uv-btn" onClick={() => handleRemoveOption(opt.id)} style={{ marginTop: 6, fontSize: 12 }}>Remove</button>
           </div>
         ))}
-        <button onClick={handleAddOption} style={{ alignSelf: 'center', height: 40 }}>+ Add Button</button>
+        {/* Add new answer button option */}
+        <button className="uv-btn primary" onClick={handleAddOption} style={{ alignSelf: 'center', height: 40 }}>+ Add Button</button>
       </div>
     </div>
   );
