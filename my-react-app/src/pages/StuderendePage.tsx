@@ -8,17 +8,37 @@ interface StuderendePageProps {
 
 
 const StuderendePage: React.FC<StuderendePageProps> = ({ onBack }) => {
+  const [roomCode, setRoomCode] = useState('');
   const [showDemo, setShowDemo] = useState(false);
+
+  // If demo mode is triggered, show demo page
   if (showDemo) {
     return <QuestionDemo onBack={() => setShowDemo(false)} />;
   }
+
+  // Handle submit: if code is 'demo', show demo, else (future: join room)
+  const handleSubmit = () => {
+    if (roomCode.trim().toLowerCase() === 'demo') {
+      setShowDemo(true);
+    } else {
+      // TODO: handle joining a real room
+      alert('Room joining not implemented. Enter "demo" for demo mode.');
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', width: '100vw' }}>
       <h2>Studerende Page</h2>
       <p>Insert Room Number</p>
-      <input type="text" placeholder="Type here..." style={{ padding: '0.5rem', fontSize: '1rem', margin: '1rem 0', width: '250px' }} />
-      <button style={{ padding: '0.75rem 2rem', fontSize: '1rem', cursor: 'pointer' }}>Submit</button>
-      <button onClick={() => setShowDemo(true)} style={{ marginTop: '1rem', padding: '0.5rem 1.5rem', fontSize: '1rem', cursor: 'pointer', background: '#e0e0ff' }}>Demo Questions</button>
+      <input
+        type="text"
+        value={roomCode}
+        onChange={e => setRoomCode(e.target.value)}
+        placeholder="Type here..."
+        style={{ padding: '0.5rem', fontSize: '1rem', margin: '1rem 0', width: '250px' }}
+        onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}
+      />
+      <button onClick={handleSubmit} style={{ padding: '0.75rem 2rem', fontSize: '1rem', cursor: 'pointer' }}>Submit</button>
       <button onClick={onBack} style={{ marginTop: '2rem', padding: '0.5rem 1.5rem', fontSize: '1rem', cursor: 'pointer' }}>Back</button>
     </div>
   );

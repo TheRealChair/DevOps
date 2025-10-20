@@ -1,0 +1,23 @@
+/*
+  Index CSS
+  Entry-point styles for the app, including resets and base layout.
+*/
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100vw;
+  background: #f8fafc;
+}
+
+/* Add more base styles as needed */
