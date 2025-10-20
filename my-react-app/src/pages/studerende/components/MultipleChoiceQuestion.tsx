@@ -1,18 +1,29 @@
+
+// MultipleChoiceQuestion: Renders a multiple choice question for students
 import React from 'react';
 import type { PageData } from '../../UnderviserPagesManager';
 
+
+// Props:
+// - page: question data for multiple choice type
+// - onAnswer: callback when answer is checked
+// - disabled: disables interaction
 interface Props {
   page: Extract<PageData, { type: 'multipleChoice' }>;
   onAnswer: (correct: boolean) => void;
   disabled?: boolean;
 }
 
+
 const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
+  // State: selected option id
   const [selected, setSelected] = React.useState<number | null>(null);
+  // State: feedback message after checking answer
   const [feedback, setFeedback] = React.useState<string | null>(null);
 
+  // Handle option click
   const handleClick = (optId: number) => {
-    if (disabled || selected !== null) return;
+    if (disabled || selected !== null) return; // Prevent multiple answers or if disabled
     setSelected(optId);
     const correct = page.options.find(o => o.id === optId)?.correct;
     setFeedback(correct ? 'Correct!' : 'Incorrect');
@@ -21,8 +32,11 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
 
   return (
     <div>
+      {/* Question title */}
       <h3>{page.title}</h3>
+      {/* Optional image */}
       {page.imageUrl && <img src={page.imageUrl} alt="" style={{ maxWidth: 300, marginBottom: 12 }} />}
+      {/* Render options as buttons */}
       {page.options.map(opt => (
         <button
           key={opt.id}
@@ -46,6 +60,7 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
           {opt.text}
         </button>
       ))}
+      {/* Feedback message */}
       {feedback && <div style={{ marginTop: 16, fontWeight: 600, fontSize: 16, color: feedback === 'Correct!' ? '#059669' : '#dc2626' }}>{feedback}</div>}
     </div>
   );
