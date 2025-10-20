@@ -1,34 +1,44 @@
 /*
-  App-wide CSS
-  General styles for the application shell and resets.
+	App.css: Light/Dark mode theme variables and helpers
 */
 
-body {
-  margin: 0;
-  font-family: 'Inter', Arial, sans-serif;
-  background: #f8fafc;
-  color: #22292f;
+
+:root {
+	--bg: #f8fafc;
+	--text: #22292f;
+	--primary: #6366f1;
+	--button-bg: #fff;
+	--button-text: #22292f;
+	--button-border: #cbd5e1;
 }
 
-#root {
-  min-height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
+:root.dark-mode {
+	--bg: #18181b;
+	--text: #f4f4f5;
+	--primary: #818cf8;
+	--button-bg: #232336;
+	--button-text: #f4f4f5;
+	--button-border: #27272a;
 }
 
-/* Utility classes */
-.hide {
-  display: none !important;
+body, #root {
+	background: var(--bg);
+	color: var(--text);
+	transition: background 0.2s, color 0.2s;
 }
 
-.flex {
-  display: flex;
+.frontpage-container {
+	background: var(--bg);
+	color: var(--text);
 }
 
-.center {
-  justify-content: center;
-  align-items: center;
+.themed-btn {
+	background: var(--button-bg);
+	color: var(--button-text);
+	border: 1px solid var(--button-border);
+	border-radius: 8px;
+	padding: 1rem 2rem;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
 }
-
-/* Add more global styles as needed */

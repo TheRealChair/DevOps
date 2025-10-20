@@ -1,3 +1,4 @@
+
 #root {
   min-height: 100vh;
   height: 100vh;
@@ -8,6 +9,9 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.2s, color 0.2s;
 }
 
 .logo {
@@ -40,7 +44,8 @@
 
 .card {
   padding: 2em;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg);
+  color: var(--text);
   border-radius: 15px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin: 2rem 0;
@@ -49,7 +54,7 @@
 .message {
   font-size: 1.2em;
   margin: 1rem 0;
-  color: #61dafb;
+  color: var(--primary);
   font-weight: 500;
 }
 
@@ -59,13 +64,13 @@
 
 .counter-section h3 {
   margin-bottom: 1rem;
-  color: #ffffff;
+  color: var(--text);
 }
 
 .counter-section p {
   font-size: 1.1em;
   margin-bottom: 1.5rem;
-  color: #ffffff;
+  color: var(--text);
 }
 
 .button-group {
@@ -103,12 +108,12 @@
 }
 
 .hint {
-  color: #e0e0e0;
+  color: var(--text);
   font-style: italic;
   margin-top: 1rem;
 }
 
 .read-the-docs {
-  color: #888;
+  color: var(--text);
   margin-top: 2rem;
 }
