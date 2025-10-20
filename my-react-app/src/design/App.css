@@ -252,75 +252,71 @@
 	.uv-sidebar { position: relative; width: 100%; height: auto; }
 	.uv-main { margin-left: 0; }
 }
-/*
-	App.css: Light/Dark mode theme variables and helpers
-*/
-
-
-
-
-:root {
-	/* Light mode: Purple-focused palette */
-	--bg: #FAFAFA; /* Off-White background */
-	--surface: #FFFFFF; /* Card/Surface */
-	--primary: #6C63FF; /* Royal Purple */
-	--secondary: #4A3FB3; /* Deep Violet */
-	--accent: #00C9A7; /* Electric Teal */
-	--text: #212121; /* Charcoal */
-	--text-secondary: #616161; /* Cool Gray */
-	--button-bg: var(--primary);
-	--button-text: #fff;
-	--button-border: var(--secondary);
-	--border: #e2e8f0;
-	--muted: #6b7280;
-	--input-bg: #f3f4f6;
-	--card-shadow: rgba(99,102,241,0.08);
-	--btn-shadow: rgba(99,102,241,0.12);
-	--primary-hover: #4f46e5;
-	--accent-weak: rgba(108,99,255,0.08);
-	--accent-shadow: rgba(108,99,255,0.06);
-	--hover-bg: #f1f5f9;
-}
-
-
-
-
-:root.dark-mode {
-	/* Dark mode: Purple-focused palette */
-	--bg: #14121F; /* Deep Space Blue background */
-	--surface: #1E1B2E; /* Card/Surface */
-	--primary: #9C8FFF; /* Soft Lavender */
-	--secondary: #7C6EF6; /* Bright Purple */
-	--accent: #3CEAD3; /* Aqua Mint */
-	--text: #FFFFFF; /* White */
-	--text-secondary: #BDBDBD; /* Light Gray */
-	--button-bg: var(--primary);
-	--button-text: #14121F;
-	--button-border: var(--secondary);
-	--border: #2d2a3a;
-	--muted: #BDBDBD;
-	--input-bg: #1E1B2E;
-	--card-shadow: rgba(156,143,255,0.08);
-	--btn-shadow: rgba(156,143,255,0.12);
-	--primary-hover: #7C6EF6;
-	--accent-weak: rgba(156,143,255,0.08);
-	--accent-shadow: rgba(156,143,255,0.06);
-	--hover-bg: #23203a;
-}
+/* app.css: Layout, page-level, and global styles */
 
 .frontpage-container {
 	background: var(--bg);
 	color: var(--text);
 }
 
-.themed-btn {
-	background: var(--button-bg);
-	color: var(--button-text);
-	border: 1px solid var(--button-border);
-	border-radius: 8px;
-	padding: 1rem 2rem;
-	font-size: 1rem;
-	cursor: pointer;
-	transition: background 0.2s, color 0.2s;
-	box-shadow: 0 2px 8px var(--accent);
+body, html {
+	min-height: 100vh;
+	width: 100vw;
+	background: var(--bg);
+	color: var(--text);
+	font-family: 'Inter', sans-serif;
+}
+
+/* Utility classes */
+.flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Page containers */
+.stud-root {
+	min-height: 100vh;
+	width: 100vw;
+	background: var(--bg);
+	color: var(--primary);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.uv-root {
+	display: flex;
+	flex-direction: row;
+	height: 100vh;
+	width: 100vw;
+	background: var(--bg);
+}
+
+.uv-main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background: var(--bg);
+	min-width: 0;
+}
+
+.uv-sidebar {
+	width: 320px;
+	background: var(--surface);
+	box-shadow: 2px 0 18px var(--shadow, rgba(2,6,23,0.06));
+	padding: 32px 24px 32px 32px;
+	z-index: 40;
+	overflow: auto;
+	flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+	.uv-sidebar { width: 220px; }
+	.uv-main { margin-left: 220px; }
+}
+@media (max-width: 900px) {
+	.uv-sidebar { position: relative; width: 100%; height: auto; }
+	.uv-main { margin-left: 0; }
 }

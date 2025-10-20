@@ -1,5 +1,7 @@
 import React from 'react';
-import '../design/App.css';
+import '../design/colors.css';
+import '../design/app.css';
+import '../design/components.css';
 
 export interface HomePageProps {
   onStuderendeClick?: () => void;

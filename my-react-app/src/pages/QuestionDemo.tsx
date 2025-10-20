@@ -4,7 +4,9 @@ import MultipleChoiceQuestion from './studerende/components/MultipleChoiceQuesti
 import InputAnswerQuestion from './studerende/components/InputAnswerQuestion';
 import ProgressiveQuestions from './studerende/components/ProgressiveQuestions';
 import DragAndDropQuestion from './studerende/components/DragAndDropQuestion';
-import '../design/App.css';
+import '../design/colors.css';
+import '../design/app.css';
+import '../design/components.css';
 
 // Example demo templates (replace or import real templates as needed)
 const demoPages: PageData[] = [

@@ -1,7 +1,9 @@
 
 
 import React from 'react';
-import './design/App.css';
+import './design/colors.css';
+import './design/app.css';
+import './design/components.css';
 import HomePage from './pages/HomePage';
 import StuderendePage from './pages/StuderendePage';
 import UnderviserPage from './pages/UnderviserPage';

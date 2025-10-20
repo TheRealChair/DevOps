@@ -3,7 +3,9 @@
 // StuderendePage: Main entry for student users
 import React, { useState } from 'react';
 import QuestionDemo from './QuestionDemo';
-import '../design/App.css';
+import '../design/colors.css';
+import '../design/app.css';
+import '../design/components.css';
 
 
 

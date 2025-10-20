@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import '../design/App.css';
+import '../design/colors.css';
+import '../design/app.css';
+import '../design/components.css';
 
 function generateCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

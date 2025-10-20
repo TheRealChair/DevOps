@@ -1,0 +1,47 @@
+/* colors.css: Theme variables for light/dark mode and palette */
+
+:root {
+  /* Light mode: Purple-focused palette */
+  --bg: #FAFAFA;
+  --surface: #FFFFFF;
+  --primary: #6C63FF;
+  --secondary: #4A3FB3;
+  --accent: #00C9A7;
+  --text: #212121;
+  --text-secondary: #616161;
+  --button-bg: var(--primary);
+  --button-text: #fff;
+  --button-border: var(--secondary);
+  --border: #e2e8f0;
+  --muted: #6b7280;
+  --input-bg: #f3f4f6;
+  --card-shadow: rgba(99,102,241,0.08);
+  --btn-shadow: rgba(99,102,241,0.12);
+  --primary-hover: #4f46e5;
+  --accent-weak: rgba(108,99,255,0.08);
+  --accent-shadow: rgba(108,99,255,0.06);
+  --hover-bg: #f1f5f9;
+}
+
+:root.dark-mode {
+  /* Dark mode: Purple-focused palette */
+  --bg: #1A1826;
+  --surface: #23203a;
+  --primary: #9C8FFF;
+  --secondary: #7C6EF6;
+  --accent: #3CEAD3;
+  --text: #FFFFFF;
+  --text-secondary: #BDBDBD;
+  --button-bg: var(--primary);
+  --button-text: #14121F;
+  --button-border: var(--secondary);
+  --border: #2d2a3a;
+  --muted: #BDBDBD;
+  --input-bg: #23203a;
+  --card-shadow: rgba(156,143,255,0.16);
+  --btn-shadow: rgba(156,143,255,0.18);
+  --primary-hover: #7C6EF6;
+  --accent-weak: rgba(156,143,255,0.12);
+  --accent-shadow: rgba(156,143,255,0.09);
+  --hover-bg: #282544;
+}
