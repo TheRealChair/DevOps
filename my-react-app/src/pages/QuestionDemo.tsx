@@ -4,6 +4,7 @@ import MultipleChoiceQuestion from './studerende/components/MultipleChoiceQuesti
 import InputAnswerQuestion from './studerende/components/InputAnswerQuestion';
 import ProgressiveQuestions from './studerende/components/ProgressiveQuestions';
 import DragAndDropQuestion from './studerende/components/DragAndDropQuestion';
+import '../design/App.css';
 
 // Example demo templates (replace or import real templates as needed)
 const demoPages: PageData[] = [
@@ -61,52 +62,14 @@ const QuestionDemo: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   // ...existing code...
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      minWidth: '100vw',
-      width: '100vw',
-      height: '100vh',
-      background: 'linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 0,
-      boxSizing: 'border-box',
-      overflow: 'hidden',
-      position: 'relative',
-    }}>
+    <div className="stud-root" style={{ minHeight: '100vh', minWidth: '100vw', width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, boxSizing: 'border-box', overflow: 'hidden', position: 'relative' }}>
       {/* Subtle fade shadow for depth */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        pointerEvents: 'none',
-        zIndex: 0,
-        background: 'radial-gradient(circle at 60% 40%, rgba(99,102,241,0.08) 0%, rgba(0,0,0,0) 70%)',
-      }} />
-      <div style={{
-        background: '#fff',
-        borderRadius: 22,
-        border: '1.5px solid #e5e7eb',
-        boxShadow: '0 8px 32px 0 rgba(60,72,100,0.13)',
-        padding: '48px 36px',
-        maxWidth: 480,
-        width: '100%',
-        margin: '32px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        boxSizing: 'border-box',
-        maxHeight: 'calc(100vh - 48px)',
-        overflowY: 'auto',
-        zIndex: 1,
-      }}>
-        <h2 style={{ fontWeight: 700, fontSize: 28, marginBottom: 8, color: '#2d3748', letterSpacing: 0.5 }}>Question Demo</h2>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 0, background: 'radial-gradient(circle at 60% 40%, rgba(99,102,241,0.08) 0%, rgba(0,0,0,0) 70%)' }} />
+      <div className="stud-card" style={{ borderRadius: 22, border: '1.5px solid var(--border)', boxShadow: '0 8px 32px 0 var(--card-shadow, rgba(60,72,100,0.13))', padding: '48px 36px', maxWidth: 480, width: '100%', margin: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', boxSizing: 'border-box', maxHeight: 'calc(100vh - 48px)', overflowY: 'auto', zIndex: 1 }}>
+        <h2 className="stud-title" style={{ fontWeight: 700, fontSize: 28, marginBottom: 8, letterSpacing: 0.5 }}>Question Demo</h2>
         <div style={{ marginBottom: 24, width: '100%' }}>
-          <div style={{ color: '#718096', fontSize: 14, marginBottom: 2 }}><strong>Type:</strong> {page.type}</div>
-          <div style={{ color: '#4a5568', fontSize: 20, fontWeight: 600 }}>{page.title}</div>
+          <div className="stud-muted" style={{ fontSize: 14, marginBottom: 2 }}><strong>Type:</strong> {page.type}</div>
+          <div style={{ color: 'var(--primary)', fontSize: 20, fontWeight: 600 }}>{page.title}</div>
         </div>
         {/* Render modular question components based on type */}
         {page.type === 'multipleChoice' && (
@@ -122,9 +85,9 @@ const QuestionDemo: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <DragAndDropQuestion page={page} onAnswer={() => {}} />
         )}
         <div style={{ marginTop: 32, display: 'flex', gap: 12, width: '100%' }}>
-          <button onClick={onBack} style={{ flex: 1, padding: 12, borderRadius: 8, background: '#e2e8f0', color: '#2d3748', fontWeight: 600, fontSize: 16, border: 'none', cursor: 'pointer' }}>Back</button>
-          <button onClick={() => setPageIdx(i => Math.max(0, i - 1))} disabled={pageIdx === 0} style={{ flex: 1, padding: 12, borderRadius: 8, background: pageIdx === 0 ? '#f1f5f9' : '#6366f1', color: pageIdx === 0 ? '#a0aec0' : '#fff', fontWeight: 600, fontSize: 16, border: 'none', cursor: pageIdx === 0 ? 'not-allowed' : 'pointer' }}>Previous</button>
-          <button onClick={() => setPageIdx(i => Math.min(demoPages.length - 1, i + 1))} disabled={pageIdx === demoPages.length - 1} style={{ flex: 1, padding: 12, borderRadius: 8, background: pageIdx === demoPages.length - 1 ? '#f1f5f9' : '#6366f1', color: pageIdx === demoPages.length - 1 ? '#a0aec0' : '#fff', fontWeight: 600, fontSize: 16, border: 'none', cursor: pageIdx === demoPages.length - 1 ? 'not-allowed' : 'pointer' }}>Next</button>
+          <button className="stud-btn" onClick={onBack} style={{ flex: 1 }}>Back</button>
+          <button className="stud-btn" onClick={() => setPageIdx(i => Math.max(0, i - 1))} disabled={pageIdx === 0} style={{ flex: 1, opacity: pageIdx === 0 ? 0.6 : 1 }}>Previous</button>
+          <button className="stud-btn" onClick={() => setPageIdx(i => Math.min(demoPages.length - 1, i + 1))} disabled={pageIdx === demoPages.length - 1} style={{ flex: 1, opacity: pageIdx === demoPages.length - 1 ? 0.6 : 1 }}>Next</button>
         </div>
       </div>
     </div>

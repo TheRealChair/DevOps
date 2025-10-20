@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../design/App.css';
 
 function generateCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -24,14 +25,14 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', width: '100vw' }}>
-      <h2>Underviser Page</h2>
+    <div className="uv-root" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <h2 className="uv-heading">Underviser Page</h2>
       <div style={{ margin: '1rem 0' }}>
-        <input type="text" value={code} readOnly style={{ padding: '0.5rem', fontSize: '1.2rem', width: '180px', textAlign: 'center', letterSpacing: '0.2em' }} />
+        <input className="uv-input" type="text" value={code} readOnly style={{ fontSize: '1.2rem', width: '180px', textAlign: 'center', letterSpacing: '0.2em' }} />
       </div>
-      <button onClick={handleGenerate} style={{ padding: '0.75rem 2rem', fontSize: '1rem', cursor: 'pointer' }}>Generate New Code</button>
-      <button onClick={onPagesManager} style={{ marginTop: '1.5rem', padding: '0.5rem 1.5rem', fontSize: '1rem', cursor: 'pointer' }}>Manage Pages</button>
-      <button onClick={onBack} style={{ marginTop: '1rem', padding: '0.5rem 1.5rem', fontSize: '1rem', cursor: 'pointer' }}>Back</button>
+      <button className="uv-btn primary" onClick={handleGenerate}>Generate New Code</button>
+      <button className="uv-btn" onClick={onPagesManager} style={{ marginTop: '1.5rem' }}>Manage Pages</button>
+      <button className="uv-btn" onClick={onBack} style={{ marginTop: '1rem' }}>Back</button>
     </div>
   );
 };

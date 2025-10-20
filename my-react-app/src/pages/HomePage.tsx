@@ -1,4 +1,5 @@
 import React from 'react';
+import '../design/App.css';
 
 export interface HomePageProps {
   onStuderendeClick?: () => void;
@@ -9,7 +10,7 @@ export interface HomePageProps {
 
 const HomePage: React.FC<HomePageProps> = ({ onStuderendeClick, onUnderviserClick }) => {
   return (
-    <div className="frontpage-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', width: '100vw' }}>
+  <div className="frontpage-container" style={{ minHeight: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <h1>Welcome to the Escape Room</h1>
       <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
         <button className="themed-btn" onClick={onUnderviserClick}>Underviser</button>

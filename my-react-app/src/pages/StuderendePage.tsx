@@ -1,7 +1,9 @@
 
+
 // StuderendePage: Main entry for student users
 import React, { useState } from 'react';
 import QuestionDemo from './QuestionDemo';
+import '../design/App.css';
 
 
 
@@ -37,23 +39,23 @@ const StuderendePage: React.FC<StuderendePageProps> = ({ onBack }) => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', width: '100vw' }}>
+    <div className="stud-root">
       {/* Page title */}
-      <h2>Studerende Page</h2>
+      <h2 className="stud-title">Studerende Page</h2>
       {/* Room code input */}
-      <p>Insert Room Number</p>
+      <p className="stud-label">Insert Room Number</p>
       <input
+        className="stud-input"
         type="text"
         value={roomCode}
         onChange={e => setRoomCode(e.target.value)}
         placeholder="Type here..."
-        style={{ padding: '0.5rem', fontSize: '1rem', margin: '1rem 0', width: '250px' }}
         onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}
       />
       {/* Submit button */}
-      <button onClick={handleSubmit} style={{ padding: '0.75rem 2rem', fontSize: '1rem', cursor: 'pointer' }}>Submit</button>
+      <button className="stud-btn" onClick={handleSubmit}>Submit</button>
       {/* Back button */}
-      <button onClick={onBack} style={{ marginTop: '2rem', padding: '0.5rem 1.5rem', fontSize: '1rem', cursor: 'pointer' }}>Back</button>
+      <button className="stud-btn" style={{ marginTop: '2rem' }} onClick={onBack}>Back</button>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import InputAnswerEditor from './underviser/InputAnswerEditor';
 import ProgressiveQuestionsEditor from './underviser/ProgressiveQuestionsEditor';
 import DragAndDropEditor from './underviser/DragAndDropEditor';
 import UnderviserPagesMenu from './underviser/UnderviserPagesMenu';
-import './underviser/underviser.css';
+import '../design/App.css';
 export type PageType = 'multipleChoice' | 'inputAnswer' | 'progressiveQuestions' | 'dragAndDrop';
 export interface DragAndDropItem {
   id: number;
