@@ -1,3 +1,7 @@
+/* Button hover effect for both light and dark mode */
+.themed-btn:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
 .themed-btn {
   /* General button base style. Use for all <Button> components. */
   /* General button base style. Use for all <Button> components. */

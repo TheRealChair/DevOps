@@ -1,6 +1,8 @@
 /* colors.css: Theme variables for light/dark mode and palette */
 
 :root {
+  /* Button hover color for light mode */
+  --button-hover: #ede9fe;
   /* Light mode: Purple-focused palette */
   --bg: #FAFAFA;
   --surface: #FFFFFF;
@@ -31,6 +33,8 @@
 }
 
 :root.dark-mode {
+  /* Button hover color for dark mode */
+  --button-hover: #2d2750;
   /* Dark mode: Purple-focused palette */
   --bg: #1A1826;
   --surface: #23203a;
