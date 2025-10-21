@@ -1,3 +1,81 @@
+/* ========== Teacher/Underviser Shared UI Components ========== */
+/* Label for form fields and headings */
+.uv-label {
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
+}
+/* Section/page headings */
+.uv-heading {
+  color: var(--text);
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 1.5rem;
+}
+.uv-editor {
+  padding: 24px;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+}
+/* Editor input fields */
+.uv-editor input[type="text"],
+.uv-editor textarea,
+.uv-editor select {
+  background: var(--input-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  color: var(--text);
+  padding: 10px;
+  border-radius: 6px;
+}
+.uv-editor input::placeholder,
+.uv-editor textarea::placeholder {
+  color: var(--muted);
+}
+.uv-editor h2,
+.uv-editor h3,
+.uv-editor label {
+  color: var(--text);
+  margin-top: 0;
+  font-weight: 600;
+}
+.uv-editor h2 {
+  margin-top: 0;
+}
+.uv-empty {
+  max-width: 820px;
+  margin: 40px auto;
+  text-align: center;
+  color: var(--uv-muted);
+}
+.uv-page-card {
+  background: var(--uv-surface);
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #eee);
+  cursor: pointer;
+}
+.uv-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--primary);
+}
+.uv-btn.primary {
+  background: var(--uv-accent);
+  color: var(--btn-text, #fff);
+  border-color: transparent;
+  box-shadow: 0 6px 18px var(--btn-shadow, rgba(15,98,254,0.12));
+}
+.uv-select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #dbeafe;
+}
 .stud-btn-option {
   background: var(--feedback-default-bg);
   color: var(--text);
@@ -92,20 +170,17 @@
 }
 .themed-btn-primary {
   /* Primary action button. Use for main actions (e.g., Submit, Save). */
-  /* Primary action button. Use for main actions (e.g., Submit, Save). */
   background: var(--primary);
   color: var(--btn-text, #fff);
   border-color: var(--primary);
 }
 .themed-btn-secondary {
   /* Secondary action button. Use for less prominent actions. */
-  /* Secondary action button. Use for less prominent actions. */
   background: var(--surface);
   color: var(--primary);
   border-color: var(--border);
 }
 .themed-btn-ghost {
-  /* Ghost button. Use for minimal, inline, or toolbar actions. */
   /* Ghost button. Use for minimal, inline, or toolbar actions. */
   background: transparent;
   color: var(--primary);
@@ -126,23 +201,22 @@
 }
 .themed-btn:disabled {
   /* Disabled button state. Use when button should not be interactive. */
-  /* Disabled button state. Use when button should not be interactive. */
-  background: #e0e7ef;
-  color: #a1a1aa;
+  background: var(--disabled-bg, #e0e7ef);
+  color: var(--muted, #a1a1aa);
   cursor: not-allowed;
 }
 /* components.css: Buttons, cards, inputs, and reusable UI elements */
 
 .themed-btn {
-  background: var(--button-bg);
-  color: var(--button-text);
-  border: 1px solid var(--button-border);
+  background: var(--button-bg, var(--primary));
+  color: var(--button-text, #fff);
+  border: 1px solid var(--button-border, var(--primary));
   border-radius: 8px;
   padding: 1rem 2rem;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
-  box-shadow: 0 2px 8px var(--accent);
+  box-shadow: 0 2px 8px var(--btn-shadow, rgba(99,102,241,0.12));
 }
 
 .stud-btn {
@@ -165,8 +239,8 @@
 }
 .stud-btn:disabled {
   /* Disabled state for student button. */
-  background: #e0e7ef;
-  color: #a1a1aa;
+  background: var(--disabled-bg, #e0e7ef);
+  color: var(--muted, #a1a1aa);
   cursor: not-allowed;
 }
 
@@ -199,7 +273,19 @@
   color: var(--text);
 }
 
-.stud-input, .uv-input {
+.stud-input {
+  /* Input fields for student and teacher pages. Use for text entry and forms. */
+  background: var(--input-bg, var(--surface));
+  border: 1.5px solid var(--primary);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 250px;
+  box-sizing: border-box;
+  margin: 1rem 0;
+}
+.uv-input {
   /* Input fields for student and teacher pages. Use for text entry and forms. */
   background: var(--input-bg, var(--surface));
   border: 1.5px solid var(--primary);

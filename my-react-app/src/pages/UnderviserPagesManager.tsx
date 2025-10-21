@@ -139,7 +139,7 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <label style={{ color: 'var(--text)', fontSize: 14 }}>Template:</label>
-            <select className="uv-select" value={templateType} onChange={e => setTemplateType(e.target.value as PageType)}>
+            <select className="uv-input" value={templateType} onChange={e => setTemplateType(e.target.value as PageType)}>
               <option value="multipleChoice">Multiple Choice</option>
               <option value="inputAnswer">Input Answer</option>
               <option value="progressiveQuestions">Progressive Questions</option>
