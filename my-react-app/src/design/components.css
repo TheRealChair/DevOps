@@ -1,4 +1,6 @@
 .themed-btn {
+  /* General button base style. Use for all <Button> components. */
+  /* General button base style. Use for all <Button> components. */
   background: var(--button-bg, var(--primary));
   color: var(--button-text, #fff);
   border: 1px solid var(--button-border, var(--primary));
@@ -11,30 +13,42 @@
   transition: background 0.2s, color 0.2s;
 }
 .themed-btn-primary {
+  /* Primary action button. Use for main actions (e.g., Submit, Save). */
+  /* Primary action button. Use for main actions (e.g., Submit, Save). */
   background: var(--primary);
   color: var(--btn-text, #fff);
   border-color: var(--primary);
 }
 .themed-btn-secondary {
+  /* Secondary action button. Use for less prominent actions. */
+  /* Secondary action button. Use for less prominent actions. */
   background: var(--surface);
   color: var(--primary);
   border-color: var(--border);
 }
 .themed-btn-ghost {
+  /* Ghost button. Use for minimal, inline, or toolbar actions. */
+  /* Ghost button. Use for minimal, inline, or toolbar actions. */
   background: transparent;
   color: var(--primary);
   border: none;
   box-shadow: none;
 }
 .themed-btn-small {
+  /* Small button. Use for compact UIs, toolbars, or secondary actions. */
+  /* Small button. Use for compact UIs, toolbars, or secondary actions. */
   padding: 6px 12px;
   font-size: 0.9rem;
 }
 .themed-btn-large {
+  /* Large button. Use for prominent actions or when extra emphasis is needed. */
+  /* Large button. Use for prominent actions or when extra emphasis is needed. */
   padding: 16px 28px;
   font-size: 1.15rem;
 }
 .themed-btn:disabled {
+  /* Disabled button state. Use when button should not be interactive. */
+  /* Disabled button state. Use when button should not be interactive. */
   background: #e0e7ef;
   color: #a1a1aa;
   cursor: not-allowed;
@@ -54,6 +68,7 @@
 }
 
 .stud-btn {
+  /* Student-specific button. Use for actions in student-facing pages. */
   background: var(--primary);
   color: var(--btn-text, #fff);
   border: none;
@@ -67,15 +82,18 @@
   transition: background 0.2s;
 }
 .stud-btn:hover {
+  /* Hover state for student button. */
   background: var(--primary-hover, #4f46e5);
 }
 .stud-btn:disabled {
+  /* Disabled state for student button. */
   background: #e0e7ef;
   color: #a1a1aa;
   cursor: not-allowed;
 }
 
 .uv-btn {
+  /* Teacher-specific button. Use for actions in teacher-facing pages. */
   background: var(--surface);
   border: 1px solid var(--border);
   padding: 8px 12px;
@@ -84,6 +102,7 @@
   color: var(--primary);
 }
 .uv-btn.primary {
+  /* Primary teacher button. Use for main actions in teacher UI. */
   background: var(--primary);
   color: var(--btn-text, #fff);
   border-color: transparent;
@@ -91,6 +110,7 @@
 }
 
 .stud-card, .uv-page-card {
+  /* Card container for student and teacher pages. Use for grouping content in a visually distinct box. */
   background: var(--surface);
   border-radius: 12px;
   box-shadow: 0 2px 12px var(--card-shadow, rgba(99,102,241,0.08));
@@ -102,6 +122,7 @@
 }
 
 .stud-input, .uv-input {
+  /* Input fields for student and teacher pages. Use for text entry and forms. */
   background: var(--input-bg, var(--surface));
   border: 1px solid var(--border);
   color: var(--text);
