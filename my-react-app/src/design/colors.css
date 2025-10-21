@@ -1,6 +1,9 @@
 /* colors.css: Theme variables for light/dark mode and palette */
 
 :root {
+  /* Arrow button background and text for light mode */
+  --arrow-btn-bg: #ede9fe;
+  --arrow-btn-text: var(--primary);
   /* Button hover color for light mode */
   --button-hover: #ede9fe;
   /* Light mode: Purple-focused palette */
@@ -33,6 +36,9 @@
 }
 
 :root.dark-mode {
+  /* Arrow button background and text for dark mode */
+  --arrow-btn-bg: #998bf3;
+  --arrow-btn-text: var(white);
   /* Button hover color for dark mode */
   --button-hover: #2d2750;
   /* Dark mode: Purple-focused palette */

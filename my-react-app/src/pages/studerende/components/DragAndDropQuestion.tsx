@@ -75,17 +75,19 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
               <span style={{ flex: 1 }}>{item.label}</span>
               {/* Move up button */}
               <button
+                className="arrow-btn"
                 onClick={() => handleMove(idx, 'up')}
                 disabled={idx === 0 || feedback !== null}
-                style={{ marginLeft: 8, border: 'none', background: 'var(--input-bg)', borderRadius: 4, padding: '4px 8px', cursor: idx === 0 || feedback !== null ? 'not-allowed' : 'pointer' }}
+                style={{ marginLeft: 8 }}
               >
                 ↑
               </button>
               {/* Move down button */}
               <button
+                className="arrow-btn"
                 onClick={() => handleMove(idx, 'down')}
                 disabled={idx === order.length - 1 || feedback !== null}
-                style={{ marginLeft: 4, border: 'none', background: 'var(--input-bg)', borderRadius: 4, padding: '4px 8px', cursor: idx === order.length - 1 || feedback !== null ? 'not-allowed' : 'pointer' }}
+                style={{ marginLeft: 4 }}
               >
                 ↓
               </button>

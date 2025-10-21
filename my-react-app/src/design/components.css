@@ -1,3 +1,66 @@
+/* ArrowButton: Consistent up/down button for drag-and-drop UIs */
+/* .arrow-btn {
+  background: linear-gradient(135deg, var(--primary) 60%, var(--secondary) 100%);
+  color: var(--button-text);
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-left: 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border 0.15s, box-shadow 0.15s;
+  box-shadow: 0 1px 4px var(--btn-shadow, rgba(99,102,241,0.10));
+  outline: none;
+} */
+
+/* ArrowButton: match input and button style, high contrast */
+
+.arrow-btn {
+  background: var(--input-bg);
+  color: var(--primary);
+  border: 1.25px solid var(--primary);
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-left: 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border 0.15s, box-shadow 0.15s;
+  box-shadow: none;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.arrow-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--border);
+  color: var(--muted);
+  border-color: var(--border);
+  box-shadow: none;
+}
+.arrow-btn:hover:not(:disabled),
+.arrow-btn:focus-visible:not(:disabled) {
+  background: var(--hover-bg);
+  color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+.arrow-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--border);
+  color: var(--muted);
+  border-color: var(--border);
+  box-shadow: none;
+}
+.arrow-btn:hover:not(:disabled),
+.arrow-btn:focus-visible:not(:disabled) {
+  background: var(--primary-hover);
+  color: var(--button-text);
+  border-color: var(--primary-hover);
+}
 /* Button hover effect for both light and dark mode */
 .themed-btn:hover:not(:disabled) {
   filter: brightness(0.96);
