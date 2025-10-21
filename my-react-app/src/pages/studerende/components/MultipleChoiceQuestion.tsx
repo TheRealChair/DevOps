@@ -37,31 +37,23 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
       {/* Optional image */}
       {page.imageUrl && <img src={page.imageUrl} alt="" style={{ maxWidth: 300, marginBottom: 12 }} />}
       {/* Render options as buttons */}
-      {page.options.map(opt => (
-        <button
-          key={opt.id}
-          onClick={() => handleClick(opt.id)}
-          disabled={disabled || selected !== null}
-          style={{
-            display: 'block',
-            margin: '10px 0',
-            padding: '14px 0',
-            width: '100%',
-            borderRadius: 10,
-            border: '1px solid var(--border)',
-            background: selected === opt.id
-              ? (opt.correct ? 'var(--feedback-correct-bg)' : 'var(--feedback-incorrect-bg)')
-              : 'var(--feedback-default-bg)',
-            color: 'var(--text)',
-            fontWeight: 500,
-            fontSize: 16,
-            cursor: selected === null ? 'pointer' : 'default',
-            transition: 'background 0.2s',
-          }}
-        >
-          {opt.text}
-        </button>
-      ))}
+      {page.options.map(opt => {
+        const isSelected = selected === opt.id;
+        const isCorrect = !!opt.correct;
+        let optionClass = 'stud-btn-option';
+        if (isSelected && isCorrect) optionClass += ' selected-correct';
+        else if (isSelected && !isCorrect) optionClass += ' selected-incorrect';
+        return (
+          <button
+            key={opt.id}
+            className={optionClass}
+            onClick={() => handleClick(opt.id)}
+            disabled={disabled || selected !== null}
+          >
+            {opt.text}
+          </button>
+        );
+      })}
       {/* Feedback message */}
       {feedback && (
         <div

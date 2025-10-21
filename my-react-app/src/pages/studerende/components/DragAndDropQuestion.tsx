@@ -97,9 +97,10 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
       </ol>
       {/* Check answer button */}
       <button
+        className="stud-btn"
         onClick={handleCheck}
         disabled={disabled || feedback !== null}
-  style={{ width: '100%', padding: 12, borderRadius: 8, background: 'var(--primary)', color: 'var(--button-text)', fontWeight: 600, fontSize: 16, border: 'none', marginTop: 12, cursor: feedback === null ? 'pointer' : 'default' }}
+        style={{ width: '100%', marginTop: 12 }}
       >
         Check
       </button>
