@@ -202,7 +202,7 @@
 .stud-input, .uv-input {
   /* Input fields for student and teacher pages. Use for text entry and forms. */
   background: var(--input-bg, var(--surface));
-  border: 1px solid var(--primary);
+  border: 1.5px solid var(--primary);
   color: var(--text);
   padding: 10px 12px;
   border-radius: 8px;

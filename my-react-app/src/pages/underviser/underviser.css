@@ -16,19 +16,6 @@
 /* ========================= */
 /* Utility Classes           */
 /* ========================= */
-.uv-input {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  color: #22292f;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-size: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-.uv-input::placeholder {
-  color: #9ca3af;
-}
 .uv-label {
   color: #22292f;
   font-weight: 500;
