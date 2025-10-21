@@ -13,8 +13,13 @@ const UnderviserPagesMenu: React.FC<{
     </div>
     <ul className="uv-page-list">
       {pages.map(page => (
-        <li key={page.id} className={page.id === selectedId ? 'uv-page-item selected' : 'uv-page-item'}>
-          <button onClick={() => onSelect(page.id)} className="uv-page-btn">{(page as any).title || `Page ${page.id}`}</button>
+        <li
+          key={page.id}
+          className={page.id === selectedId ? 'uv-page-item selected' : 'uv-page-item'}
+          onClick={() => { console.log('Menu item clicked, id:', page.id); onSelect(page.id); }}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+        >
+          <span style={{ flex: 1 }}>{(page as any).title || `Page ${page.id}`}</span>
           <div className="uv-page-type">{page.type}</div>
         </li>
       ))}

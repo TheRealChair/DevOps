@@ -70,6 +70,16 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
 
   const [pages, setPages] = useState<PageData[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  // Debug: log whenever selectedId changes
+  React.useEffect(() => {
+    console.log('Selected page id changed:', selectedId);
+  }, [selectedId]);
+
+  // Debug: log whenever pages change
+  React.useEffect(() => {
+    console.log('Pages array:', pages);
+  }, [pages]);
   const [showMenu, setShowMenu] = useState(true);
 
   const [templateType, setTemplateType] = useState<PageType>('multipleChoice');
