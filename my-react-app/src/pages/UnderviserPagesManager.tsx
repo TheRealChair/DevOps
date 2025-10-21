@@ -138,7 +138,7 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
             <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Hide Menu' : 'Show Menu'}</button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <label style={{ color: '#333', fontSize: 14 }}>Template:</label>
+            <label style={{ color: 'var(--text)', fontSize: 14 }}>Template:</label>
             <select className="uv-select" value={templateType} onChange={e => setTemplateType(e.target.value as PageType)}>
               <option value="multipleChoice">Multiple Choice</option>
               <option value="inputAnswer">Input Answer</option>
@@ -173,7 +173,7 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
                     {pages.map(p => (
                       <div key={p.id} className="uv-page-card" onClick={() => setSelectedId(p.id)}>
                         <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || `Page ${p.id}`}</strong>
-                        <small style={{ color: '#666' }}>{p.type}</small>
+                        <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
                       </div>
                     ))}
                   </div>

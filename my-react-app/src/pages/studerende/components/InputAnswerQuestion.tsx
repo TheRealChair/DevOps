@@ -42,14 +42,14 @@ const InputAnswerQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
         onChange={e => setValue(e.target.value)}
         disabled={disabled || feedback !== null}
         placeholder="Your answer..."
-        style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 16, marginBottom: 10 }}
+  style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid var(--border)', fontSize: 16, marginBottom: 10 }}
       />
       {/* Check answer button */}
-      <button onClick={handleCheck} disabled={disabled || feedback !== null} style={{ width: '100%', padding: 12, borderRadius: 8, background: '#6366f1', color: '#fff', fontWeight: 600, fontSize: 16, border: 'none', marginBottom: 8, cursor: feedback === null ? 'pointer' : 'default' }}>
+  <button onClick={handleCheck} disabled={disabled || feedback !== null} style={{ width: '100%', padding: 12, borderRadius: 8, background: 'var(--primary)', color: 'var(--button-text)', fontWeight: 600, fontSize: 16, border: 'none', marginBottom: 8, cursor: feedback === null ? 'pointer' : 'default' }}>
         Check
       </button>
       {/* Feedback message */}
-      {feedback && <div style={{ marginTop: 8, fontWeight: 600, fontSize: 16, color: feedback === 'Correct!' ? '#059669' : '#dc2626' }}>{feedback}</div>}
+  {feedback && <div style={{ marginTop: 8, fontWeight: 600, fontSize: 16, color: feedback === 'Correct!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>{feedback}</div>}
     </div>
   );
 };

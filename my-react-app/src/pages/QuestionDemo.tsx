@@ -66,7 +66,7 @@ const QuestionDemo: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   return (
     <div className="stud-root" style={{ minHeight: '100vh', minWidth: '100vw', width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, boxSizing: 'border-box', overflow: 'hidden', position: 'relative' }}>
       {/* Subtle fade shadow for depth */}
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 0, background: 'radial-gradient(circle at 60% 40%, rgba(99,102,241,0.08) 0%, rgba(0,0,0,0) 70%)' }} />
+  <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 0, background: 'radial-gradient(circle at 60% 40%, var(--card-shadow, rgba(99,102,241,0.08)) 0%, rgba(0,0,0,0) 70%)' }} />
       <div className="stud-card" style={{ borderRadius: 22, border: '1.5px solid var(--border)', boxShadow: '0 8px 32px 0 var(--card-shadow, rgba(60,72,100,0.13))', padding: '48px 36px', maxWidth: 480, width: '100%', margin: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', boxSizing: 'border-box', maxHeight: 'calc(100vh - 48px)', overflowY: 'auto', zIndex: 1 }}>
         <h2 className="stud-title" style={{ fontWeight: 700, fontSize: 28, marginBottom: 8, letterSpacing: 0.5 }}>Question Demo</h2>
         <div style={{ marginBottom: 24, width: '100%' }}>

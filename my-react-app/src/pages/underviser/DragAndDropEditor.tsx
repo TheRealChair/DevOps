@@ -75,7 +75,7 @@ const DragAndDropEditor: React.FC<{
       {/* Section for draggable items */}
       <h3 className="uv-label" style={{ marginTop: 24 }}>Draggable Items</h3>
       {page.items.map((item, idx) => (
-        <div key={item.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 8, marginBottom: 8 }}>
+  <div key={item.id} style={{ border: '1px solid var(--border)', borderRadius: 8, padding: 8, marginBottom: 8 }}>
           {/* Item label input */}
           <label className="uv-label" htmlFor={`dd-item-label-${item.id}`}>Item {idx + 1} Label</label>
           <input
@@ -106,7 +106,7 @@ const DragAndDropEditor: React.FC<{
       <button className="uv-btn primary" onClick={handleAddItem} style={{ marginTop: 8 }}>+ Add Item</button>
       {/* Section for setting the correct order */}
       <h3 className="uv-label" style={{ marginTop: 24 }}>Correct Order</h3>
-      <div style={{ marginBottom: 8, color: '#555', fontSize: '1rem' }}>
+  <div style={{ marginBottom: 8, color: 'var(--text-secondary)', fontSize: '1rem' }}>
         <strong>Set the correct order for the answer below.</strong><br />
         This is the order students must arrange the items to solve the question. Use the arrows to move items up or down.
       </div>
@@ -115,7 +115,7 @@ const DragAndDropEditor: React.FC<{
           const item = page.items.find(i => i.id === itemId);
           if (!item) return null;
           return (
-            <li key={itemId} style={{ marginBottom: 4, background: 'inherit', border: '1px solid #bbb', borderRadius: 6, padding: 8, display: 'flex', alignItems: 'center' }}>
+            <li key={itemId} style={{ marginBottom: 4, background: 'inherit', border: '1px solid var(--border)', borderRadius: 6, padding: 8, display: 'flex', alignItems: 'center' }}>
               {/* Item order number and label */}
               <span style={{ fontWeight: 600, marginRight: 8 }}>#{idx + 1}</span>
               {item.label || 'Item'}

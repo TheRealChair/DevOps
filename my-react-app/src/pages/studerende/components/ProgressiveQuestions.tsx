@@ -56,7 +56,7 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
         return (
           <div key={q.id} style={{ marginBottom: 14 }}>
             {/* Question prompt */}
-            <div style={{ fontWeight: 500, color: '#374151', marginBottom: 4 }}>{q.prompt}</div>
+            <div style={{ fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 4 }}>{q.prompt}</div>
             {/* Input field for answer */}
             <input
               type="text"
@@ -68,29 +68,29 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
               }}
               disabled={isDisabled}
               placeholder="Answer..."
-              style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 16, background: isDisabled ? '#f3f4f6' : undefined }}
+              style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid var(--border)', fontSize: 16, background: isDisabled ? 'var(--input-bg)' : undefined }}
             />
           </div>
         );
       })}
       {/* Final answer input */}
       <div style={{ marginTop: 18 }}>
-        <strong style={{ color: '#6366f1' }}>{page.finalBarLabel}:</strong>
+  <strong style={{ color: 'var(--primary)' }}>{page.finalBarLabel}:</strong>
         <input
           type="text"
           value={final}
           onChange={e => setFinal(e.target.value)}
           disabled={disabled || feedback !== null || answers.length === 0 || answers[answers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()}
           placeholder="Final answer..."
-          style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 16, marginTop: 4, background: (answers.length === 0 || answers[answers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()) ? '#f3f4f6' : undefined }}
+          style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid var(--border)', fontSize: 16, marginTop: 4, background: (answers.length === 0 || answers[answers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()) ? 'var(--input-bg)' : undefined }}
         />
       </div>
       {/* Check answers button */}
-      <button onClick={handleCheck} disabled={disabled || feedback !== null} style={{ width: '100%', padding: 12, borderRadius: 8, background: '#6366f1', color: '#fff', fontWeight: 600, fontSize: 16, border: 'none', marginTop: 16, cursor: feedback === null ? 'pointer' : 'default' }}>
+  <button onClick={handleCheck} disabled={disabled || feedback !== null} style={{ width: '100%', padding: 12, borderRadius: 8, background: 'var(--primary)', color: 'var(--button-text)', fontWeight: 600, fontSize: 16, border: 'none', marginTop: 16, cursor: feedback === null ? 'pointer' : 'default' }}>
         Check
       </button>
       {/* Feedback message */}
-      {feedback && <div style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback === 'All answers correct!' ? '#059669' : '#dc2626' }}>{feedback}</div>}
+  {feedback && <div style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback === 'All answers correct!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>{feedback}</div>}
     </div>
   );
 };

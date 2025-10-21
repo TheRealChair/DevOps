@@ -62,7 +62,7 @@ const ProgressiveQuestionsEditor: React.FC<{
       {/* Section for progressive question steps */}
       <h3 className="uv-label" style={{ marginTop: 24 }}>Questions</h3>
       {page.questions.map((q, idx) => (
-        <div key={q.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 8, marginBottom: 8 }}>
+  <div key={q.id} style={{ border: '1px solid var(--border)', borderRadius: 8, padding: 8, marginBottom: 8 }}>
           {/* Question prompt input */}
           <label className="uv-label" htmlFor={`pq-q-${q.id}-prompt`}>Question {idx + 1} Prompt</label>
           <input

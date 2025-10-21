@@ -65,7 +65,7 @@ const MultipleChoiceEditor: React.FC<{
       <div style={{ display: 'flex', flexDirection: 'row', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
         {/* Render each answer button option */}
         {page.options.map((opt, idx) => (
-          <div key={opt.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 8, minWidth: 180, background: '#fafafa', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div key={opt.id} style={{ border: '1px solid var(--border)', borderRadius: 8, padding: 8, minWidth: 180, background: 'var(--hover-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {/* Button text input */}
             <label className="uv-label" htmlFor={`mc-opt-text-${opt.id}`}>{`Button ${idx + 1} text`}</label>
             <input
