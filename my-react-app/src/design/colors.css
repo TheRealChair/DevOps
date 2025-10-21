@@ -21,6 +21,13 @@
   --accent-weak: rgba(108,99,255,0.08);
   --accent-shadow: rgba(108,99,255,0.06);
   --hover-bg: #f1f5f9;
+
+  /* Feedback colors */
+  --feedback-correct-bg: #d1fae5;
+  --feedback-incorrect-bg: #fee2e2;
+  --feedback-default-bg: #f7fafc;
+  --feedback-correct-text: #059669;
+  --feedback-incorrect-text: #dc2626;
 }
 
 :root.dark-mode {
@@ -44,4 +51,11 @@
   --accent-weak: rgba(156,143,255,0.12);
   --accent-shadow: rgba(156,143,255,0.09);
   --hover-bg: #282544;
+
+  /* Feedback colors for dark mode */
+  --feedback-correct-bg: #134e4a;
+  --feedback-incorrect-bg: #7f1d1d;
+  --feedback-default-bg: #23203a;
+  --feedback-correct-text: #34d399;
+  --feedback-incorrect-text: #f87171;
 }

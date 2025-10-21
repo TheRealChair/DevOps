@@ -48,9 +48,11 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
             padding: '14px 0',
             width: '100%',
             borderRadius: 10,
-            border: '1px solid #e2e8f0',
-            background: selected === opt.id ? (opt.correct ? '#d1fae5' : '#fee2e2') : '#f7fafc',
-            color: '#2d3748',
+            border: '1px solid var(--border)',
+            background: selected === opt.id
+              ? (opt.correct ? 'var(--feedback-correct-bg)' : 'var(--feedback-incorrect-bg)')
+              : 'var(--feedback-default-bg)',
+            color: 'var(--text)',
             fontWeight: 500,
             fontSize: 16,
             cursor: selected === null ? 'pointer' : 'default',
@@ -61,7 +63,20 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
         </button>
       ))}
       {/* Feedback message */}
-      {feedback && <div style={{ marginTop: 16, fontWeight: 600, fontSize: 16, color: feedback === 'Correct!' ? '#059669' : '#dc2626' }}>{feedback}</div>}
+      {feedback && (
+        <div
+          style={{
+            marginTop: 16,
+            fontWeight: 600,
+            fontSize: 16,
+            color: feedback === 'Correct!'
+              ? 'var(--feedback-correct-text)'
+              : 'var(--feedback-incorrect-text)'
+          }}
+        >
+          {feedback}
+        </div>
+      )}
     </div>
   );
 };

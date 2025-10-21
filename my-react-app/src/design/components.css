@@ -1,3 +1,44 @@
+.themed-btn {
+  background: var(--button-bg, var(--primary));
+  color: var(--button-text, #fff);
+  border: 1px solid var(--button-border, var(--primary));
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--btn-shadow, rgba(99,102,241,0.12));
+  transition: background 0.2s, color 0.2s;
+}
+.themed-btn-primary {
+  background: var(--primary);
+  color: var(--btn-text, #fff);
+  border-color: var(--primary);
+}
+.themed-btn-secondary {
+  background: var(--surface);
+  color: var(--primary);
+  border-color: var(--border);
+}
+.themed-btn-ghost {
+  background: transparent;
+  color: var(--primary);
+  border: none;
+  box-shadow: none;
+}
+.themed-btn-small {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+}
+.themed-btn-large {
+  padding: 16px 28px;
+  font-size: 1.15rem;
+}
+.themed-btn:disabled {
+  background: #e0e7ef;
+  color: #a1a1aa;
+  cursor: not-allowed;
+}
 /* components.css: Buttons, cards, inputs, and reusable UI elements */
 
 .themed-btn {
