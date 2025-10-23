@@ -5,7 +5,7 @@ import InputAnswerQuestion from './studerende/components/InputAnswerQuestion';
 import ProgressiveQuestions from './studerende/components/ProgressiveQuestions';
 import DragAndDropQuestion from './studerende/components/DragAndDropQuestion';
 import '../design/colors.css';
-import '../design/app.css';
+import '../design/App.css';
 import '../design/components.css';
 
 // Example demo templates (replace or import real templates as needed)
