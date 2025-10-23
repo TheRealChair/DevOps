@@ -25,7 +25,7 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
   const { user, userData, signOut } = useAuth();
   const [rooms, setRooms] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
   const [newRoomCode, setNewRoomCode] = useState(generateCode());
   // Handler to generate a new code
   const handleGenerate = () => {
