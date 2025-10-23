@@ -1,0 +1,209 @@
+import React, { useState } from 'react';
+import { AuthService } from '../services/authService';
+import '../design/colors.css';
+import '../design/app.css';
+import '../design/components.css';
+
+interface UnderviserLoginProps {
+  onLoginSuccess?: () => void;
+  onBack?: () => void;
+}
+
+const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBack }) => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      if (isLogin) {
+        // Sign in
+        await AuthService.signIn(email, password);
+        setSuccess('Successfully signed in!');
+        if (onLoginSuccess) {
+          setTimeout(() => onLoginSuccess(), 1000);
+        }
+      } else {
+        // Register
+        if (password !== confirmPassword) {
+          setError('Passwords do not match');
+          setLoading(false);
+          return;
+        }
+        
+        await AuthService.register(email, password, 'Teacher');
+        setSuccess('Account created successfully! You are now logged in.');
+        if (onLoginSuccess) {
+          setTimeout(() => onLoginSuccess(), 1000);
+        }
+      }
+    } catch (error: any) {
+      setError(error.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setError('');
+    setSuccess('');
+    setPassword('');
+    setConfirmPassword('');
+  };
+
+  return (
+    <div className="uv-root" style={{ 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      minHeight: '100vh',
+      padding: '2rem'
+    }}>
+      <div style={{ 
+        background: 'white', 
+        padding: '2rem', 
+        borderRadius: '8px', 
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        width: '100%',
+        maxWidth: '400px'
+      }}>
+        <h2 className="uv-heading" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          {isLogin ? 'Underviser Login' : 'Create Underviser Account'}
+        </h2>
+
+        {error && (
+          <div style={{ 
+            background: '#fee', 
+            color: '#c33', 
+            padding: '0.75rem', 
+            borderRadius: '4px', 
+            marginBottom: '1rem',
+            fontSize: '0.9rem'
+          }}>
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div style={{ 
+            background: '#efe', 
+            color: '#3c3', 
+            padding: '0.75rem', 
+            borderRadius: '4px', 
+            marginBottom: '1rem',
+            fontSize: '0.9rem'
+          }}>
+            {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              Email:
+            </label>
+            <input
+              className="uv-input"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{ width: '100%', padding: '0.75rem' }}
+              placeholder="Enter your email"
+            />
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              Password:
+            </label>
+            <input
+              className="uv-input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{ width: '100%', padding: '0.75rem' }}
+              placeholder="Enter your password"
+            />
+          </div>
+
+          {!isLogin && (
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                Confirm Password:
+              </label>
+              <input
+                className="uv-input"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                style={{ width: '100%', padding: '0.75rem' }}
+                placeholder="Confirm your password"
+              />
+            </div>
+          )}
+
+          <button
+            className="uv-btn primary"
+            type="submit"
+            disabled={loading}
+            style={{ 
+              width: '100%', 
+              padding: '0.75rem', 
+              marginBottom: '1rem',
+              opacity: loading ? 0.7 : 1
+            }}
+          >
+            {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
+          </button>
+        </form>
+
+        <div style={{ textAlign: 'center' }}>
+          <button
+            className="uv-btn"
+            onClick={toggleMode}
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              color: '#666', 
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              fontSize: '0.9rem'
+            }}
+          >
+            {isLogin ? "Don't have an account? Create one" : "Already have an account? Sign in"}
+          </button>
+        </div>
+
+        {onBack && (
+          <button
+            className="uv-btn"
+            onClick={onBack}
+            style={{ 
+              width: '100%', 
+              marginTop: '1rem',
+              background: '#f5f5f5',
+              color: '#666'
+            }}
+          >
+            Back
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default UnderviserLogin;
