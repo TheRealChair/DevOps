@@ -68,7 +68,7 @@ const QuestionDemo: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       {/* Subtle fade shadow for depth */}
   <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 0, background: 'radial-gradient(circle at 60% 40%, var(--card-shadow, rgba(99,102,241,0.08)) 0%, rgba(0,0,0,0) 70%)' }} />
       <div className="stud-card" style={{ borderRadius: 22, border: '1.5px solid var(--border)', boxShadow: '0 8px 32px 0 var(--card-shadow, rgba(60,72,100,0.13))', padding: '48px 36px', maxWidth: 480, width: '100%', margin: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', boxSizing: 'border-box', maxHeight: 'calc(100vh - 48px)', overflowY: 'auto', zIndex: 1 }}>
-        <h2 className="stud-title" style={{ fontWeight: 700, fontSize: 28, marginBottom: 8, letterSpacing: 0.5 }}>Question Demo</h2>
+  <h2 className="stud-title" style={{ fontWeight: 700, fontSize: 28, marginBottom: 8, letterSpacing: 0.5 }}>Spørgsmåls Demo</h2>
         <div style={{ marginBottom: 24, width: '100%' }}>
           <div className="stud-muted" style={{ fontSize: 14, marginBottom: 2 }}><strong>Type:</strong> {page.type}</div>
           <div style={{ color: 'var(--primary)', fontSize: 20, fontWeight: 600 }}>{page.title}</div>
@@ -87,9 +87,9 @@ const QuestionDemo: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <DragAndDropQuestion page={page} onAnswer={() => {}} />
         )}
         <div style={{ marginTop: 32, display: 'flex', gap: 12, width: '100%' }}>
-          <button className="stud-btn" onClick={onBack} style={{ flex: 1 }}>Back</button>
-          <button className="stud-btn" onClick={() => setPageIdx(i => Math.max(0, i - 1))} disabled={pageIdx === 0} style={{ flex: 1, opacity: pageIdx === 0 ? 0.6 : 1 }}>Previous</button>
-          <button className="stud-btn" onClick={() => setPageIdx(i => Math.min(demoPages.length - 1, i + 1))} disabled={pageIdx === demoPages.length - 1} style={{ flex: 1, opacity: pageIdx === demoPages.length - 1 ? 0.6 : 1 }}>Next</button>
+          <button className="stud-btn" onClick={onBack} style={{ flex: 1 }}>Tilbage</button>
+          <button className="stud-btn" onClick={() => setPageIdx(i => Math.max(0, i - 1))} disabled={pageIdx === 0} style={{ flex: 1, opacity: pageIdx === 0 ? 0.6 : 1 }}>Forrige</button>
+          <button className="stud-btn" onClick={() => setPageIdx(i => Math.min(demoPages.length - 1, i + 1))} disabled={pageIdx === demoPages.length - 1} style={{ flex: 1, opacity: pageIdx === demoPages.length - 1 ? 0.6 : 1 }}>Næste</button>
         </div>
       </div>
     </div>
