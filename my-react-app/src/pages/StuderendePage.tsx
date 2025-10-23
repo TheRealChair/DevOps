@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import QuestionDemo from './QuestionDemo';
 import '../design/colors.css';
-import '../design/app.css';
+import '../design/App.css';
 import '../design/components.css';
 
 
