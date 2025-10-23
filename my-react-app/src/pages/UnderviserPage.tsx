@@ -1,9 +1,4 @@
 // Code generation function for new room codes
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import '../design/colors.css';
-import '../design/App.css';
-import '../design/components.css';
 
 function generateCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -13,6 +8,12 @@ function generateCode() {
   }
   return code;
 }
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import '../design/colors.css';
+import '../design/App.css';
+import '../design/components.css';
+
 
 
 interface UnderviserPageProps {
@@ -24,7 +25,7 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
   const { user, userData, signOut } = useAuth();
   const [rooms, setRooms] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
   const [newRoomCode, setNewRoomCode] = useState(generateCode());
   // Handler to generate a new code
   const handleGenerate = () => {

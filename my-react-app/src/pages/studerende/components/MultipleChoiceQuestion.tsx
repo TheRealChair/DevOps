@@ -61,7 +61,7 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
             marginTop: 16,
             fontWeight: 600,
             fontSize: 16,
-            color: feedback === 'Correct!'
+            color: feedback === 'Korrekt!'
               ? 'var(--feedback-correct-text)'
               : 'var(--feedback-incorrect-text)'
           }}
