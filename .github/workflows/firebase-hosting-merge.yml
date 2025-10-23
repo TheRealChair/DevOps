@@ -8,26 +8,63 @@ on:
     branches:
       - Main  # live branch
       - Dev   # dev branch for preview
+      - staging  # staging branch
 
 jobs:
-  build_and_deploy:
+  deploy_main:
+    if: github.ref == 'refs/heads/Main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-
-      # Install dependencies and build React app
       - name: Install and build
         working-directory: my-react-app
         run: npm ci && npm run build
-
-      # Deploy to Firebase Hosting
-      - name: Deploy to Firebase Hosting
+      - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEVOPS_ESCAPEROOM }}
           projectId: devops-escaperoom
-          channelId: ${{ github.ref == 'refs/heads/Main' && 'live' || github.ref_name }}
+          channelId: live
+
+  deploy_dev:
+    if: github.ref == 'refs/heads/Dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install and build
+        working-directory: my-react-app
+        run: npm ci && npm run build
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEVOPS_ESCAPEROOM }}
+          projectId: devops-escaperoom
+          channelId: dev
+          expires: 30d
+
+          
+  deploy_staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install & Build
+        working-directory: my-react-app
+        run: npm ci && npm run build
+      - name: Deploy to Firebase Staging
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEVOPS_ESCAPEROOM }}
+          projectId: devops-escaperoom
+          channelId: staging

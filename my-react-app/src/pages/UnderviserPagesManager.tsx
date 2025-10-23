@@ -223,6 +223,16 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
           )}
         </div>
       </div>
+      <button
+        className="uv-btn primary"
+        style={{ position: 'fixed', bottom: 20, right: 20, padding: '10px 20px', fontSize: 16, border: 'none' }}
+        title="Gem rum"
+        onClick={() => {
+          // Implement save functionality here
+        }}
+      >
+        Gem rum
+      </button>
     </div>
   );
 };

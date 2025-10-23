@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import QuestionDemo from './QuestionDemo';
 import '../design/colors.css';
-import '../design/app.css';
+import '../design/App.css';
 import '../design/components.css';
 
 
@@ -43,19 +43,19 @@ const StuderendePage: React.FC<StuderendePageProps> = ({ onBack }) => {
   return (
     <div className="stud-root">
       {/* Page title */}
-      <h2 className="stud-title">Studerende Page</h2>
+      <h2 className="stud-title">Studerende</h2>
       {/* Room code input */}
-      <p className="stud-label">Insert Room Number</p>
+      <p className="stud-label">Indsæt rumnummer</p>
       <input
         className="stud-input"
         type="text"
         value={roomCode}
         onChange={e => setRoomCode(e.target.value)}
-        placeholder="Type here..."
+  placeholder="Skriv her..."
         onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}
       />
-      {/* Submit button */}
-      <button className="stud-btn" onClick={handleSubmit}>Submit</button>
+  {/* Submit button */}
+  <button className="stud-btn" onClick={handleSubmit}>Send</button>
       {/* Back button */}
       <button className="stud-btn" style={{ marginTop: '2rem' }} onClick={onBack}>Back</button>
     </div>
