@@ -70,10 +70,10 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
       padding: '2rem'
     }}>
       <div style={{ 
-        background: 'white', 
+        background: 'var(--surface)', 
         padding: '2rem', 
         borderRadius: '8px', 
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 4px 6px var(--card-shadow)',
         width: '100%',
         maxWidth: '400px'
       }}>
@@ -83,8 +83,8 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
 
         {error && (
           <div style={{ 
-            background: '#fee', 
-            color: '#c33', 
+            background: 'var(--feedback-incorrect-bg)', 
+            color: 'var(--feedback-incorrect-text)', 
             padding: '0.75rem', 
             borderRadius: '4px', 
             marginBottom: '1rem',
@@ -96,8 +96,8 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
 
         {success && (
           <div style={{ 
-            background: '#efe', 
-            color: '#3c3', 
+            background: 'var(--feedback-correct-bg)', 
+            color: 'var(--feedback-correct-text)', 
             padding: '0.75rem', 
             borderRadius: '4px', 
             marginBottom: '1rem',
@@ -163,7 +163,10 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
               width: '100%', 
               padding: '0.75rem', 
               marginBottom: '1rem',
-              opacity: loading ? 0.7 : 1
+              opacity: loading ? 0.7 : 1,
+              background: 'var(--button-bg)',
+              color: 'var(--button-text)',
+              border: '1px solid var(--button-border)'
             }}
           >
             {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
@@ -177,7 +180,7 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
             style={{ 
               background: 'none', 
               border: 'none', 
-              color: '#666', 
+              color: 'var(--muted)', 
               textDecoration: 'underline',
               cursor: 'pointer',
               fontSize: '0.9rem'
@@ -194,8 +197,8 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
             style={{ 
               width: '100%', 
               marginTop: '1rem',
-              background: '#f5f5f5',
-              color: '#666'
+              background: 'var(--hover-bg)',
+              color: 'var(--muted)'
             }}
           >
             Back

@@ -61,27 +61,29 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
   };
 
   return (
-    <div className="uv-root" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-  <h2 className="uv-heading">Underviser-side</h2>
+    <div className="uv-root" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', minHeight: '100vh' }}>
+      <h2 className="uv-heading">Underviser-side</h2>
 
       {/* Brugerinfo */}
       {user && userData && (
         <div style={{
-          background: '#f8f9fa',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
           padding: '1rem',
           borderRadius: '8px',
           marginBottom: '1.5rem',
           textAlign: 'center',
-          minWidth: '300px'
+          minWidth: '300px',
+          boxShadow: '0 4px 6px var(--card-shadow)'
         }}>
-          <h3 style={{ margin: '0 0 0.5rem 0', color: '#333' }}>Velkommen, {userData.role}!</h3>
-          <p style={{ margin: '0', color: '#666', fontSize: '0.9rem' }}>Email: {userData.email}</p>
+          <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text)' }}>Velkommen, {userData.role}!</h3>
+          <p style={{ margin: '0', color: 'var(--text)', fontSize: '0.9rem' }}>Email: {userData.email}</p>
         </div>
       )}
 
       {/* Kodegenerering til nyt rum */}
       <div style={{ margin: '1.5rem 0', width: '100%', maxWidth: '400px' }}>
-        <h3 style={{ textAlign: 'center', color: '#333' }}>Opret nyt rum</h3>
+        <h3 style={{ textAlign: 'center', color: 'var(--text)' }}>Opret nyt rum</h3>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
           <input
             className="uv-input"
@@ -99,38 +101,39 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
 
       {/* Oversigt over rum */}
       <div style={{ margin: '1.5rem 0', width: '100%', maxWidth: '400px' }}>
-        <h3 style={{ textAlign: 'center', color: '#333' }}>Rumsoversigt</h3>
+        <h3 style={{ textAlign: 'center', color: 'var(--text)' }}>Rumsoversigt</h3>
         {loading ? (
-          <div style={{ textAlign: 'center', color: '#888' }}>Indlæser rum...</div>
+          <div style={{ textAlign: 'center', color: 'var(--text)' }}>Indlæser rum...</div>
         ) : error ? (
-          <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>
+          <div style={{ color: 'var(--feedback-incorrect-text)', textAlign: 'center' }}>{error}</div>
         ) : rooms.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#888' }}>Ingen rum fundet.</div>
+          <div style={{ textAlign: 'center', color: 'var(--text)' }}>Ingen rum fundet.</div>
         ) : (
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {rooms.map(room => (
               <li key={room.id} style={{
-                background: '#fff',
-                border: '1px solid #e0e0e0',
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
                 borderRadius: '6px',
                 margin: '0.5rem 0',
                 padding: '1rem',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                boxShadow: '0 2px 4px var(--card-shadow)'
               }}>
-                <span style={{ fontWeight: 500 }}>{room.name}</span>
+                <span style={{ fontWeight: 500, color: 'var(--text)' }}>{room.name}</span>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button
                     className="uv-btn primary"
-                    style={{ padding: '0.4rem 1.2rem' }}
+                    style={{ padding: '0.4rem 1.2rem', background: 'var(--button-bg)', color: 'var(--button-text)', border: '1px solid var(--button-border)' }}
                     onClick={() => onPagesManager && onPagesManager(room.id)}
                   >
                     Administrer
                   </button>
                   <button
                     className="uv-btn"
-                    style={{ background: '#dc3545', color: 'white', padding: '0.4rem 1.2rem' }}
+                    style={{ background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', padding: '0.4rem 1.2rem' }}
                     onClick={() => handleDeleteRoom(room.id)}
                   >
                     Slet
@@ -142,8 +145,8 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
         )}
       </div>
 
-  <button className="uv-btn" onClick={handleLogout} style={{ marginTop: '1rem', background: '#dc3545', color: 'white' }}>Log ud</button>
-  <button className="uv-btn" onClick={onBack} style={{ marginTop: '0.5rem' }}>Tilbage</button>
+    <button className="uv-btn" onClick={handleLogout} style={{ marginTop: '1rem', background: 'var(--feedback-incorrect-text)', color: 'var(--button-text)' }}>Log ud</button>
+    <button className="uv-btn" onClick={onBack} style={{ marginTop: '0.5rem', background: 'var(--hover-bg)', color: 'var(--muted)' }}>Tilbage</button>
     </div>
   );
 };
