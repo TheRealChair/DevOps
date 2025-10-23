@@ -160,15 +160,31 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
         </div>
         <div className="uv-content">
           {selectedPage ? (
-            selectedPage.type === 'multipleChoice' ? (
-              <MultipleChoiceEditor page={selectedPage} onChange={handleChange} />
-            ) : selectedPage.type === 'inputAnswer' ? (
-              <InputAnswerEditor page={selectedPage} onChange={handleChange} />
-            ) : selectedPage.type === 'progressiveQuestions' ? (
-              <ProgressiveQuestionsEditor page={selectedPage} onChange={handleChange} />
-            ) : selectedPage.type === 'dragAndDrop' ? (
-              <DragAndDropEditor page={selectedPage} onChange={handleChange} />
-            ) : null
+            <>
+              <div style={{ display: 'flex', width: '100%', marginBottom: 16 }}>
+                <div style={{ flex: 1 }} />
+                <button
+                  className="uv-btn"
+                  style={{ background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none', fontWeight: 600, padding: '6px 16px' }}
+                  title="Delete this page"
+                  onClick={() => {
+                    setPages(pages => pages.filter(page => page.id !== selectedPage.id));
+                    setSelectedId(null);
+                  }}
+                >
+                  Delete Page
+                </button>
+              </div>
+              {selectedPage.type === 'multipleChoice' ? (
+                <MultipleChoiceEditor page={selectedPage} onChange={handleChange} />
+              ) : selectedPage.type === 'inputAnswer' ? (
+                <InputAnswerEditor page={selectedPage} onChange={handleChange} />
+              ) : selectedPage.type === 'progressiveQuestions' ? (
+                <ProgressiveQuestionsEditor page={selectedPage} onChange={handleChange} />
+              ) : selectedPage.type === 'dragAndDrop' ? (
+                <DragAndDropEditor page={selectedPage} onChange={handleChange} />
+              ) : null}
+            </>
           ) : (
             <div className="uv-empty">
               <h2>No page selected</h2>
@@ -181,9 +197,23 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
                   <h3>Your pages</h3>
                   <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                     {pages.map(p => (
-                      <div key={p.id} className="uv-page-card" onClick={() => setSelectedId(p.id)}>
-                        <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || `Page ${p.id}`}</strong>
-                        <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
+                      <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
+                        <div onClick={() => setSelectedId(p.id)} style={{ cursor: 'pointer' }}>
+                          <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || `Page ${p.id}`}</strong>
+                          <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
+                        </div>
+                        <button
+                          className="uv-btn"
+                          style={{ position: 'absolute', top: 8, right: 8, padding: '2px 8px', fontSize: 13, background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none' }}
+                          title="Delete page"
+                          onClick={e => {
+                            e.stopPropagation();
+                            setPages(pages => pages.filter(page => page.id !== p.id));
+                            if (selectedId === p.id) setSelectedId(null);
+                          }}
+                        >
+                          Delete
+                        </button>
                       </div>
                     ))}
                   </div>
