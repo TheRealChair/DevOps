@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AuthService } from '../services/authService';
 import '../design/colors.css';
-import '../design/app.css';
+import '../design/App.css';
 import '../design/components.css';
 
 interface UnderviserLoginProps {
