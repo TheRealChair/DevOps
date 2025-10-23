@@ -31,7 +31,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStuderendeClick, onUnderviserClic
           draggable={false}
         />
       </div>
-      <h1 style={{ fontWeight: 800, fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--primary)' }}>Welcome to the Escape Room</h1>
+      <h1 style={{ fontWeight: 800, fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--primary)' }}>Welcome to the Escape Room TEST</h1>
       <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
         <button className="themed-btn" onClick={onUnderviserClick}>Underviser</button>
         <button className="themed-btn" onClick={onStuderendeClick}>Studerende</button>
