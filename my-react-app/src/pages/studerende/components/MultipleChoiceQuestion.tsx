@@ -26,7 +26,7 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
     if (disabled || selected !== null) return; // Prevent multiple answers or if disabled
     setSelected(optId);
     const correct = page.options.find(o => o.id === optId)?.correct;
-    setFeedback(correct ? 'Correct!' : 'Incorrect');
+  setFeedback(correct ? 'Korrekt!' : 'Forkert');
     onAnswer(!!correct);
   };
 

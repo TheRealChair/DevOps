@@ -68,7 +68,7 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
                 setAnswers(arr);
               }}
               disabled={isDisabled}
-              placeholder="Answer..."
+              placeholder="Svar..."
               style={{ width: '100%' }}
             />
           </div>
@@ -83,16 +83,16 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
           value={final}
           onChange={e => setFinal(e.target.value)}
           disabled={disabled || feedback !== null || answers.length === 0 || answers[answers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()}
-          placeholder="Final answer..."
+          placeholder="Endeligt svar..."
           style={{ width: '100%', marginTop: 4 }}
         />
       </div>
       {/* Check answers button */}
       <button className="stud-btn" onClick={handleCheck} disabled={disabled || feedback !== null} style={{ width: '100%', marginTop: 16 }}>
-        Check
+        Tjek
       </button>
       {/* Feedback message */}
-      {feedback && <div style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback === 'All answers correct!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>{feedback}</div>}
+      {feedback && <div style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback === 'All answers correct!' || feedback === 'All answers correct!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>{feedback}</div>}
     </div>
   );
 };

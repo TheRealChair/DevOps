@@ -28,13 +28,13 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
   }, [page]);
 
   // Move item up or down in the order
-  const handleMove = (idx: number, dir: 'up' | 'down') => {
+  const handleMove = (idx: number, dir: 'op' | 'ned') => {
     if (disabled || feedback !== null) return; // Prevent moves if disabled or after answer
     const arr = [...order];
-    if (dir === 'up' && idx > 0) {
+    if (dir === 'op' && idx > 0) {
       // Swap with previous item
       [arr[idx - 1], arr[idx]] = [arr[idx], arr[idx - 1]];
-    } else if (dir === 'down' && idx < arr.length - 1) {
+    } else if (dir === 'ned' && idx < arr.length - 1) {
       // Swap with next item
       [arr[idx + 1], arr[idx]] = [arr[idx], arr[idx + 1]];
     }
@@ -45,7 +45,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
   const handleCheck = () => {
     if (disabled || feedback !== null) return; // Prevent multiple checks
     const correct = page.correctOrder.every((id: number, idx: number) => order[idx] === id);
-    setFeedback(correct ? 'Correct order!' : 'Incorrect order.');
+    setFeedback(correct ? 'Korrekt rækkefølge!' : 'Forkert rækkefølge.');
     onAnswer(correct);
   };
 
@@ -76,7 +76,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
               {/* Move up button */}
               <button
                 className="arrow-btn"
-                onClick={() => handleMove(idx, 'up')}
+                onClick={() => handleMove(idx, 'op')}
                 disabled={idx === 0 || feedback !== null}
                 style={{ marginLeft: 8 }}
               >
@@ -85,7 +85,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
               {/* Move down button */}
               <button
                 className="arrow-btn"
-                onClick={() => handleMove(idx, 'down')}
+                onClick={() => handleMove(idx, 'ned')}
                 disabled={idx === order.length - 1 || feedback !== null}
                 style={{ marginLeft: 4 }}
               >
@@ -107,7 +107,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
       {/* Feedback message */}
       {feedback && (
         <div
-          style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback === 'Correct order!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}
+          style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback === 'Korrekt rækkefølge!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}
         >
           {feedback}
         </div>

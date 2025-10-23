@@ -25,7 +25,7 @@ const InputAnswerQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
   const handleCheck = () => {
     if (disabled || feedback !== null) return; // Prevent multiple checks or if disabled
     const correct = value.trim().toLowerCase() === page.answer.trim().toLowerCase();
-    setFeedback(correct ? 'Correct!' : 'Incorrect');
+    setFeedback(correct ? 'Korrekt!' : 'Forkert');
     onAnswer(correct);
   };
 
@@ -42,15 +42,15 @@ const InputAnswerQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
         value={value}
         onChange={e => setValue(e.target.value)}
         disabled={disabled || feedback !== null}
-        placeholder="Your answer..."
+  placeholder="Dit svar..."
         style={{ width: '100%', marginBottom: 10 }}
       />
       {/* Check answer button */}
       <button className="stud-btn" onClick={handleCheck} disabled={disabled || feedback !== null} style={{ width: '100%', marginBottom: 8 }}>
-        Check
+        Tjek
       </button>
-      {/* Feedback message */}
-      {feedback && <div style={{ marginTop: 8, fontWeight: 600, fontSize: 16, color: feedback === 'Correct!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>{feedback}</div>}
+  {/* Feedback message */}
+  {feedback && <div style={{ marginTop: 8, fontWeight: 600, fontSize: 16, color: feedback === 'Korrekt!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>{feedback}</div>}
     </div>
   );
 };

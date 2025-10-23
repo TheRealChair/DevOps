@@ -2,7 +2,7 @@
 
 import React from 'react';
 import './design/colors.css';
-import './design/app.css';
+import './design/App.css';
 import './design/components.css';
 import HomePage from './pages/HomePage';
 import StuderendePage from './pages/StuderendePage';
