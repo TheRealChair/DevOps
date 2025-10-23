@@ -33,7 +33,7 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
         <input className="uv-input" type="text" value={code} readOnly style={{ fontSize: '1.2rem', width: '180px', textAlign: 'center', letterSpacing: '0.2em' }} />
       </div>
       <button className="uv-btn primary" onClick={handleGenerate}>Generate New Code</button>
-      <button className="uv-btn" onClick={onPagesManager} style={{ marginTop: '1.5rem' }}>Manage Pages</button>
+      <button className="uv-btn" onClick={onPagesManager} style={{ marginTop: '1.5rem' }}>Create New Room</button>
       <button className="uv-btn" onClick={onBack} style={{ marginTop: '1rem' }}>Back</button>
     </div>
   );
