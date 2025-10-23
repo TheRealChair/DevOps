@@ -8,12 +8,13 @@ import HomePage from './pages/HomePage';
 import StuderendePage from './pages/StuderendePage';
 import UnderviserPage from './pages/UnderviserPage';
 import UnderviserPagesManager from './pages/UnderviserPagesManager';
+import UnderviserLogin from './components/UnderviserLogin';
 
 
 const App: React.FC = () => {
   // Global dark mode state
   const [darkMode, setDarkMode] = React.useState(false);
-  const [page, setPage] = React.useState<'home' | 'studerende' | 'underviser' | 'underviserPagesManager'>('home');
+  const [page, setPage] = React.useState<'home' | 'studerende' | 'underviser' | 'underviserPagesManager' | 'underviserLogin'>('home');
 
   // Toggle dark mode class on root element
   React.useEffect(() => {
@@ -54,9 +55,18 @@ const App: React.FC = () => {
       <UnderviserPagesManager onBack={() => setPage('underviser')} />
     </>;
   }
+  if (page === 'underviserLogin') {
+    return <>
+      {DarkModeToggle}
+      <UnderviserLogin 
+        onLoginSuccess={() => setPage('underviser')} 
+        onBack={() => setPage('home')} 
+      />
+    </>;
+  }
   return <>
     {DarkModeToggle}
-    <HomePage onStuderendeClick={() => setPage('studerende')} onUnderviserClick={() => setPage('underviser')} />
+    <HomePage onStuderendeClick={() => setPage('studerende')} onUnderviserClick={() => setPage('underviserLogin')} />
   </>;
 };
 

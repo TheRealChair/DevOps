@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "devops-escaperoom"
-  }
+    "default": "devops-escaperoom",
+    "dev": "devops-escaperoom"
+  },
+  "targets": {},
+  "etags": {}
 }
