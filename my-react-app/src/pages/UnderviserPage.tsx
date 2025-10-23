@@ -1,9 +1,4 @@
 // Code generation function for new room codes
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import '../design/colors.css';
-import '../design/App.css';
-import '../design/components.css';
 
 function generateCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
