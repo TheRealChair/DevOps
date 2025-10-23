@@ -1,5 +1,5 @@
 // Code generation function for new room codes
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import '../design/colors.css';
 import '../design/App.css';
@@ -13,12 +13,6 @@ function generateCode() {
   }
   return code;
 }
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import '../design/colors.css';
-import '../design/app.css';
-import '../design/components.css';
-
 
 
 interface UnderviserPageProps {
