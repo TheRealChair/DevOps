@@ -28,26 +28,26 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
       if (isLogin) {
         // Sign in
         await AuthService.signIn(email, password);
-        setSuccess('Successfully signed in!');
+        setSuccess('Succesfuldt logget ind!');
         if (onLoginSuccess) {
           setTimeout(() => onLoginSuccess(), 1000);
         }
       } else {
         // Register
         if (password !== confirmPassword) {
-          setError('Passwords do not match');
+          setError('Adgangskoderne matcher ikke');
           setLoading(false);
           return;
         }
         
         await AuthService.register(email, password, 'Teacher');
-        setSuccess('Account created successfully! You are now logged in.');
+        setSuccess('Konto oprettet succesfuldt! Du er nu logget ind.');
         if (onLoginSuccess) {
           setTimeout(() => onLoginSuccess(), 1000);
         }
       }
     } catch (error: any) {
-      setError(error.message || 'An error occurred');
+      setError(error.message || 'Der opstod en fejl');
     } finally {
       setLoading(false);
     }
@@ -78,7 +78,7 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
         maxWidth: '400px'
       }}>
         <h2 className="uv-heading" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          {isLogin ? 'Underviser Login' : 'Create Underviser Account'}
+          {isLogin ? 'Underviser Login' : 'Opret Underviser Konto'}
         </h2>
 
         {error && (
@@ -119,13 +119,13 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
               onChange={(e) => setEmail(e.target.value)}
               required
               style={{ width: '100%', padding: '0.75rem' }}
-              placeholder="Enter your email"
+              placeholder="Indtast din email"
             />
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Password:
+              Adgangskode:
             </label>
             <input
               className="uv-input"
@@ -134,14 +134,14 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
               onChange={(e) => setPassword(e.target.value)}
               required
               style={{ width: '100%', padding: '0.75rem' }}
-              placeholder="Enter your password"
+              placeholder="Indtast din adgangskode"
             />
           </div>
 
           {!isLogin && (
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                Confirm Password:
+                Bekræft Adgangskode:
               </label>
               <input
                 className="uv-input"
@@ -150,7 +150,7 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 style={{ width: '100%', padding: '0.75rem' }}
-                placeholder="Confirm your password"
+                placeholder="Bekræft din adgangskode"
               />
             </div>
           )}
@@ -166,7 +166,7 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
               opacity: loading ? 0.7 : 1
             }}
           >
-            {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
+            {loading ? 'Indlæser...' : (isLogin ? 'Log Ind' : 'Opret Konto')}
           </button>
         </form>
 
@@ -183,7 +183,7 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
               fontSize: '0.9rem'
             }}
           >
-            {isLogin ? "Don't have an account? Create one" : "Already have an account? Sign in"}
+            {isLogin ? "Har du ikke en konto? Opret en" : "Har du allerede en konto? Log ind"}
           </button>
         </div>
 
@@ -198,7 +198,7 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
               color: '#666'
             }}
           >
-            Back
+            Tilbage
           </button>
         )}
       </div>
