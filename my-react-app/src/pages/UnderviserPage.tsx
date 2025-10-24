@@ -26,20 +26,13 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
   const [rooms, setRooms] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error] = useState<string | null>(null);
-  const [newRoomCode, setNewRoomCode] = useState(generateCode());
-  // Handler to generate a new code
-  const handleGenerate = () => {
-    setNewRoomCode(generateCode());
-  };
-
-  // Handler to create a new room (placeholder logic)
+  // Add room with default name
   const handleCreateRoom = () => {
-    // In a real app, you would send this to your backend/Firebase
+    const newId = Math.random().toString(36).substring(2, 8);
     setRooms(prev => [
       ...prev,
-      { id: newRoomCode, name: `Room ${newRoomCode}` }
+      { id: newId, name: `Room ${newId}` }
     ]);
-    setNewRoomCode(generateCode());
   };
 
   // Placeholder: Replace with actual fetch from backend or Firebase
@@ -65,39 +58,39 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
     <div className="uv-root" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', minHeight: '100vh' }}>
       <h2 className="uv-heading">Underviser-side</h2>
 
-      {/* Brugerinfo */}
+      {/* Brugerinfo as profile button in top-left */}
       {user && userData && (
-        <div style={{
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
-          padding: '1rem',
-          borderRadius: '8px',
-          marginBottom: '1.5rem',
-          textAlign: 'center',
-          minWidth: '300px',
-          boxShadow: '0 4px 6px var(--card-shadow)'
-        }}>
-          <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text)' }}>Velkommen, {userData.role}!</h3>
-          <p style={{ margin: '0', color: 'var(--text)', fontSize: '0.9rem' }}>Email: {userData.email}</p>
-        </div>
+        <button
+          onClick={() => alert('Profilfunktion kan tilføjes her!')}
+          style={{
+            position: 'fixed',
+            top: '24px',
+            right: '24px',
+            zIndex: 1000,
+            background: 'var(--surface)',
+            border: '1.5px solid var(--border)',
+            padding: '0.75rem 1.25rem',
+            borderRadius: '999px',
+            minWidth: '220px',
+            textAlign: 'left',
+            cursor: 'pointer',
+            transition: 'box-shadow 0.2s',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            gap: '0.2rem',
+          }}
+          onMouseOver={e => (e.currentTarget.style.border = '1.5px solid var(--secondary)')}
+          onMouseOut={e => (e.currentTarget.style.border = '1.5px solid var(--border)')}
+        >
+          <span style={{ fontWeight: 600, color: 'var(--text)', fontSize: '1rem' }}>Velkommen, {userData.role}!</span>
+          <span style={{ color: 'var(--text)', fontSize: '0.85rem', opacity: 0.8 }}>Email: {userData.email}</span>
+        </button>
       )}
 
-      {/* Kodegenerering til nyt rum */}
-      <div style={{ margin: '1.5rem 0', width: '100%', maxWidth: '400px' }}>
-        <h3 style={{ textAlign: 'center', color: 'var(--text)' }}>Opret nyt rum</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <input
-            className="uv-input"
-            type="text"
-            value={newRoomCode}
-            readOnly
-            style={{ fontSize: '1.2rem', width: '180px', textAlign: 'center', letterSpacing: '0.2em', marginBottom: '0.5rem' }}
-          />
-          <div>
-            <button className="uv-btn primary" onClick={handleGenerate} style={{ marginRight: '0.5rem' }}>Generér ny kode</button>
-            <button className="uv-btn" onClick={handleCreateRoom}>Opret rum</button>
-          </div>
-        </div>
+      {/* Opret rum knap */}
+      <div style={{ margin: '1.5rem 0', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
+        <button className="uv-btn primary" onClick={handleCreateRoom}>Opret rum</button>
       </div>
 
       {/* Oversigt over rum */}
