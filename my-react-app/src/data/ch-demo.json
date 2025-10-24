@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "type": "multipleChoice",
+    "title": "Which language is used for styling web pages?",
+    "imageUrl": "",
+    "options": [
+      { "id": 1, "text": "HTML", "imageUrl": "", "correct": false },
+      { "id": 2, "text": "CSS", "imageUrl": "", "correct": true },
+      { "id": 3, "text": "JavaScript", "imageUrl": "", "correct": false }
+    ]
+  },
+  {
+    "id": 2,
+    "type": "inputAnswer",
+    "title": "Type the largest planet in our solar system",
+    "imageUrl": "",
+    "answer": "Jupiter"
+  },
+  {
+    "id": 3,
+    "type": "progressiveQuestions",
+    "title": "Progressive Coding",
+    "imageUrl": "",
+    "questions": [
+      { "id": 1, "prompt": "First letter of 'Code'?", "answer": "C" },
+      { "id": 2, "prompt": "Second letter?", "answer": "O" },
+      { "id": 3, "prompt": "Third letter?", "answer": "D" },
+      { "id": 4, "prompt": "Fourth letter?", "answer": "E" }
+    ],
+    "finalBarLabel": "Final Word",
+    "finalAnswer": "CODE"
+  },
+  {
+    "id": 4,
+    "type": "dragAndDrop",
+    "title": "Order the colors of the rainbow (first 4)",
+    "imageUrl": "",
+    "items": [
+      { "id": 1, "label": "Red" },
+      { "id": 2, "label": "Orange" },
+      { "id": 3, "label": "Yellow" },
+      { "id": 4, "label": "Green" }
+    ],
+    "correctOrder": [1, 2, 3, 4]
+  }
+]

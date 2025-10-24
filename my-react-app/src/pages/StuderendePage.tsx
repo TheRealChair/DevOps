@@ -2,7 +2,9 @@
 
 // StuderendePage: Main entry for student users
 import React, { useState } from 'react';
-import QuestionDemo from './QuestionDemo';
+import RoomViewer from './RoomViewer';
+import questionsData from '../data/questions.json';
+import chDemoData from '../data/ch-demo.json';
 import '../design/colors.css';
 import '../design/App.css';
 import '../design/components.css';
@@ -22,21 +24,29 @@ const StuderendePage: React.FC<StuderendePageProps> = ({ onBack }) => {
   const [roomCode, setRoomCode] = useState('');
   // State: whether to show demo page
   const [showDemo, setShowDemo] = useState(false);
+  // State: questions to pass to demo (if any)
+  const [demoQuestions, setDemoQuestions] = useState<any[]>([]);
 
   // If demo mode is triggered, show demo page
   if (showDemo) {
-    // Render demo questions page
-    return <QuestionDemo onBack={() => setShowDemo(false)} />;
+    // Render room viewer page with loaded questions
+    return <RoomViewer onBack={() => setShowDemo(false)} questions={demoQuestions} />;
   }
 
   // Handle submit: if code is 'demo', show demo, else (future: join room)
   const handleSubmit = () => {
-    if (roomCode.trim().toLowerCase() === 'demo') {
-      // Enter demo mode
+    const code = roomCode.trim().toLowerCase();
+    if (code === 'demo') {
+      // Enter demo mode, load questions from JSON
+      setDemoQuestions(questionsData as any[]);
+      setShowDemo(true);
+    } else if (code === 'ch-demo') {
+      // Enter ch-demo mode, load ch-demo questions
+      setDemoQuestions(chDemoData as any[]);
       setShowDemo(true);
     } else {
       // TODO: handle joining a real room
-      alert('Room joining not implemented. Enter "demo" for demo mode.');
+      alert('Room joining not implemented. Enter "demo" or "ch-demo" for demo mode.');
     }
   };
 

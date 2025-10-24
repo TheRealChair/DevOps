@@ -1,0 +1,45 @@
+[
+  {
+    "id": 1,
+    "type": "multipleChoice",
+    "title": "What is 2 + 2?",
+    "imageUrl": "",
+    "options": [
+      { "id": 1, "text": "3", "imageUrl": "", "correct": false },
+      { "id": 2, "text": "4", "imageUrl": "", "correct": true },
+      { "id": 3, "text": "5", "imageUrl": "", "correct": false }
+    ]
+  },
+  {
+    "id": 2,
+    "type": "inputAnswer",
+    "title": "Type the capital of France",
+    "imageUrl": "",
+    "answer": "Paris"
+  },
+  {
+    "id": 3,
+    "type": "progressiveQuestions",
+    "title": "Progressive Example",
+    "imageUrl": "",
+    "questions": [
+      { "id": 1, "prompt": "First letter of the alphabet?", "answer": "A" },
+      { "id": 2, "prompt": "Second letter?", "answer": "B" }
+    ],
+    "finalBarLabel": "Final Word",
+    "finalAnswer": "AB"
+  },
+  {
+    "id": 4,
+    "type": "dragAndDrop",
+    "title": "Order the planets from the sun",
+    "imageUrl": "",
+    "items": [
+      { "id": 1, "label": "Venus" },
+      { "id": 2, "label": "Earth" },
+      { "id": 3, "label": "Mercury" },
+      { "id": 4, "label": "Mars" }
+    ],
+    "correctOrder": [3, 1, 2, 4]
+  }
+]
