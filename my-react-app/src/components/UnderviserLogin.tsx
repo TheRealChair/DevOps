@@ -67,7 +67,9 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
       alignItems: 'center', 
       justifyContent: 'center',
       minHeight: '100vh',
-      padding: '2rem'
+      padding: '2rem',
+      overflow: 'auto',
+      boxSizing: 'border-box'
     }}>
       <div style={{ 
         background: 'var(--surface)', 
