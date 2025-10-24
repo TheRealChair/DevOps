@@ -2,45 +2,108 @@
   {
     "id": 1,
     "type": "multipleChoice",
-    "title": "Which language is used for styling web pages?",
+    "title": "Hvad er det kemiske symbol for vand?",
     "imageUrl": "",
     "options": [
-      { "id": 1, "text": "HTML", "imageUrl": "", "correct": false },
-      { "id": 2, "text": "CSS", "imageUrl": "", "correct": true },
-      { "id": 3, "text": "JavaScript", "imageUrl": "", "correct": false }
+      { "id": 1, "text": "O2", "imageUrl": "", "correct": false },
+      { "id": 2, "text": "H2O", "imageUrl": "", "correct": true },
+      { "id": 3, "text": "CO2", "imageUrl": "", "correct": false }
     ]
   },
   {
     "id": 2,
     "type": "inputAnswer",
-    "title": "Type the largest planet in our solar system",
+    "title": "Hvad er atomnummeret for kulstof?",
     "imageUrl": "",
-    "answer": "Jupiter"
+    "answer": "6"
   },
   {
     "id": 3,
-    "type": "progressiveQuestions",
-    "title": "Progressive Coding",
+    "type": "multipleChoice",
+    "title": "Hvilken af disse er en ædelgas?",
     "imageUrl": "",
-    "questions": [
-      { "id": 1, "prompt": "First letter of 'Code'?", "answer": "C" },
-      { "id": 2, "prompt": "Second letter?", "answer": "O" },
-      { "id": 3, "prompt": "Third letter?", "answer": "D" },
-      { "id": 4, "prompt": "Fourth letter?", "answer": "E" }
-    ],
-    "finalBarLabel": "Final Word",
-    "finalAnswer": "CODE"
+    "options": [
+      { "id": 1, "text": "Oxygen", "imageUrl": "", "correct": false },
+      { "id": 2, "text": "Nitrogen", "imageUrl": "", "correct": false },
+      { "id": 3, "text": "Neon", "imageUrl": "", "correct": true }
+    ]
   },
   {
     "id": 4,
+    "type": "inputAnswer",
+    "title": "Hvad er pH-værdien af rent vand ved 25°C?",
+    "imageUrl": "",
+    "answer": "7"
+  },
+  {
+    "id": 5,
+    "type": "progressiveQuestions",
+    "title": "Byg formlen for bordsalt",
+    "imageUrl": "",
+    "questions": [
+      { "id": 1, "prompt": "Første element (symbol)?", "answer": "N" },
+      { "id": 2, "prompt": "Andet bogstav?", "answer": "a" },
+      { "id": 3, "prompt": "Tredje element (symbol)?", "answer": "C" },
+      { "id": 4, "prompt": "Fjerde bogstav?", "answer": "l" }
+    ],
+    "finalBarLabel": "Endelig formel",
+    "finalAnswer": "NaCl"
+  },
+  {
+    "id": 6,
     "type": "dragAndDrop",
-    "title": "Order the colors of the rainbow (first 4)",
+    "title": "Sorter følgende grundstoffer efter stigende atomnummer:",
     "imageUrl": "",
     "items": [
-      { "id": 1, "label": "Red" },
-      { "id": 2, "label": "Orange" },
-      { "id": 3, "label": "Yellow" },
-      { "id": 4, "label": "Green" }
+      { "id": 1, "label": "Helium (He)" },
+      { "id": 2, "label": "Hydrogen (H)" },
+      { "id": 3, "label": "Lithium (Li)" },
+      { "id": 4, "label": "Beryllium (Be)" }
+    ],
+    "correctOrder": [2, 1, 3, 4]
+  },
+  {
+    "id": 7,
+    "type": "multipleChoice",
+    "title": "Hvilken syre findes i eddike?",
+    "imageUrl": "",
+    "options": [
+      { "id": 1, "text": "Citronsyre", "imageUrl": "", "correct": false },
+      { "id": 2, "text": "Eddikesyre", "imageUrl": "", "correct": true },
+      { "id": 3, "text": "Svovlsyre", "imageUrl": "", "correct": false }
+    ]
+  },
+  {
+    "id": 8,
+    "type": "inputAnswer",
+    "title": "Hvilken gas er mest udbredt i Jordens atmosfære?",
+    "imageUrl": "",
+    "answer": "Nitrogen"
+  },
+  {
+    "id": 9,
+    "type": "progressiveQuestions",
+    "title": "Byg formlen for glukose",
+    "imageUrl": "",
+    "questions": [
+      { "id": 1, "prompt": "Første bogstav?", "answer": "C" },
+      { "id": 2, "prompt": "Antal H? (kun tallet)", "answer": "6" },
+      { "id": 3, "prompt": "Bogstav for oxygen?", "answer": "O" },
+      { "id": 4, "prompt": "Antal O? (kun tallet)", "answer": "6" }
+    ],
+    "finalBarLabel": "Endelig formel",
+    "finalAnswer": "C6H12O6"
+  },
+  {
+    "id": 10,
+    "type": "dragAndDrop",
+    "title": "Sorter følgende kemiske processer fra start til slut:",
+    "imageUrl": "",
+    "items": [
+      { "id": 1, "label": "Reaktanter blandes" },
+      { "id": 2, "label": "Reaktionen sker" },
+      { "id": 3, "label": "Produkter dannes" },
+      { "id": 4, "label": "Observation registreres" }
     ],
     "correctOrder": [1, 2, 3, 4]
   }
