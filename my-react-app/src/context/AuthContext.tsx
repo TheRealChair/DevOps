@@ -10,6 +10,7 @@ interface AuthContextType {
   userData: UserData | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  refreshUserData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,18 +32,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchUserData = async (uid: string) => {
+    try {
+      const data = await AuthService.getUserData(uid);
+      setUserData(data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setUserData(null);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       
       if (user) {
-        try {
-          const data = await AuthService.getUserData(user.uid);
-          setUserData(data);
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-          setUserData(null);
-        }
+        await fetchUserData(user.uid);
       } else {
         setUserData(null);
       }
@@ -62,11 +67,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const refreshUserData = async () => {
+    if (user) {
+      await fetchUserData(user.uid);
+    }
+  };
+
   const value: AuthContextType = {
     user,
     userData,
     loading,
     signOut,
+    refreshUserData,
   };
 
   return (
