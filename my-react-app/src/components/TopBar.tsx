@@ -78,7 +78,13 @@ const TopBar: React.FC = () => {
           >
             <span className="icon sun" aria-hidden="true"><SunIcon /></span>
             <span className="icon moon" aria-hidden="true"><MoonIcon /></span>
-            <span className="knob" aria-hidden="true" />
+            <span className="knob" aria-hidden="true">
+              {darkMode ? (
+                <MoonIcon className="knob-icon" />
+              ) : (
+                <SunIcon className="knob-icon" />
+              )}
+            </span>
           </button>
         </div>
       </div>
