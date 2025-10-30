@@ -39,7 +39,14 @@ const MoonIcon: React.FC<{ className?: string; title?: string }> = ({ className,
 );
 
 const TopBar: React.FC = () => {
-  const [darkMode, setDarkMode] = React.useState(false);
+  const [darkMode, setDarkMode] = React.useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'dark') return true;
+      if (stored === 'light') return false;
+    } catch {}
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
   React.useEffect(() => {
     const root = document.documentElement;
@@ -48,6 +55,9 @@ const TopBar: React.FC = () => {
     } else {
       root.classList.remove('dark-mode');
     }
+    try {
+      localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    } catch {}
   }, [darkMode]);
 
   return (
@@ -55,20 +65,20 @@ const TopBar: React.FC = () => {
       <div className="topbar-content">
         <h2 className="topbar-title">EscapED</h2>
         <div className="topbar-buttons">
-          {/* Add your buttons here, e.g. <button>Home</button> */}
+          {/* Theme toggle */}
           <button
             type="button"
-            className="themed-btn icon-btn"
+            className="theme-toggle"
             aria-label="Toggle dark mode"
-            aria-pressed={darkMode}
-            title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            role="switch"
+            aria-checked={darkMode}
+            data-dark={darkMode}
+            title={darkMode ? 'Dark mode on — switch to light' : 'Light mode on — switch to dark'}
             onClick={() => setDarkMode((dm) => !dm)}
           >
-            {darkMode ? (
-              <SunIcon className="icon" />
-            ) : (
-              <MoonIcon className="icon" />
-            )}
+            <span className="icon sun" aria-hidden="true"><SunIcon /></span>
+            <span className="icon moon" aria-hidden="true"><MoonIcon /></span>
+            <span className="knob" aria-hidden="true" />
           </button>
         </div>
       </div>

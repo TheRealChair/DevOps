@@ -1,5 +1,5 @@
 .topbar {
-  width: 100vw;
+  width: 100%;
   background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
   color: #fff;
   padding: 0rem 0;
@@ -8,6 +8,8 @@
   top: 0;
   left: 0;
   z-index: 1000;
+  height: var(--topbar-h, 48px);
+  box-sizing: border-box;
 }
 .topbar-content {
   width: 100%;
@@ -17,6 +19,7 @@
   justify-content: space-between;
   margin: 0;
   padding: 0 2rem;
+  height: 100%;
 }
 .topbar-title {
   margin: 0;
@@ -28,6 +31,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  padding-right: 50px; /* nudge group left without shrinking the button */
 }
 .topbar-buttons > * {
   margin-left: 1rem;
@@ -61,4 +65,79 @@
   width: 1.2rem;
   height: 1.2rem;
   display: block;
+}
+
+/* Modern theme toggle */
+.topbar .theme-toggle {
+  --toggle-w: 56px; /* bigger width */
+  --toggle-h: 28px; /* bigger height */
+  --gap: 3px;      /* slightly more gap for knob */
+  --knob: calc(var(--toggle-h) - var(--gap) * 2);
+
+  width: var(--toggle-w);
+  height: var(--toggle-h);
+  padding: 0;
+  margin: 0; /* spacing handled by .topbar-buttons padding */
+  align-self: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 9999px;
+  /* Brand-tinted frosted look to match gradient bar */
+  background: linear-gradient(135deg, rgba(108,99,255,0.25), rgba(124,110,246,0.25));
+  background-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  position: relative;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+.topbar .theme-toggle:hover {
+  background: linear-gradient(135deg, rgba(108,99,255,0.3), rgba(124,110,246,0.3));
+}
+.topbar .theme-toggle:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.topbar .theme-toggle .knob {
+  position: absolute;
+  top: 50%;
+  left: var(--gap);
+  width: var(--knob);
+  height: var(--knob);
+  border-radius: 9999px;
+  background: var(--primary); /* light mode knob: brand purple */
+  box-shadow: 0 2px 6px rgba(99,102,241,0.18);
+  transform: translate(0, -50%);
+  transition: transform 200ms cubic-bezier(.2,.8,.2,1), background 160ms ease, box-shadow 160ms ease;
+}
+.topbar .theme-toggle[data-dark='true'] .knob {
+  transform: translate(calc(var(--toggle-w) - var(--knob) - var(--gap) * 2), -50%);
+  background: #23203a; /* dark mode knob: slate color */
+  box-shadow: 0 2px 10px rgba(60,72,100,0.25);
+}
+.topbar .theme-toggle .icon {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  display: block;
+  color: #fff;
+  opacity: 0.6;
+  transition: opacity 160ms ease;
+}
+.topbar .theme-toggle .icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.topbar .theme-toggle .icon.sun { left: 8px; }
+.topbar .theme-toggle .icon.moon { right: 8px; }
+.topbar .theme-toggle[data-dark='true'] .icon.moon { opacity: 1; }
+.topbar .theme-toggle[data-dark='true'] .icon.sun { opacity: 0.35; }
+.topbar .theme-toggle:not([data-dark='true']) .icon.sun { opacity: 1; }
+.topbar .theme-toggle:not([data-dark='true']) .icon.moon { opacity: 0.35; }
+.topbar .theme-toggle[data-dark='true'] {
+  /* Slightly stronger frosted effect when active, no black bar */
+  background: linear-gradient(135deg, rgba(108,99,255,0.32), rgba(124,110,246,0.32));
+  border-color: rgba(255, 255, 255, 0.32);
 }

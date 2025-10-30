@@ -66,7 +66,16 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
   }
 
   return (
-    <div className="uv-root" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', minHeight: '100vh' }}>
+    <div
+      className="uv-root"
+      style={{
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--bg)',
+        minHeight: 'calc(100vh - var(--topbar-h, 48px))'
+      }}
+    >
       <h2 className="uv-heading">Underviser-side</h2>
       {user && userData && (
         <button
