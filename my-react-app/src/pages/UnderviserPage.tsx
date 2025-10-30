@@ -10,6 +10,7 @@
 // }
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import BrugerInfo from '../components/BrugerInfo';
 import '../design/colors.css';
 import '../design/App.css';
 import '../design/components.css';
@@ -26,6 +27,7 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
   const [rooms, setRooms] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error] = useState<string | null>(null);
+  const [showBrugerInfo, setShowBrugerInfo] = useState(false);
   // Add room with default name
   const handleCreateRoom = () => {
     const newId = Math.random().toString(36).substring(2, 8);
@@ -61,7 +63,7 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
       {/* Brugerinfo as profile button in top-left */}
       {user && userData && (
         <button
-          onClick={() => alert('Profilfunktion kan tilføjes her!')}
+          onClick={() => setShowBrugerInfo(true)}
           style={{
             position: 'fixed',
             top: '24px',
@@ -83,7 +85,9 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
           onMouseOver={e => (e.currentTarget.style.border = '1.5px solid var(--secondary)')}
           onMouseOut={e => (e.currentTarget.style.border = '1.5px solid var(--border)')}
         >
-          <span style={{ fontWeight: 600, color: 'var(--text)', fontSize: '1rem' }}>Velkommen, {userData.role}!</span>
+          <span style={{ fontWeight: 600, color: 'var(--text)', fontSize: '1rem' }}>
+            Velkommen, {userData.name || userData.role}!
+          </span>
           <span style={{ color: 'var(--text)', fontSize: '0.85rem', opacity: 0.8 }}>Email: {userData.email}</span>
         </button>
       )}
@@ -141,6 +145,9 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
 
     <button className="uv-btn" onClick={handleLogout} style={{ marginTop: '1rem', background: 'var(--feedback-incorrect-text)', color: 'var(--button-text)' }}>Log ud</button>
     <button className="uv-btn" onClick={onBack} style={{ marginTop: '0.5rem', background: 'var(--hover-bg)', color: 'var(--muted)' }}>Tilbage</button>
+
+      {/* BrugerInfo modal */}
+      {showBrugerInfo && <BrugerInfo onClose={() => setShowBrugerInfo(false)} />}
     </div>
   );
 };
