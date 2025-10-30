@@ -5,7 +5,7 @@ import { getFirestore } from 'firebase/firestore';
 // Firebase configuration
 // You'll need to replace these with your actual Firebase project config
 const firebaseConfig = {
-  apiKey: "AIzaSyCFOZEo8MHBRWYnqLR1S8RUYik7k26UMXM",
+  apiKey: "AIzaSyCFOZEo8MHBRWYnqLR1S8RUYik7k26UMXM",   // Only help identify the project, firebase security rules protects data
   authDomain: "devops-escaperoom.firebaseapp.com",
   projectId: "devops-escaperoom",
   storageBucket: "devops-escaperoom.appspot.com",
