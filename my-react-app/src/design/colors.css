@@ -1,6 +1,8 @@
 /* colors.css: Theme variables for light/dark mode and palette */
 
 :root {
+  /* Layout */
+  --topbar-h: 48px;
   /* Arrow button background and text for light mode */
   --arrow-btn-bg: #ede9fe;
   --arrow-btn-text: var(--primary);
@@ -36,6 +38,8 @@
 }
 
 :root.dark-mode {
+  /* Layout */
+  --topbar-h: 48px;
   /* Arrow button background and text for dark mode */
   --arrow-btn-bg: #998bf3;
   --arrow-btn-text: var(white);

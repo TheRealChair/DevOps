@@ -19,7 +19,7 @@ const App: React.FC = () => {
   return (
     <>
       <TopBar />
-      <div style={{ paddingTop: '28px' }}>
+      <div style={{ paddingTop: 'var(--topbar-h, 48px)' }}>
         <Routes>
           <Route
             path="/"

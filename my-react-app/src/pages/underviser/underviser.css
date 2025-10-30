@@ -23,8 +23,8 @@
   */
   display: flex;              /* Use flexbox for horizontal layout */
   flex-direction: row;        /* Children (sidebar, main) are side by side */
-  height: 100vh;              /* Full viewport height */
-  width: 100vw;               /* Full viewport width */
+  min-height: calc(100vh - var(--topbar-h, 48px)); /* Avoid extra scroll under fixed topbar */
+  width: 100%;               /* Avoid horizontal overflow */
   background: var(--bg);      /* Use shared background variable */
 }
 
