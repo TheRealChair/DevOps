@@ -4,11 +4,13 @@ import React from 'react';
 import './design/colors.css';
 import './design/App.css';
 import './design/components.css';
+
 import HomePage from './pages/HomePage';
 import StuderendePage from './pages/StuderendePage';
 import UnderviserPage from './pages/UnderviserPage';
 import UnderviserPagesManager from './pages/UnderviserPagesManager';
 import UnderviserLogin from './components/UnderviserLogin';
+import TopBar from './components/TopBar';
 
 
 const App: React.FC = () => {
@@ -26,48 +28,28 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
-  // Global dark mode toggle button (fixed position)
-  const DarkModeToggle = (
-    <button
-      className="themed-btn"
-      style={{ position: 'fixed', bottom: 24, left: 24, zIndex: 1000 }}
-      onClick={() => setDarkMode(dm => !dm)}
-    >
-      {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-    </button>
-  );
 
+  let pageContent: React.ReactNode = null;
   if (page === 'studerende') {
-    return <>
-      {DarkModeToggle}
-      <StuderendePage onBack={() => setPage('home')} />
-    </>;
+    pageContent = <StuderendePage onBack={() => setPage('home')} />;
+  } else if (page === 'underviser') {
+    pageContent = <UnderviserPage onBack={() => setPage('home')} onPagesManager={() => setPage('underviserPagesManager')} />;
+  } else if (page === 'underviserPagesManager') {
+    pageContent = <UnderviserPagesManager onBack={() => setPage('underviser')} />;
+  } else if (page === 'underviserLogin') {
+    pageContent = <UnderviserLogin onLoginSuccess={() => setPage('underviser')} onBack={() => setPage('home')} />;
+  } else {
+    pageContent = <HomePage onStuderendeClick={() => setPage('studerende')} onUnderviserClick={() => setPage('underviserLogin')} />;
   }
-  if (page === 'underviser') {
-    return <>
-      {DarkModeToggle}
-      <UnderviserPage onBack={() => setPage('home')} onPagesManager={() => setPage('underviserPagesManager')} />
-    </>;
-  }
-  if (page === 'underviserPagesManager') {
-    return <>
-      {DarkModeToggle}
-      <UnderviserPagesManager onBack={() => setPage('underviser')} />
-    </>;
-  }
-  if (page === 'underviserLogin') {
-    return <>
-      {DarkModeToggle}
-      <UnderviserLogin 
-        onLoginSuccess={() => setPage('underviser')} 
-        onBack={() => setPage('home')} 
-      />
-    </>;
-  }
-  return <>
-    {DarkModeToggle}
-    <HomePage onStuderendeClick={() => setPage('studerende')} onUnderviserClick={() => setPage('underviserLogin')} />
-  </>;
+
+  return (
+    <>
+      <TopBar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <div style={{ paddingTop: '64px' }}>
+        {pageContent}
+      </div>
+    </>
+  );
 };
 
 export default App;
