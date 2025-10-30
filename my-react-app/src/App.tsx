@@ -1,6 +1,5 @@
-
-
 import React from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import './design/colors.css';
 import './design/App.css';
 import './design/components.css';
@@ -16,7 +15,7 @@ import TopBar from './components/TopBar';
 const App: React.FC = () => {
   // Global dark mode state
   const [darkMode, setDarkMode] = React.useState(false);
-  const [page, setPage] = React.useState<'home' | 'studerende' | 'underviser' | 'underviserPagesManager' | 'underviserLogin'>('home');
+  const navigate = useNavigate();
 
   // Toggle dark mode class on root element
   React.useEffect(() => {
@@ -28,26 +27,66 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
-
-  let pageContent: React.ReactNode = null;
-  if (page === 'studerende') {
-    pageContent = <StuderendePage onBack={() => setPage('home')} />;
-  } else if (page === 'underviser') {
-    pageContent = <UnderviserPage onBack={() => setPage('home')} onPagesManager={() => setPage('underviserPagesManager')} />;
-  } else if (page === 'underviserPagesManager') {
-    pageContent = <UnderviserPagesManager onBack={() => setPage('underviser')} />;
-  } else if (page === 'underviserLogin') {
-    pageContent = <UnderviserLogin onLoginSuccess={() => setPage('underviser')} onBack={() => setPage('home')} />;
-  } else {
-    pageContent = <HomePage onStuderendeClick={() => setPage('studerende')} onUnderviserClick={() => setPage('underviserLogin')} />;
-  }
+  // Global dark mode toggle button (fixed position)
+  const DarkModeToggle = (
+    <button
+      className="themed-btn"
+      style={{ position: 'fixed', bottom: 24, left: 24, zIndex: 1000 }}
+      onClick={() => setDarkMode(dm => !dm)}
+    >
+      {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+    </button>
+  );
 
   return (
     <>
-      <TopBar darkMode={darkMode} setDarkMode={setDarkMode} />
-      <div style={{ paddingTop: '64px' }}>
-        {pageContent}
-      </div>
+      {DarkModeToggle}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <HomePage
+              onStuderendeClick={() => navigate('/studerende')}
+              onUnderviserClick={() => navigate('/underviser/login')}
+            />
+          }
+        />
+        <Route
+          path="/studerende"
+          element={<StuderendePage onBack={() => navigate(-1)} />}
+        />
+        <Route
+          path="/underviser"
+          element={
+            <UnderviserPage
+              onBack={() => navigate('/')}
+              onPagesManager={() => navigate('/underviser/pages')}
+            />
+          }
+        />
+        <Route
+          path="/underviser/pages"
+          element={<UnderviserPagesManager onBack={() => navigate(-1)} />}
+        />
+        <Route
+          path="/underviser/login"
+          element={
+            <UnderviserLogin
+              onLoginSuccess={() => navigate('/underviser')}
+              onBack={() => navigate('/')}
+            />
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <HomePage
+              onStuderendeClick={() => navigate('/studerende')}
+              onUnderviserClick={() => navigate('/underviser/login')}
+            />
+          }
+        />
+      </Routes>
     </>
   );
 };

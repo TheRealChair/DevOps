@@ -71,3 +71,21 @@ export default defineConfig([
   },
 ])
 ```
+
+## App routes and navigation
+
+This app now uses React Router for URL-based navigation, so the browser back/forward buttons work across views. Key routes:
+
+- `/` – Home
+- `/studerende` – Student page
+- `/underviser/login` – Teacher login
+- `/underviser` – Teacher dashboard
+- `/underviser/pages` – Teacher page editor/manager
+
+Deep links are supported in dev and production (Firebase Hosting is configured with a SPA rewrite to `/index.html`).
+
+Dev server tip (from repo root):
+
+```powershell
+npm run dev --prefix my-react-app
+```
