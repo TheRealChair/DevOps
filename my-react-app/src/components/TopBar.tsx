@@ -18,7 +18,7 @@ const TopBar: React.FC<TopBarProps> = ({ darkMode, setDarkMode }) => {
             className="themed-btn"
             onClick={() => setDarkMode(dm => !dm)}
           >
-            {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            {darkMode ? '🌞' : '🌙'}
           </button>
         </div>
       </div>
