@@ -2,12 +2,19 @@ import React from 'react';
 import './TopBar.css';
 
 
-interface TopBarProps {
-  darkMode: boolean;
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
-const TopBar: React.FC<TopBarProps> = ({ darkMode, setDarkMode }) => {
+const TopBar: React.FC = () => {
+  const [darkMode, setDarkMode] = React.useState(false);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode) {
+      root.classList.add('dark-mode');
+    } else {
+      root.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
+
   return (
     <header className="topbar">
       <div className="topbar-content">
