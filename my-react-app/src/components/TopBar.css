@@ -69,9 +69,9 @@
 
 /* Modern theme toggle */
 .topbar .theme-toggle {
-  --toggle-w: 56px; /* bigger width */
-  --toggle-h: 28px; /* bigger height */
-  --gap: 3px;      /* slightly more gap for knob */
+  --toggle-w: 64px; /* slightly bigger width */
+  --toggle-h: 32px; /* slightly bigger height */
+  --gap: 3px;      /* gap for knob */
   --knob: calc(var(--toggle-h) - var(--gap) * 2);
 
   width: var(--toggle-w);
@@ -117,8 +117,8 @@
 .topbar .theme-toggle .icon {
   position: absolute;
   top: 50%;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   transform: translateY(-50%);
   display: block;
   color: #fff;
