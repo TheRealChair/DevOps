@@ -34,9 +34,7 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions }) => {
 
   useEffect(() => {
     if (questions) {
-      setPages(questions);
-    } else {
-      setPages(questionsData as PageData[]);
+      console.log("RoomViewer loading questions:", questions);
     }
     setAnswers(Array((questions ? questions.length : (questionsData as PageData[]).length)).fill(null));
     setStartTime(Date.now());
@@ -81,7 +79,10 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions }) => {
   if (!pages.length) {
     return (
       <div className="stud-root" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <div>Loading questions...</div>
+        <div>
+          <div style={{color:'red'}}>Error: No questions/pages loaded for this room. Please check with your teacher or reload the page.</div>
+          <button className="stud-btn" onClick={onBack}>Back</button>
+        </div>
       </div>
     );
   }
