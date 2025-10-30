@@ -10,7 +10,6 @@
 // }
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import BrugerInfo from '../components/BrugerInfo';
 import '../design/colors.css';
 import '../design/App.css';
 import '../design/components.css';
@@ -29,7 +28,6 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
   const [rooms, setRooms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showBrugerInfo, setShowBrugerInfo] = useState(false);
   const [showManager, setShowManager] = useState(false);
   const [initialPages, setInitialPages] = useState<any[]>([]);
 
@@ -72,7 +70,6 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
       <h2 className="uv-heading">Underviser-side</h2>
       {user && userData && (
         <button
-          onClick={() => setShowBrugerInfo(true)}
           style={{
             position: 'fixed',
             top: '48px', // Move below TopBar (adjust as needed)

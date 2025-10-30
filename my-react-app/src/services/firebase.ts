@@ -2,15 +2,15 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-// Firebase configuration
-// You'll need to replace these with your actual Firebase project config
+// Firebase configuration (hardcoded)
+// Replace placeholders with your actual Firebase project config if needed.
 const firebaseConfig = {
-  apiKey: "AIzaSyCFOZEo8MHBRWYnqLR1S8RUYik7k26UMXM",
-  authDomain: "devops-escaperoom.firebaseapp.com",
-  projectId: "devops-escaperoom",
-  storageBucket: "devops-escaperoom.appspot.com",
-  messagingSenderId: "your-sender-id",
-  appId: "your-app-id"
+  apiKey: 'AIzaSyCFOZEo8MHBRWYnqLR1S8RUYik7k26UMXM',
+  authDomain: 'devops-escaperoom.firebaseapp.com',
+  projectId: 'devops-escaperoom',
+  storageBucket: 'devops-escaperoom.appspot.com',
+  messagingSenderId: 'your-sender-id',
+  appId: 'your-app-id',
 };
 
 // Initialize Firebase

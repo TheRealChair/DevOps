@@ -23,7 +23,10 @@ interface RoomViewerProps {
 
 const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions }) => {
   const [pageIdx, setPageIdx] = useState(0);
-  const [pages, setPages] = useState<PageData[]>(questions ?? []);
+  // Derive pages from props with a fallback to demo data
+  const pages: PageData[] = (questions && questions.length > 0)
+    ? questions
+    : (questionsData as PageData[]);
   const [completed, setCompleted] = useState(false);
   // Track answers and correctness
   const [answers, setAnswers] = useState<(boolean | null)[]>([]);
@@ -36,10 +39,11 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions }) => {
     if (questions) {
       console.log("RoomViewer loading questions:", questions);
     }
-    setAnswers(Array((questions ? questions.length : (questionsData as PageData[]).length)).fill(null));
+    setAnswers(Array(pages.length).fill(null));
     setStartTime(Date.now());
     setElapsed(0);
-  }, [questions]);
+    setPageIdx(0);
+  }, [questions, pages.length]);
 
   // Timer effect
   useEffect(() => {
