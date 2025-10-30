@@ -9,6 +9,7 @@
 //   return code;
 // }
 import React, { useEffect, useState } from 'react';
+import RoomViewer from './RoomViewer';
 import { useAuth } from '../context/AuthContext';
 import BrugerInfo from '../components/BrugerInfo';
 import '../design/colors.css';
@@ -25,6 +26,7 @@ interface UnderviserPageProps {
 const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager }) => {
   const { user, userData, signOut } = useAuth();
   const [rooms, setRooms] = useState<Array<{ id: string; name: string }>>([]);
+  const [previewRoomId, setPreviewRoomId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error] = useState<string | null>(null);
   const [showBrugerInfo, setShowBrugerInfo] = useState(false);
@@ -55,6 +57,20 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
       console.error('Logout error:', error);
     }
   };
+
+  // Find the room to preview
+  const previewRoom = previewRoomId ? rooms.find(r => r.id === previewRoomId) : null;
+
+  // Show RoomViewer in preview mode if previewRoomId is set
+  if (previewRoom) {
+    return (
+      <RoomViewer
+        onBack={() => setPreviewRoomId(null)}
+        questions={[]}
+        previewAsStudent={true}
+      />
+    );
+  }
 
   return (
     <div className="uv-root" style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', minHeight: '100vh' }}>
@@ -135,6 +151,13 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
                     onClick={() => handleDeleteRoom(room.id)}
                   >
                     Slet
+                  </button>
+                  <button
+                    className="uv-btn"
+                    style={{ background: 'var(--button-bg)', color: 'var(--button-text)', padding: '0.4rem 1.2rem' }}
+                    onClick={() => setPreviewRoomId(room.id)}
+                  >
+                    Forhåndsvis som studerende
                   </button>
                 </div>
               </li>
