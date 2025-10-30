@@ -1,13 +1,16 @@
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
-  signOut
+  signOut,
+  sendPasswordResetEmail,
+  updateProfile
 } from 'firebase/auth';
 import type { User, UserCredential } from 'firebase/auth';
 import { 
   doc, 
   setDoc, 
   getDoc, 
+  updateDoc,
   serverTimestamp 
 } from 'firebase/firestore';
 import { auth, db } from './firebase';
@@ -15,6 +18,7 @@ import { auth, db } from './firebase';
 export interface UserData {
   email: string;
   role: 'Teacher' | 'Student';
+  name?: string;
   createdAt: any; // Firestore timestamp
 }
 
@@ -55,11 +59,12 @@ export class AuthService {
   }
 
   // Save user data to Firestore Users collection
-  static async saveUserToFirestore(user: User, role: 'Teacher' | 'Student'): Promise<void> {
+  static async saveUserToFirestore(user: User, role: 'Teacher' | 'Student', name?: string): Promise<void> {
     try {
       const userData: UserData = {
         email: user.email || '',
         role: role,
+        name: name || user.displayName || '',
         createdAt: serverTimestamp()
       };
 
@@ -93,5 +98,35 @@ export class AuthService {
   // Get current user
   static getCurrentUser(): User | null {
     return auth.currentUser;
+  }
+
+  // Send password reset email
+  static async sendPasswordReset(email: string): Promise<void> {
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      console.error('Password reset error:', error);
+      throw error;
+    }
+  }
+
+  // Update user profile (name)
+  static async updateUserProfile(user: User, displayName: string): Promise<void> {
+    try {
+      await updateProfile(user, { displayName });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
+    }
+  }
+
+  // Update user data in Firestore
+  static async updateUserData(userId: string, updates: Partial<UserData>): Promise<void> {
+    try {
+      await updateDoc(doc(db, 'Users', userId), updates);
+    } catch (error) {
+      console.error('Error updating user data:', error);
+      throw error;
+    }
   }
 }
