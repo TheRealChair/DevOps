@@ -39,3 +39,26 @@
   height: 2rem;
   margin-right: 3.5rem;
 }
+
+/* Icon button tweaks */
+.topbar .icon-btn {
+  display: inline-grid;
+  place-items: center;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 120ms ease, transform 80ms ease;
+}
+.topbar .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+.topbar .icon-btn:active {
+  transform: translateY(1px);
+}
+.topbar .icon-btn .icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  display: block;
+}
