@@ -8,7 +8,8 @@
 //   }
 //   return code;
 // }
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import BrugerInfo from '../components/BrugerInfo';
 import { useAuth } from '../context/AuthContext';
 import '../design/colors.css';
 import '../design/App.css';
@@ -30,6 +31,29 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
   const [error, setError] = useState<string | null>(null);
   const [showManager, setShowManager] = useState(false);
   const [initialPages, setInitialPages] = useState<any[]>([]);
+  const [showProfile, setShowProfile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const profileWrapRef = useRef<HTMLDivElement | null>(null);
+
+  // Close dropdown on outside click or ESC
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (!menuOpen) return;
+      const target = e.target as Node;
+      if (profileWrapRef.current && !profileWrapRef.current.contains(target)) {
+        setMenuOpen(false);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setMenuOpen(false);
+    }
+    document.addEventListener('mousedown', onDocClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDocClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [menuOpen]);
 
   // Fetch real rooms from Firestore
   useEffect(() => {
@@ -78,33 +102,106 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
     >
       <h2 className="uv-heading">Underviser-side</h2>
       {user && userData && (
-        <button
-          style={{
-            position: 'fixed',
-            top: '48px', // Move below TopBar (adjust as needed)
-            right: '12px',
-            zIndex: 1000,
-            background: 'var(--surface)',
-            border: '1.5px solid var(--border)',
-            padding: '0.75rem 1.25rem',
-            borderRadius: '999px',
-            minWidth: '220px',
-            textAlign: 'left',
-            cursor: 'pointer',
-            transition: 'box-shadow 0.2s',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            gap: '0.2rem',
-          }}
-          onMouseOver={e => (e.currentTarget.style.border = '1.5px solid var(--secondary)')}
-          onMouseOut={e => (e.currentTarget.style.border = '1.5px solid var(--border)')}
+        <div
+          ref={profileWrapRef}
+          style={{ position: 'fixed', top: '48px', right: '12px', zIndex: 1200 }}
         >
-          <span style={{ fontWeight: 600, color: 'var(--text)', fontSize: '1rem' }}>
-            Velkommen, {userData.name || userData.role}!
-          </span>
-          <span style={{ color: 'var(--text)', fontSize: '0.85rem', opacity: 0.8 }}>Email: {userData.email}</span>
-        </button>
+          <button
+            type="button"
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(prev => !prev)}
+            style={{
+              background: 'var(--surface)',
+              border: '1.5px solid var(--border)',
+              padding: '0.75rem 1.25rem',
+              borderRadius: '999px',
+              minWidth: '220px',
+              textAlign: 'left',
+              cursor: 'pointer',
+              transition: 'box-shadow 0.2s, border-color 0.2s',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '0.2rem',
+            }}
+            onMouseOver={e => (e.currentTarget.style.border = '1.5px solid var(--secondary)')}
+            onMouseOut={e => (e.currentTarget.style.border = '1.5px solid var(--border)')}
+          >
+            <span style={{ fontWeight: 600, color: 'var(--text)', fontSize: '1rem' }}>
+              Velkommen, {userData.name || userData.role}!
+            </span>
+            <span style={{ color: 'var(--text)', fontSize: '0.85rem', opacity: 0.8 }}>Email: {userData.email}</span>
+          </button>
+
+          {menuOpen && (
+            <div
+              role="menu"
+              style={{
+                position: 'absolute',
+                top: 'calc(100% + 8px)',
+                right: 0,
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: '10px',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
+                minWidth: '240px',
+                padding: '8px',
+              }}
+            >
+              <button
+                role="menuitem"
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setShowProfile(true);
+                }}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  background: 'transparent',
+                  color: 'var(--text)',
+                  border: '1px solid transparent',
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                }}
+                onMouseOver={e => (e.currentTarget.style.background = 'var(--hover-bg)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
+              >
+                Rediger oplysninger
+              </button>
+              <button
+                role="menuitem"
+                type="button"
+                onClick={async () => {
+                  setMenuOpen(false);
+                  await signOut();
+                  if (onBack) onBack();
+                }}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  background: 'transparent',
+                  color: 'var(--feedback-incorrect-text)',
+                  border: '1px solid transparent',
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  marginTop: '4px',
+                }}
+                onMouseOver={e => (e.currentTarget.style.background = 'var(--hover-bg)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
+              >
+                Log ud
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {showProfile && (
+        <BrugerInfo onClose={() => setShowProfile(false)} />
       )}
       <div style={{ margin: '1.5rem 0', width: '100%', maxWidth: '600px', textAlign: 'center' }}>
         <button className="uv-btn primary" onClick={() => {
@@ -144,7 +241,7 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
           </div>
         )}
       </div>
-      <button className="uv-btn" onClick={async () => { await signOut(); if(onBack)onBack(); }} style={{ marginTop: '1rem', background: 'var(--feedback-incorrect-text)', color: 'var(--button-text)' }}>Log ud</button>
+  {/* Bottom logout removed in favor of profile dropdown menu */}
       <button className="uv-btn" onClick={onBack} style={{ marginTop: '0.5rem', background: 'var(--hover-bg)', color: 'var(--muted)' }}>Tilbage</button>
     </div>
   );
