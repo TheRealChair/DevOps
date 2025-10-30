@@ -52,6 +52,7 @@ jobs:
 
           
   deploy_staging:
+    if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

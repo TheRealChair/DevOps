@@ -66,8 +66,8 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
           onClick={() => setShowBrugerInfo(true)}
           style={{
             position: 'fixed',
-            top: '24px',
-            right: '24px',
+            top: '48px', // Move below TopBar (adjust as needed)
+            right: '12px',
             zIndex: 1000,
             background: 'var(--surface)',
             border: '1.5px solid var(--border)',
