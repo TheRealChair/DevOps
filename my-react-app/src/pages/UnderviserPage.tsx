@@ -106,7 +106,9 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
                   className="uv-btn primary"
                   style={{ marginTop: '0.7rem', padding: '0.5rem 1.4rem', background: 'var(--button-bg)', color: 'var(--button-text)', border: '1px solid var(--button-border)' }}
                   onClick={() => {
-                    setInitialPages(room.pages || []);
+                    const arr = room.pages ? [...room.pages] : [];
+                    (arr as any)._roomId = room.id;
+                    setInitialPages(arr);
                     setShowManager(true);
                   }}
                 >
