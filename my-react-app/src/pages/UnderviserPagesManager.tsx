@@ -1,6 +1,7 @@
 
 
 import React, { useState, useEffect } from 'react';
+import RoomViewer from './RoomViewer';
 import MultipleChoiceEditor from './underviser/MultipleChoiceEditor';
 import InputAnswerEditor from './underviser/InputAnswerEditor';
 import ProgressiveQuestionsEditor from './underviser/ProgressiveQuestionsEditor';
@@ -130,6 +131,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
   const [myRooms, setMyRooms] = useState<any[]>([]);
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [editRoomId, setEditRoomId] = useState<string | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
 
   // --- Teacher live dashboard logic ---
   const [studentList, setStudentList] = useState<any[]>([]);
@@ -159,6 +161,16 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     const fetchRooms = async () => {
       if (!user) {
         setMyRooms([]);
+      if (previewMode) {
+        // Show RoomViewer in student mode
+        return (
+          <RoomViewer
+            onBack={() => setPreviewMode(false)}
+            questions={pages}
+            previewAsStudent={true}
+          />
+        );
+      }
         return;
       }
       setLoadingRooms(true);
@@ -196,6 +208,9 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     setStarted(true);
   };
 
+            <button className="uv-btn" style={{ background: 'var(--button-bg)', color: 'var(--button-text)' }} onClick={() => setPreviewMode(true)}>
+              Forhåndsvis som studerende
+            </button>
   const handleCloseRoom = async () => {
     if (!roomDocId) return;
     // 1) Set started: false
@@ -392,6 +407,10 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button className="uv-btn" onClick={onBack}>Back</button>
             <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Hide Menu' : 'Show Menu'}</button>
+            {/* Preview button next to Hide Menu */}
+            <button className="uv-btn" style={{ marginLeft: 8 }} onClick={() => setPreviewMode(true)}>
+              Forhåndsvis som studerende
+            </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <label style={{ color: 'var(--text)', fontSize: 14 }}>Template:</label>
@@ -404,70 +423,75 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
             <button className="uv-btn primary" onClick={handleAddPage}>+ Add Page</button>
           </div>
         </div>
-        <div className="uv-content">
-          {selectedPage ? (
-            <>
-              <div style={{ display: 'flex', width: '100%', marginBottom: 16 }}>
-                <div style={{ flex: 1 }} />
-                <button
-                  className="uv-btn"
-                  style={{ background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none', fontWeight: 600, padding: '6px 16px' }}
-                  title="Delete this page"
-                  onClick={() => {
-                    setPages(pages => pages.filter(page => page.id !== selectedPage.id));
-                    setSelectedId(null);
-                  }}
-                >
-                  Delete Page
-                </button>
-              </div>
-              {selectedPage.type === 'multipleChoice' ? (
-                <MultipleChoiceEditor page={selectedPage} onChange={handleChange} />
-              ) : selectedPage.type === 'inputAnswer' ? (
-                <InputAnswerEditor page={selectedPage} onChange={handleChange} />
-              ) : selectedPage.type === 'progressiveQuestions' ? (
-                <ProgressiveQuestionsEditor page={selectedPage} onChange={handleChange} />
-              ) : selectedPage.type === 'dragAndDrop' ? (
-                <DragAndDropEditor page={selectedPage} onChange={handleChange} />
-              ) : null}
-            </>
-          ) : (
-            <div className="uv-empty">
-              <h2>No page selected</h2>
-              <p>Create a page using the controls in the top-right. You can also open the left menu to select an existing page.</p>
-              <div style={{ marginTop: 12 }}>
-                <button className="uv-btn primary" onClick={handleAddPage}>Create {templateType === 'multipleChoice' ? 'Multiple Choice' : templateType === 'inputAnswer' ? 'Input Answer' : templateType === 'progressiveQuestions' ? 'Progressive Questions' : 'Drag and Drop'}</button>
-              </div>
-              {pages.length > 0 && (
-                <div style={{ marginTop: 20 }}>
-                  <h3>Your pages</h3>
-                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    {pages.map(p => (
-                      <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
-                        <div onClick={() => setSelectedId(p.id)} style={{ cursor: 'pointer' }}>
-                          <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || `Page ${p.id}`}</strong>
-                          <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
-                        </div>
-                        <button
-                          className="uv-btn"
-                          style={{ position: 'absolute', top: 8, right: 8, padding: '2px 8px', fontSize: 13, background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none' }}
-                          title="Delete page"
-                          onClick={e => {
-                            e.stopPropagation();
-                            setPages(pages => pages.filter(page => page.id !== p.id));
-                            if (selectedId === p.id) setSelectedId(null);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+        {/* Show RoomViewer in preview mode if requested */}
+        {previewMode ? (
+          <RoomViewer onBack={() => setPreviewMode(false)} questions={pages} />
+        ) : (
+          <div className="uv-content">
+            {selectedPage ? (
+              <>
+                <div style={{ display: 'flex', width: '100%', marginBottom: 16 }}>
+                  <div style={{ flex: 1 }} />
+                  <button
+                    className="uv-btn"
+                    style={{ background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none', fontWeight: 600, padding: '6px 16px' }}
+                    title="Delete this page"
+                    onClick={() => {
+                      setPages(pages => pages.filter(page => page.id !== selectedPage.id));
+                      setSelectedId(null);
+                    }}
+                  >
+                    Delete Page
+                  </button>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
+                {selectedPage.type === 'multipleChoice' ? (
+                  <MultipleChoiceEditor page={selectedPage} onChange={handleChange} />
+                ) : selectedPage.type === 'inputAnswer' ? (
+                  <InputAnswerEditor page={selectedPage} onChange={handleChange} />
+                ) : selectedPage.type === 'progressiveQuestions' ? (
+                  <ProgressiveQuestionsEditor page={selectedPage} onChange={handleChange} />
+                ) : selectedPage.type === 'dragAndDrop' ? (
+                  <DragAndDropEditor page={selectedPage} onChange={handleChange} />
+                ) : null}
+              </>
+            ) : (
+              <div className="uv-empty">
+                <h2>No page selected</h2>
+                <p>Create a page using the controls in the top-right. You can also open the left menu to select an existing page.</p>
+                <div style={{ marginTop: 12 }}>
+                  <button className="uv-btn primary" onClick={handleAddPage}>Create {templateType === 'multipleChoice' ? 'Multiple Choice' : templateType === 'inputAnswer' ? 'Input Answer' : templateType === 'progressiveQuestions' ? 'Progressive Questions' : 'Drag and Drop'}</button>
+                </div>
+                {pages.length > 0 && (
+                  <div style={{ marginTop: 20 }}>
+                    <h3>Your pages</h3>
+                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                      {pages.map(p => (
+                        <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
+                          <div onClick={() => setSelectedId(p.id)} style={{ cursor: 'pointer' }}>
+                            <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || `Page ${p.id}`}</strong>
+                            <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
+                          </div>
+                          <button
+                            className="uv-btn"
+                            style={{ position: 'absolute', top: 8, right: 8, padding: '2px 8px', fontSize: 13, background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none' }}
+                            title="Delete page"
+                            onClick={e => {
+                              e.stopPropagation();
+                              setPages(pages => pages.filter(page => page.id !== p.id));
+                              if (selectedId === p.id) setSelectedId(null);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <button
         className="uv-btn primary"
