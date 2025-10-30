@@ -101,10 +101,27 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
       }}
     >
       <h2 className="uv-heading">Underviser-side</h2>
+      {/* Back button at top-left */}
+      <div style={{ position: 'fixed', top: 'calc(var(--topbar-h, 48px) + 8px)', left: '12px', zIndex: 1200 }}>
+        <button
+          className="uv-btn"
+          type="button"
+          onClick={onBack}
+          style={{
+            background: 'var(--hover-bg)',
+            color: 'var(--muted)',
+            padding: '0.5rem 0.9rem',
+            borderRadius: '999px',
+            border: '1px solid var(--border)'
+          }}
+        >
+          ← Tilbage
+        </button>
+      </div>
       {user && userData && (
         <div
           ref={profileWrapRef}
-          style={{ position: 'fixed', top: '48px', right: '12px', zIndex: 1200 }}
+          style={{ position: 'fixed', top: 'calc(var(--topbar-h, 48px) + 8px)', right: '12px', zIndex: 1200 }}
         >
           <button
             type="button"
@@ -241,8 +258,7 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
           </div>
         )}
       </div>
-  {/* Bottom logout removed in favor of profile dropdown menu */}
-      <button className="uv-btn" onClick={onBack} style={{ marginTop: '0.5rem', background: 'var(--hover-bg)', color: 'var(--muted)' }}>Tilbage</button>
+      {/* Bottom logout removed in favor of profile dropdown menu; back button moved to top-left */}
     </div>
   );
 };
