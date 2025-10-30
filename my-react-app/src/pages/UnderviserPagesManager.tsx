@@ -67,22 +67,11 @@ export type PageData =
 
 
 const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-
   const [pages, setPages] = useState<PageData[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  // Debug: log whenever selectedId changes
-  React.useEffect(() => {
-    console.log('Selected page id changed:', selectedId);
-  }, [selectedId]);
-
-  // Debug: log whenever pages change
-  React.useEffect(() => {
-    console.log('Pages array:', pages);
-  }, [pages]);
   const [showMenu, setShowMenu] = useState(true);
-
   const [templateType, setTemplateType] = useState<PageType>('multipleChoice');
+  const [previewMode, setPreviewMode] = useState(false);
 
   const handleAddPage = () => {
     let newPage: PageData;
@@ -132,6 +121,17 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
 
   const selectedPage = pages.find(p => p.id === selectedId) || null;
 
+  if (previewMode) {
+    // Show RoomViewer in student mode
+    return (
+      <RoomViewer
+        onBack={() => setPreviewMode(false)}
+        questions={pages}
+        previewAsStudent={true}
+      />
+    );
+  }
+
   return (
     <div className="uv-root">
       {showMenu && (
@@ -146,6 +146,9 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button className="uv-btn" onClick={onBack}>Back</button>
             <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Hide Menu' : 'Show Menu'}</button>
+            <button className="uv-btn" style={{ background: 'var(--button-bg)', color: 'var(--button-text)' }} onClick={() => setPreviewMode(true)}>
+              Forhåndsvis som studerende
+            </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <label style={{ color: 'var(--text)', fontSize: 14 }}>Template:</label>

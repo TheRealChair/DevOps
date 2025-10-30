@@ -152,13 +152,6 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack, onPagesManager 
                   >
                     Slet
                   </button>
-                  <button
-                    className="uv-btn"
-                    style={{ background: 'var(--button-bg)', color: 'var(--button-text)', padding: '0.4rem 1.2rem' }}
-                    onClick={() => setPreviewRoomId(room.id)}
-                  >
-                    Forhåndsvis som studerende
-                  </button>
                 </div>
               </li>
             ))}
