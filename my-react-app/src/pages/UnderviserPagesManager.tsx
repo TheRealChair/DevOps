@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MultipleChoiceEditor from './underviser/MultipleChoiceEditor';
 import InputAnswerEditor from './underviser/InputAnswerEditor';
 import ProgressiveQuestionsEditor from './underviser/ProgressiveQuestionsEditor';
@@ -9,6 +9,9 @@ import UnderviserPagesMenu from './underviser/UnderviserPagesMenu';
 import '../design/colors.css';
 import './underviser/underviser.css';
 import '../design/components.css';
+import { db } from '../services/firebase';
+import { addDoc, collection, getDocs, serverTimestamp, query, where } from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext';
 export type PageType = 'multipleChoice' | 'inputAnswer' | 'progressiveQuestions' | 'dragAndDrop';
 export interface DragAndDropItem {
   id: number;
@@ -65,11 +68,35 @@ export type PageData =
   | ProgressiveQuestionsPageData
   | DragAndDropPageData;
 
+export type UnderviserPagesManagerProps = { onBack: () => void; initialPages?: PageData[] };
 
-const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack, initialPages = [] }) => {
 
-  const [pages, setPages] = useState<PageData[]>([]);
+  const [pages, setPages] = useState<PageData[]>(initialPages);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const { user } = useAuth();
+  const [myRooms, setMyRooms] = useState<any[]>([]);
+  const [loadingRooms, setLoadingRooms] = useState(false);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      if (!user) {
+        setMyRooms([]);
+        return;
+      }
+      setLoadingRooms(true);
+      try {
+        const q = query(collection(db, 'EscapeRooms'), where('ownerId', '==', user.uid));
+        const snap = await getDocs(q);
+        setMyRooms(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+      } catch (err) {
+        console.error('Error fetching rooms:', err);
+        setMyRooms([]);
+      }
+      setLoadingRooms(false);
+    };
+    fetchRooms();
+  }, [user]);
 
   // Debug: log whenever selectedId changes
   React.useEffect(() => {
@@ -134,6 +161,30 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
 
   return (
     <div className="uv-root">
+      {user && (
+        <div style={{background:'#f1f5f9',borderRadius:8,padding:16,marginBottom:18}}>
+          <h3>Your Saved Escape Rooms</h3>
+          {loadingRooms ? (<div>Loading rooms...</div>) : myRooms.length === 0 ? (<div>No rooms yet.</div>) : (
+            <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
+              {myRooms.map(r => (
+                <div key={r.id} style={{border:'1px solid #aaa',borderRadius:8,padding:12,minWidth:240}}>
+                  <div><strong>{r.name || 'Untitled Room'}</strong></div>
+                  <div style={{fontSize:13}}>Room code: {r.roomCode}</div>
+                  <div style={{fontSize:13}}>{r.pages?.length} pages</div>
+                  <button
+                    className="uv-btn"
+                    style={{marginTop:6,padding:'4px 16px'}}
+                    onClick={()=>{
+                      setPages(r.pages || []);
+                    }}>
+                    Edit/Continue
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       {showMenu && (
         <UnderviserPagesMenu
           pages={pages}
@@ -227,8 +278,24 @@ const UnderviserPagesManager: React.FC<{ onBack: () => void }> = ({ onBack }) =>
         className="uv-btn primary"
         style={{ position: 'fixed', bottom: 20, right: 20, padding: '10px 20px', fontSize: 16, border: 'none' }}
         title="Gem rum"
-        onClick={() => {
-          // Implement save functionality here
+        onClick={async () => {
+          if (!user) {
+            alert('You must be logged in to save a room.');
+            return;
+          }
+          try {
+            const docRef = await addDoc(collection(db, 'EscapeRooms'), {
+              pages,
+              ownerId: user.uid,
+              createdAt: serverTimestamp(),
+              isPublished: false,
+              name: pages[0]?.title || 'Untitled Room',
+              roomCode: Math.floor(1000 + Math.random() * 9000),
+            });
+            alert(`Room saved to Firestore! ID: ${docRef.id}`);
+          } catch (error) {
+            alert('Error saving room to Firestore: ' + error);
+          }
         }}
       >
         Gem rum
