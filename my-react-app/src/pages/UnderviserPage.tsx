@@ -224,7 +224,7 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
         <button className="uv-btn primary" onClick={() => {
           setInitialPages([]);
           setShowManager(true);
-        }}>Ny Room</button>
+        }}>Nyt rum</button>
       </div>
       <div style={{ margin: '1.5rem 0', width: '100%', maxWidth: '600px' }}>
         <h3 style={{ textAlign: 'center', color: 'var(--text)' }}>Dine Escape Rooms</h3>
@@ -239,8 +239,8 @@ const UnderviserPage: React.FC<UnderviserPageProps> = ({ onBack }) => {
             {rooms.map(room => (
               <div key={room.id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '6px', margin: '0.5rem 0', padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 220, alignItems: 'flex-start', boxShadow: '0 2px 4px var(--card-shadow)' }}>
                 <span style={{ fontWeight: 500, color: 'var(--text)' }}>{room.name || 'Untitled Room'}</span>
-                <span style={{ color: '#444', fontSize: 13 }}>Room code: {room.roomCode}</span>
-                <span style={{ color: '#444', fontSize: 13 }}>{room.pages?.length || 0} pages</span>
+                <span style={{ color: '#444', fontSize: 13 }}>Rumkode: {room.roomCode}</span>
+                <span style={{ color: '#444', fontSize: 13 }}>{room.pages?.length || 0} sider</span>
                 <button
                   className="uv-btn primary"
                   style={{ marginTop: '0.7rem', padding: '0.5rem 1.4rem', background: 'var(--button-bg)', color: 'var(--button-text)', border: '1px solid var(--button-border)' }}

@@ -290,7 +290,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
   // Save handler
   const handleSaveRoom = async () => {
     if (!user) {
-      alert('You must be logged in to save a room.');
+      alert('Du skal være logget ind for at gemme et rum.');
       return;
     }
     const roomsCol = collection(db, 'EscapeRooms');
@@ -300,11 +300,11 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
       await updateDoc(doc(roomsCol, editRoomId), {
         pages: cleanPages,
         ownerId: user.uid,
-        name: cleanPages[0]?.title || 'Untitled Room',
+        name: cleanPages[0]?.title || 'Unavngivet rum',
         isPublished: false
         // DO NOT overwrite roomCode or createdAt here!
       });
-      alert('Room updated.');
+      alert('Rum opdateret.');
     } else {
       // New room: generate roomCode ONCE
       const code = Math.floor(1000 + Math.random() * 9000);
@@ -313,17 +313,17 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
         ownerId: user.uid,
         createdAt: serverTimestamp(),
         isPublished: false,
-        name: cleanPages[0]?.title || 'Untitled Room',
+        name: cleanPages[0]?.title || 'Unavngivet rum',
         roomCode: code
       });
       setEditRoomId(docRef.id);
-      alert('Room saved! The join code for this room is: ' + code);
+      alert('Rummet er gemt! Rumkoden er: ' + code);
     }
   };
 
   // Room delete (for teacher's rooms list)
   const handleDeleteRoom = async (roomId: string) => {
-    if (!window.confirm('Are you sure you want to delete this room and all student data?')) return;
+  if (!window.confirm('Er du sikker på, at du vil slette dette rum og alle elevdata?')) return;
     // Delete all Students in subcollection
     const studentsCol = collection(db, 'EscapeRooms', roomId, 'Students');
     const snap = await getDocs(studentsCol);
@@ -332,30 +332,30 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     await deleteDoc(doc(db, 'EscapeRooms', roomId));
     // Update dashboard UI
     setMyRooms(rms => rms.filter(r => r.id !== roomId));
-    alert('Room deleted.');
+    alert('Rum slettet.');
   };
 
   return (
     <div className="uv-root">
       {user && showRoomsDashboard && (
         <div style={{background:'#f1f5f9',borderRadius:8,padding:16,marginBottom:18}}>
-          <h3>Your Saved Escape Rooms</h3>
-          {loadingRooms ? (<div>Loading rooms...</div>) : myRooms.length === 0 ? (<div>No rooms yet.</div>) : (
+          <h3>Dine gemte rum</h3>
+          {loadingRooms ? (<div>Indlæser rum...</div>) : myRooms.length === 0 ? (<div>Ingen rum endnu.</div>) : (
             <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
               {myRooms.map(r => (
                 <div key={r.id} style={{border:'1px solid #aaa',borderRadius:8,padding:12,minWidth:240}}>
-                  <div><strong>{r.name || 'Untitled Room'}</strong></div>
-                  <div style={{fontSize:13}}>Room code: {r.roomCode}</div>
-                  <div style={{fontSize:13}}>{r.pages?.length} pages</div>
+                  <div><strong>{r.name || 'Unavngivet rum'}</strong></div>
+                  <div style={{fontSize:13}}>Rumkode: {r.roomCode}</div>
+                  <div style={{fontSize:13}}>{r.pages?.length} sider</div>
                   <button
                     className="uv-btn"
                     style={{marginTop:6,padding:'4px 16px'}}
                     onClick={()=>{
                       setPages(r.pages || []);
                     }}>
-                    Edit/Continue
+                    Rediger/Fortsæt
                   </button>
-                  <button className="uv-btn" onClick={()=>handleDeleteRoom(r.id)} style={{marginTop:6,marginLeft:8,background:'var(--feedback-incorrect-bg)',color:'var(--feedback-incorrect-text)'}}>Delete</button>
+                  <button className="uv-btn" onClick={()=>handleDeleteRoom(r.id)} style={{marginTop:6,marginLeft:8,background:'var(--feedback-incorrect-bg)',color:'var(--feedback-incorrect-text)'}}>Slet</button>
                 </div>
               ))}
             </div>
@@ -372,24 +372,24 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
       <div className="uv-main">
         <div className="uv-topbar">
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <button className="uv-btn" onClick={onBack}>Back</button>
-            <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Hide Menu' : 'Show Menu'}</button>
+            <button className="uv-btn" onClick={onBack}>Tilbage</button>
+            <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Skjul menu' : 'Vis menu'}</button>
             {/* Preview toggle */}
             <button className="uv-btn" style={{ marginLeft: 8 }} onClick={() => setPreviewMode(p => !p)}>
               {previewMode ? 'Afslut forhåndsvisning' : 'Forhåndsvis som studerende'}
             </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <label style={{ color: 'var(--text)', fontSize: 14 }}>Template:</label>
+            <label style={{ color: 'var(--text)', fontSize: 14 }}>Skabelon:</label>
             <select className="uv-input" value={templateType} onChange={e => setTemplateType(e.target.value as PageType)}>
               <option value="multipleChoice">Multiple Choice</option>
               <option value="inputAnswer">Input Answer</option>
               <option value="progressiveQuestions">Progressive Questions</option>
               <option value="dragAndDrop">Drag and Drop</option>
             </select>
-            <button className="uv-btn primary" onClick={handleAddPage}>+ Add Page</button>
-            <button className="uv-btn" onClick={() => setShowLivePanel(true)} title="Open live room panel">
-              Live room{started ? ' (On)' : ''}{roomDocId ? '' : ' • save to enable'}
+            <button className="uv-btn primary" onClick={handleAddPage}>+ Tilføj side</button>
+            <button className="uv-btn" onClick={() => setShowLivePanel(true)} title="Åbn live-rum panel">
+              Live-rum{started ? ' (Aktiv)' : ''}{roomDocId ? '' : ' • gem for at aktivere'}
             </button>
           </div>
         </div>
@@ -405,13 +405,13 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
                   <button
                     className="uv-btn"
                     style={{ background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none', fontWeight: 600, padding: '6px 16px' }}
-                    title="Delete this page"
+                    title="Slet denne side"
                     onClick={() => {
                       setPages(pages => pages.filter(page => page.id !== selectedPage.id));
                       setSelectedId(null);
                     }}
                   >
-                    Delete Page
+                    Slet side
                   </button>
                 </div>
                 {selectedPage.type === 'multipleChoice' ? (
@@ -426,14 +426,14 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
               </>
             ) : (
               <div className="uv-empty">
-                <h2>No page selected</h2>
-                <p>Create a page using the controls in the top-right. You can also open the left menu to select an existing page.</p>
+                <h2>Ingen side valgt</h2>
+                <p>Opret en side med kontrollerne øverst til højre. Du kan også åbne menuen til venstre for at vælge en eksisterende side.</p>
                 <div style={{ marginTop: 12 }}>
-                  <button className="uv-btn primary" onClick={handleAddPage}>Create {templateType === 'multipleChoice' ? 'Multiple Choice' : templateType === 'inputAnswer' ? 'Input Answer' : templateType === 'progressiveQuestions' ? 'Progressive Questions' : 'Drag and Drop'}</button>
+                  <button className="uv-btn primary" onClick={handleAddPage}>Opret {templateType === 'multipleChoice' ? 'Multiple Choice' : templateType === 'inputAnswer' ? 'Input Answer' : templateType === 'progressiveQuestions' ? 'Progressive Questions' : 'Drag and Drop'}</button>
                 </div>
                 {pages.length > 0 && (
                   <div style={{ marginTop: 20 }}>
-                    <h3>Your pages</h3>
+                    <h3>Dine sider</h3>
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                       {pages.map(p => (
                         <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
@@ -444,14 +444,14 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
                           <button
                             className="uv-btn"
                             style={{ position: 'absolute', top: 8, right: 8, padding: '2px 8px', fontSize: 13, background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none' }}
-                            title="Delete page"
+                            title="Slet side"
                             onClick={e => {
                               e.stopPropagation();
                               setPages(pages => pages.filter(page => page.id !== p.id));
                               if (selectedId === p.id) setSelectedId(null);
                             }}
                           >
-                            Delete
+                            Slet
                           </button>
                         </div>
                       ))}
@@ -469,7 +469,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
         title="Gem rum"
         onClick={handleSaveRoom}
       >
-        {editRoomId ? 'Update' : 'Save'} Room
+        {editRoomId ? 'Opdater' : 'Gem'} rum
       </button>
 
       {/* Right-side Live Room panel / Drawer */}
