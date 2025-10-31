@@ -134,6 +134,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
   const [editRoomId, setEditRoomId] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
   const [showLivePanel, setShowLivePanel] = useState(false);
+  const [roomName, setRoomName] = useState<string>('');
   // Ensure live panel doesn't block preview interactions
   useEffect(() => {
     if (previewMode) setShowLivePanel(false);
@@ -193,6 +194,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
       const snap = await getDoc(docRef);
       setStarted(Boolean(snap.get('started')));
       setRoomCode(snap.get('roomCode'));
+      setRoomName(snap.get('name') || '');
     };
     fetchStartedAndCode();
   }, [roomDocId]);
@@ -295,12 +297,13 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     }
     const roomsCol = collection(db, 'EscapeRooms');
     const cleanPages = sanitizePages(pages);
+    const nameToSave = roomName.trim() || 'Unavngivet rum';
     if (editRoomId) {
       // Update existing room: don't update roomCode or createdAt
       await updateDoc(doc(roomsCol, editRoomId), {
         pages: cleanPages,
         ownerId: user.uid,
-        name: cleanPages[0]?.title || 'Unavngivet rum',
+        name: nameToSave,
         isPublished: false
         // DO NOT overwrite roomCode or createdAt here!
       });
@@ -313,7 +316,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
         ownerId: user.uid,
         createdAt: serverTimestamp(),
         isPublished: false,
-        name: cleanPages[0]?.title || 'Unavngivet rum',
+        name: nameToSave,
         roomCode: code
       });
       setEditRoomId(docRef.id);
@@ -343,7 +346,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
           {loadingRooms ? (<div>Indlæser rum...</div>) : myRooms.length === 0 ? (<div>Ingen rum endnu.</div>) : (
             <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
               {myRooms.map(r => (
-                <div key={r.id} style={{border:'1px solid #aaa',borderRadius:8,padding:12,minWidth:240}}>
+                <div key={r.id} style={{border:'1px solid var(--border)',borderRadius:8,padding:12,minWidth:240}}>
                   <div><strong>{r.name || 'Unavngivet rum'}</strong></div>
                   <div style={{fontSize:13}}>Rumkode: {r.roomCode}</div>
                   <div style={{fontSize:13}}>{r.pages?.length} sider</div>
@@ -367,6 +370,8 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
           pages={pages}
           selectedId={selectedId}
           onSelect={id => setSelectedId(id)}
+          roomName={roomName}
+          onChangeRoomName={setRoomName}
         />
       )}
       <div className="uv-main">
@@ -376,7 +381,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
             <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Skjul menu' : 'Vis menu'}</button>
             {/* Preview toggle */}
             <button className="uv-btn" style={{ marginLeft: 8 }} onClick={() => setPreviewMode(p => !p)}>
-              {previewMode ? 'Afslut forhåndsvisning' : 'Forhåndsvis som studerende'}
+              {previewMode ? 'Afslut forhåndsvisning' : 'Forhåndsvis'}
             </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -388,8 +393,16 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
               <option value="dragAndDrop">Drag and Drop</option>
             </select>
             <button className="uv-btn primary" onClick={handleAddPage}>+ Tilføj side</button>
-            <button className="uv-btn" onClick={() => setShowLivePanel(true)} title="Åbn live-rum panel">
-              Live-rum{started ? ' (Aktiv)' : ''}{roomDocId ? '' : ' • gem for at aktivere'}
+            <button className="uv-btn" onClick={() => setShowLivePanel(true)} title={!roomDocId ? 'Gem for at aktivere live-rum' : (started ? 'Live-rum er aktivt' : 'Åbn live-rum panel')}>
+              Live-rum
+              <span style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                display: 'inline-block',
+                marginLeft: 6,
+                background: started ? 'var(--status-on)' : 'var(--status-off)'
+              }} />
             </button>
           </div>
         </div>

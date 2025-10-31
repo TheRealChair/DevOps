@@ -29,6 +29,10 @@
   --accent-shadow: rgba(108,99,255,0.06);
   --hover-bg: #f1f5f9;
 
+  /* Status indicators */
+  --status-on: #22c55e;   /* green */
+  --status-off: #9ca3af;  /* gray */
+
   /* Feedback colors */
   --feedback-correct-bg: #d1fae5;
   --feedback-incorrect-bg: #fee2e2;
@@ -65,6 +69,10 @@
   --accent-weak: rgba(156,143,255,0.12);
   --accent-shadow: rgba(156,143,255,0.09);
   --hover-bg: #282544;
+
+  /* Status indicators for dark mode */
+  --status-on: #22c55e;
+  --status-off: #9ca3af;
 
   /* Feedback colors for dark mode */
   --feedback-correct-bg: #134e4a;
