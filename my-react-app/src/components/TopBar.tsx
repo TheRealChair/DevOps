@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './TopBar.css';
 
 
@@ -63,7 +64,16 @@ const TopBar: React.FC = () => {
   return (
     <header className="topbar">
       <div className="topbar-content">
-        <h2 className="topbar-title">EscapED</h2>
+        {/* Keep h2 semantics/weight; nest Link to navigate home without style change */}
+        <h2 className="topbar-title">
+          <Link
+            to="/"
+            aria-label="Go to homepage"
+            style={{ textDecoration: 'none', color: 'inherit', display: 'inline-block' }}
+          >
+            EscapED
+          </Link>
+        </h2>
         <div className="topbar-buttons">
           {/* Theme toggle */}
           <button

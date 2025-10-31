@@ -26,6 +26,13 @@
   font-size: 1.5rem;
   letter-spacing: 1px;
 }
+/* Ensure any link placed inside the heading keeps the exact heading font/weight/colors */
+.topbar-title a {
+  text-decoration: none;
+  color: inherit;
+  /* inherit full font shorthand to preserve family, size, weight, style */
+  font: inherit;
+}
 .topbar-buttons {
   margin-left: auto;
   display: flex;
