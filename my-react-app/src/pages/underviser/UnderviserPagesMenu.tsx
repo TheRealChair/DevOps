@@ -9,10 +9,7 @@ const UnderviserPagesMenu: React.FC<{
   onChangeRoomName: (name: string) => void;
 }> = ({ pages, selectedId = null, onSelect, roomName, onChangeRoomName }) => (
   <div className="uv-sidebar">
-    <div className="uv-sidebar-header">
-      <h3 style={{ margin: 0 }}>Sider</h3>
-      <small style={{ color: 'var(--muted)' }}>{pages.length} i alt</small>
-    </div>
+    {/* Move room name input all the way to the top */}
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6, margin: '0 0 12px 0' }}>
       <label style={{ color: 'var(--text)', fontSize: 13 }}>Rumnavn</label>
       <input
@@ -21,6 +18,10 @@ const UnderviserPagesMenu: React.FC<{
         onChange={e => onChangeRoomName(e.target.value)}
         placeholder="Angiv rumnavn"
       />
+    </div>
+    <div className="uv-sidebar-header">
+      <h3 style={{ margin: 0 }}>Sider</h3>
+      <small style={{ color: 'var(--muted)' }}>{pages.length} i alt</small>
     </div>
     <ul className="uv-page-list">
       {pages.map(page => (
