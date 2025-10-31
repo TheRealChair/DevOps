@@ -447,7 +447,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
                 {pages.length > 0 && (
                   <div style={{ marginTop: 20 }}>
                     <h3>Dine sider</h3>
-                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
                       {pages.map(p => (
                         <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
                           <div onClick={() => setSelectedId(p.id)} style={{ cursor: 'pointer' }}>
