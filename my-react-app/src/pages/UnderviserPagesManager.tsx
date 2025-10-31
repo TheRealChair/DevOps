@@ -10,6 +10,7 @@ import UnderviserPagesMenu from './underviser/UnderviserPagesMenu';
 import '../design/colors.css';
 import './underviser/underviser.css';
 import '../design/components.css';
+import LiveRoomPanel from './underviser/LiveRoomPanel';
 import { db } from '../services/firebase';
 import { addDoc, collection, getDocs, serverTimestamp, query, where, doc, updateDoc, deleteDoc, getDoc, onSnapshot, QuerySnapshot, QueryDocumentSnapshot } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
@@ -69,7 +70,7 @@ export type PageData =
   | ProgressiveQuestionsPageData
   | DragAndDropPageData;
 
-export type UnderviserPagesManagerProps = { onBack: () => void; initialPages?: PageData[] };
+export type UnderviserPagesManagerProps = { onBack: () => void; initialPages?: PageData[]; showRoomsDashboard?: boolean };
 
 function sanitizePages(inputPages: any[]): any[] {
   return (inputPages || []).map(page => {
@@ -123,7 +124,7 @@ function sanitizePages(inputPages: any[]): any[] {
   });
 }
 
-const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack, initialPages = [] }) => {
+const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack, initialPages = [], showRoomsDashboard = false }) => {
 
   const [pages, setPages] = useState<PageData[]>(initialPages);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -132,6 +133,11 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [editRoomId, setEditRoomId] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
+  const [showLivePanel, setShowLivePanel] = useState(false);
+  // Ensure live panel doesn't block preview interactions
+  useEffect(() => {
+    if (previewMode) setShowLivePanel(false);
+  }, [previewMode]);
 
   // --- Teacher live dashboard logic ---
   const [studentList, setStudentList] = useState<any[]>([]);
@@ -161,16 +167,6 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     const fetchRooms = async () => {
       if (!user) {
         setMyRooms([]);
-      if (previewMode) {
-        // Show RoomViewer in student mode
-        return (
-          <RoomViewer
-            onBack={() => setPreviewMode(false)}
-            questions={pages}
-            previewAsStudent={true}
-          />
-        );
-      }
         return;
       }
       setLoadingRooms(true);
@@ -208,9 +204,6 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     setStarted(true);
   };
 
-            <button className="uv-btn" style={{ background: 'var(--button-bg)', color: 'var(--button-text)' }} onClick={() => setPreviewMode(true)}>
-              Forhåndsvis som studerende
-            </button>
   const handleCloseRoom = async () => {
     if (!roomDocId) return;
     // 1) Set started: false
@@ -344,33 +337,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
 
   return (
     <div className="uv-root">
-      {roomDocId && (
-        <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1100, background: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 12px #0002', padding: 14, minWidth: 220 }}>
-          {!started ? (
-            <>
-              <strong>Room is not live yet</strong>
-              <div style={{ marginTop: 12, marginBottom: 6, color:'#888', fontSize:14 }}>Students cannot join until you start it.</div>
-              <button className="uv-btn primary" style={{width:'100%'}} onClick={handleStartRoom}>Start Room</button>
-            </>
-          ) : (
-            <>
-              <strong>Joined students ({studentList.length}):</strong>
-              <ul style={{ margin: 0, padding: 0, listStyle: 'none', maxHeight: 220, overflowY: 'auto' }}>
-                {studentList.length === 0 && <li style={{ color:'#888', fontSize: 13 }}>No students yet</li>}
-                {studentList.map(s => (
-                  <li key={s.nickname} style={{ fontSize: 15, padding: '2px 0' }}>{s.nickname} <span style={{ color: '#555', fontSize: 13 }}> {s.progress+1 || 1}/{pages.length} pages </span></li>
-                ))}
-              </ul>
-              {/* Show room join code if editing a real room */}
-              {roomCode && (
-                <div style={{fontWeight:600,marginBottom:8}}>Join code: <span style={{fontFamily:'monospace',fontSize:18,letterSpacing:1}}>{roomCode}</span></div>
-              )}
-              <button className="uv-btn" style={{width:'100%', marginTop: 12, background:'var(--feedback-incorrect-bg)', color:'var(--feedback-incorrect-text)'}} onClick={handleCloseRoom}>Close Room</button>
-            </>
-          )}
-        </div>
-      )}
-      {user && (
+      {user && showRoomsDashboard && (
         <div style={{background:'#f1f5f9',borderRadius:8,padding:16,marginBottom:18}}>
           <h3>Your Saved Escape Rooms</h3>
           {loadingRooms ? (<div>Loading rooms...</div>) : myRooms.length === 0 ? (<div>No rooms yet.</div>) : (
@@ -407,9 +374,9 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button className="uv-btn" onClick={onBack}>Back</button>
             <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Hide Menu' : 'Show Menu'}</button>
-            {/* Preview button next to Hide Menu */}
-            <button className="uv-btn" style={{ marginLeft: 8 }} onClick={() => setPreviewMode(true)}>
-              Forhåndsvis som studerende
+            {/* Preview toggle */}
+            <button className="uv-btn" style={{ marginLeft: 8 }} onClick={() => setPreviewMode(p => !p)}>
+              {previewMode ? 'Afslut forhåndsvisning' : 'Forhåndsvis som studerende'}
             </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -421,6 +388,9 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
               <option value="dragAndDrop">Drag and Drop</option>
             </select>
             <button className="uv-btn primary" onClick={handleAddPage}>+ Add Page</button>
+            <button className="uv-btn" onClick={() => setShowLivePanel(true)} title="Open live room panel">
+              Live room{started ? ' (On)' : ''}{roomDocId ? '' : ' • save to enable'}
+            </button>
           </div>
         </div>
         {/* Show RoomViewer in preview mode if requested */}
@@ -501,6 +471,19 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
       >
         {editRoomId ? 'Update' : 'Save'} Room
       </button>
+
+      {/* Right-side Live Room panel / Drawer */}
+      <LiveRoomPanel
+        visible={showLivePanel}
+        hasRoomId={!!roomDocId}
+        started={started}
+        roomCode={roomCode}
+        studentList={studentList as any}
+        pagesLength={pages.length}
+        onStart={handleStartRoom}
+        onClose={handleCloseRoom}
+        onDismiss={() => setShowLivePanel(false)}
+      />
     </div>
   );
 };

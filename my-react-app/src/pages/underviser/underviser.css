@@ -141,6 +141,78 @@
 }
 
 /* ========================= */
+/* Live Room Right Panel     */
+/* ========================= */
+.uv-rightpanel {
+  position: fixed;
+  top: var(--topbar-h, 48px);
+  right: 0;
+  height: calc(100vh - var(--topbar-h, 48px));
+  width: 360px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -6px 0 24px rgba(0,0,0,0.1);
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+}
+.uv-rightpanel.open {
+  transform: translateX(0);
+}
+.uv-live-overlay {
+  position: fixed;
+  top: var(--topbar-h, 48px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.2);
+  z-index: 1050;
+}
+.uv-rightpanel-header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+.uv-rightpanel-body {
+  padding: 14px 16px;
+  overflow: auto;
+}
+.uv-rightpanel-section { margin-top: 10px; }
+.uv-rightpanel-section-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.uv-students {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 50vh;
+  overflow: auto;
+}
+.uv-student {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.uv-student:last-child { border-bottom: none; }
+.uv-student-name { font-size: 14px; }
+.uv-student-progress { font-size: 12px; color: #555; }
+.uv-muted { color: #888; font-size: 14px; }
+
+@media (max-width: 900px) {
+  .uv-rightpanel {
+    width: 100vw;
+  }
+}
+
+/* ========================= */
 /* Responsive Layout         */
 /* ========================= */
 @media (max-width: 1100px) {
