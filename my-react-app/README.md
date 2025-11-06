@@ -89,3 +89,77 @@ Dev server tip (from repo root):
 ```powershell
 npm run dev --prefix my-react-app
 ```
+
+## End-to-End (E2E) Testing with Playwright
+
+Playwright is configured for automated browser tests.
+
+### Folder Structure
+```
+my-react-app/
+  playwright.config.ts
+  tests/
+    e2e/
+      home.spec.ts
+```
+
+### Local Usage
+
+Install browsers once (after dependency install):
+
+```powershell
+npx playwright install
+```
+
+Run tests headless:
+
+```powershell
+npm run e2e
+```
+
+Run tests in headed (visible) mode:
+
+```powershell
+npm run e2e:headed
+```
+
+View last HTML report:
+
+```powershell
+npm run e2e:report
+```
+
+The config starts a Vite preview server (build + `vite preview`) on port `4173`. Tests use `baseURL` so you can do `page.goto('/')` instead of a full URL.
+
+### CI / GitHub Actions
+
+A workflow at `.github/workflows/playwright.yml` runs Playwright on every push and pull request:
+1. Checks out code
+2. Sets up Node 20
+3. Installs dependencies
+4. Installs Playwright browsers
+5. Runs `npm run e2e`
+6. Uploads the HTML report as an artifact
+
+### Adding New Tests
+Create a new file under `tests/e2e/` ending with `.spec.ts`:
+
+```ts
+import { test, expect } from '@playwright/test';
+
+test('example', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+});
+```
+
+### Troubleshooting
+- If TypeScript complains about `@playwright/test` types, ensure `@playwright/test` is in `devDependencies` and run `npm install`.
+- If tests hang on CI, verify no other process is holding port 4173 and that build succeeds.
+- Use `trace: 'on-first-retry'` (configured) and download the artifact to debug flaky tests.
+
+### Future Enhancements
+- Add data-testids for more resilient selectors.
+- Parallel projects for mobile view snapshots.
+- Integrate visual regression with `@playwright/test` screenshots.
+

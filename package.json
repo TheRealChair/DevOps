@@ -5,7 +5,10 @@
     "dev": "npm run dev --prefix my-react-app",
     "build": "npm run build --prefix my-react-app",
     "preview": "npm run preview --prefix my-react-app",
-    "lint": "npm run lint --prefix my-react-app"
+    "lint": "npm run lint --prefix my-react-app",
+    "e2e": "npm run e2e --prefix my-react-app",
+    "e2e:headed": "npm run e2e:headed --prefix my-react-app",
+    "e2e:report": "npm run e2e:report --prefix my-react-app"
   },
   "devDependencies": {
     "@types/react": "^19.2.2",
