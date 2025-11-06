@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import App from '../App';
 import { MemoryRouter } from 'react-router-dom';
+//Comment
 
 describe('App Component', () => {
   it('renders HomePage initially', () => {
