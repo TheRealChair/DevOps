@@ -216,7 +216,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     const snap = await getDocs(studentsCol);
     await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
     setStudentList([]);
-    alert('Room closed and all joined students removed.');
+    alert('Rum lukker alle deltagende elever er smidt ud.');
   };
 
   // Debug: log whenever selectedId changes
@@ -326,7 +326,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
 
   // Room delete (for teacher's rooms list)
   const handleDeleteRoom = async (roomId: string) => {
-  if (!window.confirm('Er du sikker på, at du vil slette dette rum og alle elevdata?')) return;
+    if (!window.confirm('Are you sure you want to delete this room and all student data?')) return;
     // Delete all Students in subcollection
     const studentsCol = collection(db, 'EscapeRooms', roomId, 'Students');
     const snap = await getDocs(studentsCol);
@@ -370,6 +370,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
           pages={pages}
           selectedId={selectedId}
           onSelect={id => setSelectedId(id)}
+          onReorder={(newOrder) => setPages(newOrder)}
           roomName={roomName}
           onChangeRoomName={setRoomName}
         />
@@ -388,8 +389,8 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
             <label style={{ color: 'var(--text)', fontSize: 14 }}>Skabelon:</label>
             <select className="uv-input" value={templateType} onChange={e => setTemplateType(e.target.value as PageType)}>
               <option value="multipleChoice">Multiple Choice</option>
-              <option value="inputAnswer">Input Answer</option>
-              <option value="progressiveQuestions">Progressive Questions</option>
+              <option value="inputAnswer">Input Svar</option>
+              <option value="progressiveQuestions">Progressive Spørgsmål</option>
               <option value="dragAndDrop">Drag and Drop</option>
             </select>
             <button className="uv-btn primary" onClick={handleAddPage}>+ Tilføj side</button>

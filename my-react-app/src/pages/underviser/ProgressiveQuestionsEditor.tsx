@@ -37,77 +37,77 @@ const ProgressiveQuestionsEditor: React.FC<{
   return (
     <div className="uv-editor">
       {/* Page title and explanation input */}
-      <h2 className="uv-heading">Edit Progressive Questions Page</h2>
-      <label className="uv-label" htmlFor="pq-title">Title/Explanation</label>
+      <h2 className="uv-heading">Rediger Progressive Spørgsmål Side</h2>
+      <label className="uv-label" htmlFor="pq-title">Titel/Forklaring</label>
       <input
         id="pq-title"
         className="uv-input"
         type="text"
         value={page.title}
         onChange={e => onChange({ ...page, title: e.target.value })}
-        placeholder="Title/Explanation"
+        placeholder="Titel/Forklaring"
       />
       {/* Optional image for the question */}
-      <label className="uv-label" htmlFor="pq-image">Image URL or description</label>
+      <label className="uv-label" htmlFor="pq-image">Billed URL eller beskrivelse</label>
       <input
         id="pq-image"
         className="uv-input"
         type="text"
         value={page.imageUrl}
         onChange={e => onChange({ ...page, imageUrl: e.target.value })}
-        placeholder="Image URL or description"
+        placeholder="Billed URL eller beskrivelse"
       />
       {/* Show image preview if imageUrl is set */}
       {page.imageUrl && <img src={page.imageUrl} alt="Preview" style={{ maxWidth: 300, display: 'block', marginTop: 8 }} />}
       {/* Section for progressive question steps */}
-      <h3 className="uv-label" style={{ marginTop: 24 }}>Questions</h3>
+      <h3 className="uv-label" style={{ marginTop: 24 }}>Spørgsmål</h3>
       {page.questions.map((q, idx) => (
   <div key={q.id} style={{ border: '1px solid var(--border)', borderRadius: 8, padding: 8, marginBottom: 8 }}>
           {/* Question prompt input */}
-          <label className="uv-label" htmlFor={`pq-q-${q.id}-prompt`}>Question {idx + 1} Prompt</label>
+          <label className="uv-label" htmlFor={`pq-q-${q.id}-prompt`}>Spørgsmål {idx + 1} tekst</label>
           <input
             id={`pq-q-${q.id}-prompt`}
             className="uv-input"
             type="text"
             value={q.prompt}
             onChange={e => handleQuestionChange(q.id, 'prompt', e.target.value)}
-            placeholder="Prompt"
+            placeholder="Spørgsmål"
           />
           {/* Correct answer input for this step */}
-          <label className="uv-label" htmlFor={`pq-q-${q.id}-answer`}>Correct answer</label>
+          <label className="uv-label" htmlFor={`pq-q-${q.id}-answer`}>Korrekt svar</label>
           <input
             id={`pq-q-${q.id}-answer`}
             className="uv-input"
             type="text"
             value={q.answer}
             onChange={e => handleQuestionChange(q.id, 'answer', e.target.value)}
-            placeholder="Correct answer"
+            placeholder="Korrekt svar"
           />
           {/* Remove button for this question step */}
-          <button className="uv-btn" onClick={() => handleRemoveQuestion(q.id)} style={{ fontSize: 12 }}>Remove</button>
+          <button className="uv-btn" onClick={() => handleRemoveQuestion(q.id)} style={{ fontSize: 12 }}>Slet</button>
         </div>
       ))}
       {/* Add new progressive question step */}
-      <button className="uv-btn primary" onClick={handleAddQuestion} style={{ marginTop: 8 }}>+ Add Question</button>
+      <button className="uv-btn primary" onClick={handleAddQuestion} style={{ marginTop: 8 }}>+ Tilføj Spørgsmål</button>
       {/* Final answer bar label input */}
-      <label className="uv-label" htmlFor="pq-final-label" style={{ marginTop: 24 }}>Final Answer Bar Label</label>
+      <label className="uv-label" htmlFor="pq-final-label" style={{ marginTop: 24 }}>Endeligt svar bånd label</label>
       <input
         id="pq-final-label"
         className="uv-input"
         type="text"
         value={page.finalBarLabel}
         onChange={e => onChange({ ...page, finalBarLabel: e.target.value })}
-        placeholder="Final answer bar label (e.g. 'Final Code')"
+        placeholder="Endeligt svar bånd label (f.eks. 'Endeligt svar kode')"
       />
       {/* Final answer input */}
-      <label className="uv-label" htmlFor="pq-final-answer" style={{ marginTop: 12 }}>Final Answer</label>
+      <label className="uv-label" htmlFor="pq-final-answer" style={{ marginTop: 12 }}>Endeligt svar</label>
       <input
         id="pq-final-answer"
         className="uv-input"
         type="text"
         value={(page as any).finalAnswer || ''}
         onChange={e => onChange({ ...page, finalAnswer: e.target.value })}
-        placeholder="Final answer (e.g. 'ESCAPE')"
+        placeholder="Endeligt svar (f.eks. 'ESCAPE')"
       />
     </div>
   );
