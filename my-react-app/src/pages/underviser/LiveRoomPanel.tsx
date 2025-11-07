@@ -1,6 +1,6 @@
 import React from 'react';
 
-type Student = { nickname: string; progress?: number };
+type Student = { nickname: string; progress?: number; completed?: boolean; completedAt?: any; finalTime?: number };
 
 export interface LiveRoomPanelProps {
   visible: boolean;
@@ -25,6 +25,17 @@ const LiveRoomPanel: React.FC<LiveRoomPanelProps> = ({
   onClose,
   onDismiss,
 }) => {
+  // Split students into active and completed
+  const activeStudents = studentList.filter(s => !s.completed);
+  const completedStudents = studentList.filter(s => s.completed);
+
+  const formatTime = (seconds?: number) => {
+    if (!seconds) return '--:--';
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
   return (
     <>
       {/* Overlay for small screens */}
@@ -54,13 +65,15 @@ const LiveRoomPanel: React.FC<LiveRoomPanelProps> = ({
             {roomCode && (
               <div style={{fontWeight:600,marginBottom:8}}>Rumkode: <span style={{fontFamily:'monospace',fontSize:18,letterSpacing:1}}>{roomCode}</span></div>
             )}
+            
+            {/* Active students section */}
             <div className="uv-rightpanel-section">
-              <div className="uv-rightpanel-section-title">Tilmeldte studerende ({studentList.length})</div>
+              <div className="uv-rightpanel-section-title">Aktive studerende ({activeStudents.length})</div>
               <ul className="uv-students">
-                {studentList.length === 0 && (
-                  <li className="uv-student muted">Ingen studerende endnu</li>
+                {activeStudents.length === 0 && (
+                  <li className="uv-student muted">Ingen aktive studerende</li>
                 )}
-                {studentList.map(s => (
+                {activeStudents.map(s => (
                   <li key={s.nickname} className="uv-student">
                     <span className="uv-student-name">{s.nickname}</span>
                     <span className="uv-student-progress">{(s.progress ?? 0) + 1}/{pagesLength}</span>
@@ -68,6 +81,26 @@ const LiveRoomPanel: React.FC<LiveRoomPanelProps> = ({
                 ))}
               </ul>
             </div>
+
+            {/* Completed students section */}
+            {completedStudents.length > 0 && (
+              <div className="uv-rightpanel-section" style={{ marginTop: 16 }}>
+                <div className="uv-rightpanel-section-title" style={{ color: 'var(--feedback-correct-text)' }}>
+                  ✓ Færdige studerende ({completedStudents.length})
+                </div>
+                <ul className="uv-students">
+                  {completedStudents.map(s => (
+                    <li key={s.nickname} className="uv-student" style={{ opacity: 0.8 }}>
+                      <span className="uv-student-name">{s.nickname}</span>
+                      <span className="uv-student-progress" style={{ color: 'var(--feedback-correct-text)' }}>
+                        {formatTime(s.finalTime)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <button
               className="uv-btn"
               style={{ width: '100%', marginTop: 12, background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)' }}
@@ -83,3 +116,4 @@ const LiveRoomPanel: React.FC<LiveRoomPanelProps> = ({
 };
 
 export default LiveRoomPanel;
+

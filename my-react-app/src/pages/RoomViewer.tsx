@@ -11,7 +11,7 @@ import '../design/colors.css';
 import '../design/App.css';
 import '../design/components.css';
 import { db } from '../services/firebase';
-import { doc, onSnapshot, DocumentSnapshot, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, onSnapshot, DocumentSnapshot, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 // Import questions from JSON
 import questionsData from '../data/questions.json';
@@ -153,14 +153,16 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
       // Only complete if all answers are correct
       if (answers.every(a => a === true)) {
         setCompleted(true);
-        // Remove the student document when they finish (requested behavior)
+        // Mark student as completed instead of deleting
         if (!previewAsStudent && roomId && studentId) {
           const studentRef = doc(db, 'EscapeRooms', roomId, 'Students', studentId);
-          // Option 1: Delete the doc entirely so nickname disappears
-          deleteDoc(studentRef).catch(err => {
-            console.error('Kunne ikke slette elev dokument ved afslutning:', err);
+          updateDoc(studentRef, { 
+            completed: true, 
+            completedAt: serverTimestamp(),
+            finalTime: elapsed
+          }).catch(err => {
+            console.error('Kunne ikke markere elev som færdig:', err);
           });
-          // If you later want to keep stats instead of deleting, you could updateDoc with { completed: true, completedAt: serverTimestamp() }
         }
       }
     }

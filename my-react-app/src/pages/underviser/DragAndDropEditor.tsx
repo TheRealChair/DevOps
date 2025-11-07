@@ -1,9 +1,3 @@
-// DragAndDropEditor
-// -----------------
-// Editor for drag-and-drop question pages in the teacher/manager interface.
-// Uses utility classes for consistent UI (.uv-btn, .uv-input, .uv-label, .uv-heading).
-// Handles draggable items, image preview, and correct order logic.
-// Last updated: 2025-10-20
 import React, { useState } from 'react';
 import type { PageData, DragAndDropItem } from '../UnderviserPagesManager';
 
