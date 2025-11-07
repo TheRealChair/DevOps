@@ -89,7 +89,7 @@ const DragAndDropEditor: React.FC<{
         type="text"
         value={page.title}
         onChange={e => onChange({ ...page, title: e.target.value })}
-        placeholder="Title/Explanation"
+        placeholder="Titel/Forklaring"
       />
       {/* Optional image for the question */}
       <label className="uv-label" htmlFor="dd-image">Billed URL eller beskrivelse</label>
@@ -99,7 +99,7 @@ const DragAndDropEditor: React.FC<{
         type="text"
         value={page.imageUrl}
         onChange={e => onChange({ ...page, imageUrl: e.target.value })}
-        placeholder="Image URL or description"
+        placeholder="Billed URL eller beskrivelse"
       />
       {/* Show image preview if imageUrl is set */}
       {page.imageUrl && <img src={page.imageUrl} alt="Preview" style={{ maxWidth: 300, display: 'block', marginTop: 8 }} />}
@@ -115,7 +115,7 @@ const DragAndDropEditor: React.FC<{
             type="text"
             value={item.label}
             onChange={e => handleItemChange(item.id, 'label', e.target.value)}
-            placeholder="Item label"
+            placeholder="Element label"
           />
           {/* Optional image for the item */}
           <label className="uv-label" htmlFor={`dd-item-img-${item.id}`}>Billed URL (valgfrit)</label>
@@ -125,7 +125,7 @@ const DragAndDropEditor: React.FC<{
             type="text"
             value={item.imageUrl || ''}
             onChange={e => handleItemChange(item.id, 'imageUrl', e.target.value)}
-            placeholder="Image URL (optional)"
+            placeholder="Billed URL (valgfrit)"
           />
           {/* Show item image preview if imageUrl is set */}
           {item.imageUrl && <img src={item.imageUrl} alt="item" style={{ maxWidth: 80, marginBottom: 6 }} />}

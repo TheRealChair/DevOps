@@ -13,37 +13,37 @@ const InputAnswerEditor: React.FC<{
 }> = ({ page, onChange }) => (
   <div className="uv-editor">
     {/* Page title and explanation input */}
-    <h2 className="uv-heading">Edit Input Answer Page</h2>
-    <label className="uv-label" htmlFor="ia-title">Title/Explanation</label>
+    <h2 className="uv-heading">Rediger Input Svar Side</h2>
+    <label className="uv-label" htmlFor="ia-title">Titel/Forklaring</label>
     <input
       id="ia-title"
       className="uv-input"
       type="text"
       value={page.title}
       onChange={e => onChange({ ...page, title: e.target.value })}
-      placeholder="Title/Explanation"
+      placeholder="Titel/Forklaring"
     />
     {/* Optional image for the question */}
-    <label className="uv-label" htmlFor="ia-image">Image URL or description</label>
+    <label className="uv-label" htmlFor="ia-image">Billed URL eller beskrivelse</label>
     <input
       id="ia-image"
       className="uv-input"
       type="text"
       value={page.imageUrl}
       onChange={e => onChange({ ...page, imageUrl: e.target.value })}
-      placeholder="Image URL or description"
+      placeholder="Billed URL eller beskrivelse"
     />
     {/* Show image preview if imageUrl is set */}
     {page.imageUrl && <img src={page.imageUrl} alt="Preview" style={{ maxWidth: 300, display: 'block', marginTop: 8 }} />}
     {/* Correct answer input */}
-    <label className="uv-label" htmlFor="ia-answer" style={{ marginTop: 24 }}>Correct Answer</label>
+    <label className="uv-label" htmlFor="ia-answer" style={{ marginTop: 24 }}>Korrekt Svar</label>
     <input
       id="ia-answer"
       className="uv-input"
       type="text"
       value={page.answer}
       onChange={e => onChange({ ...page, answer: e.target.value })}
-      placeholder="Correct answer text"
+      placeholder="Korrekt svar tekst"
     />
   </div>
 );
