@@ -19,7 +19,7 @@ const friendlyType = (t: string) => {
   }
 };
 
-export const QuestionHeader: React.FC<QuestionHeaderProps> = ({ title, type, current, total, elapsedSec = 0, preview }) => {
+export const QuestionHeader: React.FC<QuestionHeaderProps> = ({type, current, total, elapsedSec = 0}) => {
   const minutes = Math.floor(elapsedSec / 60);
   const seconds = elapsedSec % 60;
   const pct = total > 0 ? Math.min(100, Math.max(0, Math.round(((current + 1) / total) * 100))) : 0;
