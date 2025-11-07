@@ -452,7 +452,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
                       {pages.map(p => (
                         <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
                           <div onClick={() => setSelectedId(p.id)} style={{ cursor: 'pointer' }}>
-                            <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || `Page ${p.id}`}</strong>
+                            <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || 'Unavngivet'}</strong>
                             <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
                           </div>
                           <button
