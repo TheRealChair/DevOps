@@ -206,7 +206,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     const snap = await getDocs(studentsCol);
     await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
     setStudentList([]);
-    alert('Room closed and all joined students removed.');
+    alert('Rum lukker alle deltagende elever er smidt ud.');
   };
 
   // Debug: log whenever selectedId changes
@@ -282,7 +282,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
   // Save handler
   const handleSaveRoom = async () => {
     if (!user) {
-      alert('You must be logged in to save a room.');
+      alert('Du skal være logget ind for at gemme et rum.');
       return;
     }
     const roomsCol = collection(db, 'EscapeRooms');
@@ -309,13 +309,13 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
         roomCode: code
       });
       setEditRoomId(docRef.id);
-      alert('Room saved! The join code for this room is: ' + code);
+      alert('Rum gemt! Join koden for dette rum er: ' + code);
     }
   };
 
   // Room delete (for teacher's rooms list)
   const handleDeleteRoom = async (roomId: string) => {
-    if (!window.confirm('Are you sure you want to delete this room and all student data?')) return;
+    if (!window.confirm('Er du sikker på, at du vil slette dette rum og alle elevers data?')) return;
     // Delete all Students in subcollection
     const studentsCol = collection(db, 'EscapeRooms', roomId, 'Students');
     const snap = await getDocs(studentsCol);
@@ -324,7 +324,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     await deleteDoc(doc(db, 'EscapeRooms', roomId));
     // Update dashboard UI
     setMyRooms(rms => rms.filter(r => r.id !== roomId));
-    alert('Room deleted.');
+    alert('Rum slettet.');
   };
 
   return (
@@ -333,45 +333,45 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
         <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1100, background: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 12px #0002', padding: 14, minWidth: 220 }}>
           {!started ? (
             <>
-              <strong>Room is not live yet</strong>
-              <div style={{ marginTop: 12, marginBottom: 6, color:'#888', fontSize:14 }}>Students cannot join until you start it.</div>
-              <button className="uv-btn primary" style={{width:'100%'}} onClick={handleStartRoom}>Start Room</button>
+              <strong>Rum er ikke live endnu</strong>
+              <div style={{ marginTop: 12, marginBottom: 6, color:'#888', fontSize:14 }}>Elever kan ikke deltage før du starter det.</div>
+              <button className="uv-btn primary" style={{width:'100%'}} onClick={handleStartRoom}>Start Rum</button>
             </>
           ) : (
             <>
-              <strong>Joined students ({studentList.length}):</strong>
+              <strong>Deltagende elever ({studentList.length}):</strong>
               <ul style={{ margin: 0, padding: 0, listStyle: 'none', maxHeight: 220, overflowY: 'auto' }}>
-                {studentList.length === 0 && <li style={{ color:'#888', fontSize: 13 }}>No students yet</li>}
+                {studentList.length === 0 && <li style={{ color:'#888', fontSize: 13 }}>Ingen elever endnu</li>}
                 {studentList.map(s => (
                   <li key={s.nickname} style={{ fontSize: 15, padding: '2px 0' }}>{s.nickname} <span style={{ color: '#555', fontSize: 13 }}> {s.progress+1 || 1}/{pages.length} pages </span></li>
                 ))}
               </ul>
               {/* Show room join code if editing a real room */}
               {roomCode && (
-                <div style={{fontWeight:600,marginBottom:8}}>Join code: <span style={{fontFamily:'monospace',fontSize:18,letterSpacing:1}}>{roomCode}</span></div>
+                <div style={{fontWeight:600,marginBottom:8}}>Join kode: <span style={{fontFamily:'monospace',fontSize:18,letterSpacing:1}}>{roomCode}</span></div>
               )}
-              <button className="uv-btn" style={{width:'100%', marginTop: 12, background:'var(--feedback-incorrect-bg)', color:'var(--feedback-incorrect-text)'}} onClick={handleCloseRoom}>Close Room</button>
+              <button className="uv-btn" style={{width:'100%', marginTop: 12, background:'var(--feedback-incorrect-bg)', color:'var(--feedback-incorrect-text)'}} onClick={handleCloseRoom}>Luk Rum</button>
             </>
           )}
         </div>
       )}
       {user && (
         <div style={{background:'#f1f5f9',borderRadius:8,padding:16,marginBottom:18}}>
-          <h3>Your Saved Escape Rooms</h3>
-          {loadingRooms ? (<div>Loading rooms...</div>) : myRooms.length === 0 ? (<div>No rooms yet.</div>) : (
+          <h3>Dine gemte Rum</h3>
+          {loadingRooms ? (<div>Indlæser rum...</div>) : myRooms.length === 0 ? (<div>Ingen rum endnu.</div>) : (
             <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
               {myRooms.map(r => (
                 <div key={r.id} style={{border:'1px solid #aaa',borderRadius:8,padding:12,minWidth:240}}>
                   <div><strong>{r.name || 'Untitled Room'}</strong></div>
-                  <div style={{fontSize:13}}>Room code: {r.roomCode}</div>
-                  <div style={{fontSize:13}}>{r.pages?.length} pages</div>
+                  <div style={{fontSize:13}}>Rum kode: {r.roomCode}</div>
+                  <div style={{fontSize:13}}>{r.pages?.length} sider</div>
                   <button
                     className="uv-btn"
                     style={{marginTop:6,padding:'4px 16px'}}
                     onClick={()=>{
                       setPages(r.pages || []);
                     }}>
-                    Edit/Continue
+                    Rediger/Fortryd
                   </button>
                   <button className="uv-btn" onClick={()=>handleDeleteRoom(r.id)} style={{marginTop:6,marginLeft:8,background:'var(--feedback-incorrect-bg)',color:'var(--feedback-incorrect-text)'}}>Delete</button>
                 </div>
@@ -385,23 +385,24 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
           pages={pages}
           selectedId={selectedId}
           onSelect={id => setSelectedId(id)}
+          onReorder={(newOrder) => setPages(newOrder)}
         />
       )}
       <div className="uv-main">
         <div className="uv-topbar">
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <button className="uv-btn" onClick={onBack}>Back</button>
-            <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Hide Menu' : 'Show Menu'}</button>
+            <button className="uv-btn" onClick={onBack}>Tilbage</button>
+            <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Skjul Menu' : 'Vis Menu'}</button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <label style={{ color: 'var(--text)', fontSize: 14 }}>Template:</label>
             <select className="uv-input" value={templateType} onChange={e => setTemplateType(e.target.value as PageType)}>
               <option value="multipleChoice">Multiple Choice</option>
-              <option value="inputAnswer">Input Answer</option>
-              <option value="progressiveQuestions">Progressive Questions</option>
+              <option value="inputAnswer">Input Svar</option>
+              <option value="progressiveQuestions">Progressive Spørgsmål</option>
               <option value="dragAndDrop">Drag and Drop</option>
             </select>
-            <button className="uv-btn primary" onClick={handleAddPage}>+ Add Page</button>
+            <button className="uv-btn primary" onClick={handleAddPage}>+ Tilføj Side</button>
           </div>
         </div>
         <div className="uv-content">
@@ -418,7 +419,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
                     setSelectedId(null);
                   }}
                 >
-                  Delete Page
+                  Slet Side
                 </button>
               </div>
               {selectedPage.type === 'multipleChoice' ? (
@@ -433,8 +434,8 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
             </>
           ) : (
             <div className="uv-empty">
-              <h2>No page selected</h2>
-              <p>Create a page using the controls in the top-right. You can also open the left menu to select an existing page.</p>
+              <h2>Ingen side valgt</h2>
+              <p>Opret en side ved hjælp af kontrollerne i top-højre hjørne. Du kan også åbne venstre menu for at vælge en eksisterende side.</p>
               <div style={{ marginTop: 12 }}>
                 <button className="uv-btn primary" onClick={handleAddPage}>Create {templateType === 'multipleChoice' ? 'Multiple Choice' : templateType === 'inputAnswer' ? 'Input Answer' : templateType === 'progressiveQuestions' ? 'Progressive Questions' : 'Drag and Drop'}</button>
               </div>
@@ -445,7 +446,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
                     {pages.map(p => (
                       <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
                         <div onClick={() => setSelectedId(p.id)} style={{ cursor: 'pointer' }}>
-                          <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || `Page ${p.id}`}</strong>
+                          <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || 'unavngivet'}</strong>
                           <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
                         </div>
                         <button
