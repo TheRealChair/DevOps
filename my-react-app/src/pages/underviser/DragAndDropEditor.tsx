@@ -136,10 +136,10 @@ const DragAndDropEditor: React.FC<{
       {/* Add new draggable item */}
       <button className="uv-btn primary" onClick={handleAddItem} style={{ marginTop: 8 }}>+ Tilføj Element</button>
       {/* Section for setting the correct order */}
-      <h3 className="uv-label" style={{ marginTop: 24 }}>Correct Order</h3>
+      <h3 className="uv-label" style={{ marginTop: 24 }}>Korrekt Rækkefølge</h3>
   <div style={{ marginBottom: 8, color: 'var(--text-secondary)', fontSize: '1rem' }}>
-        <strong>Set the correct order for the answer below.</strong><br />
-        This is the order students must arrange the items to solve the question. Drag and drop items to reorder them.
+        <strong>Sæt den korrekte rækkefølge for svaret nedenfor.</strong><br />
+        Dette er rækkefølgen, som eleverne skal arrangere elementerne i for at løse spørgsmålet. Træk og slip elementer for at ændre rækkefølgen.
       </div>
       <ol style={{ padding: 0, listStyle: 'none' }}>
         {page.correctOrder.map((itemId, idx) => {

@@ -1,9 +1,3 @@
-// MultipleChoiceEditor
-// --------------------
-// Editor for multiple-choice question pages in the teacher/manager interface.
-// Uses utility classes for consistent UI (.uv-btn, .uv-input, .uv-label, .uv-heading).
-// Handles question, options, and correct answer logic.
-// Last updated: 2025-10-20
 import React from 'react';
 import type { PageData, MultipleChoiceOption } from '../UnderviserPagesManager';
 
