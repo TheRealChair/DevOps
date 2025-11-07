@@ -6,7 +6,9 @@ const UnderviserPagesMenu: React.FC<{
   selectedId?: number | null;
   onSelect: (id: number) => void;
   onReorder?: (newOrder: PageData[]) => void;
-}> = ({ pages, selectedId = null, onSelect, onReorder }) => {
+  roomName: string;
+  onChangeRoomName: (name: string) => void;
+}> = ({ pages, selectedId = null, onSelect, onReorder, roomName, onChangeRoomName }) => {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
@@ -50,9 +52,19 @@ const UnderviserPagesMenu: React.FC<{
 
   return (
     <div className="uv-sidebar">
-      <div className="uv-sidebar-header">
-        <h3 style={{ margin: 0 }}>Pages</h3>
-        <small style={{ color: '#666' }}>{pages.length} total</small>
+      {/* Move room name input all the way to the top */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, margin: '0 0 12px 0' }}>
+      <label style={{ color: 'var(--text)', fontSize: 13 }}>Rumnavn</label>
+      <input
+        className="uv-input"
+        value={roomName}
+        onChange={e => onChangeRoomName(e.target.value)}
+        placeholder="Angiv rumnavn"
+      />
+    </div>
+    <div className="uv-sidebar-header">
+        <h3 style={{ margin: 0 }}>Sider</h3>
+        <small style={{ color: 'var(--muted)' }}>{pages.length} i alt</small>
       </div>
       <ul className="uv-page-list">
         {pages.map((page, index) => (

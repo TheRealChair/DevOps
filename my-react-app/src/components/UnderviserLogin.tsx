@@ -66,7 +66,7 @@ const UnderviserLogin: React.FC<UnderviserLoginProps> = ({ onLoginSuccess, onBac
       flexDirection: 'column', 
       alignItems: 'center', 
       justifyContent: 'center',
-      minHeight: '100vh',
+      minHeight: 'calc(100vh - var(--topbar-h, 48px))',
       padding: '2rem',
       overflow: 'auto',
       boxSizing: 'border-box'

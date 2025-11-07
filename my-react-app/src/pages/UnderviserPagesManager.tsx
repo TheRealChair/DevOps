@@ -1,6 +1,7 @@
 
 
 import React, { useState, useEffect } from 'react';
+import RoomViewer from './RoomViewer';
 import MultipleChoiceEditor from './underviser/MultipleChoiceEditor';
 import InputAnswerEditor from './underviser/InputAnswerEditor';
 import ProgressiveQuestionsEditor from './underviser/ProgressiveQuestionsEditor';
@@ -9,6 +10,7 @@ import UnderviserPagesMenu from './underviser/UnderviserPagesMenu';
 import '../design/colors.css';
 import './underviser/underviser.css';
 import '../design/components.css';
+import LiveRoomPanel from './underviser/LiveRoomPanel';
 import { db } from '../services/firebase';
 import { addDoc, collection, getDocs, serverTimestamp, query, where, doc, updateDoc, deleteDoc, getDoc, onSnapshot, QuerySnapshot, QueryDocumentSnapshot } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
@@ -68,7 +70,7 @@ export type PageData =
   | ProgressiveQuestionsPageData
   | DragAndDropPageData;
 
-export type UnderviserPagesManagerProps = { onBack: () => void; initialPages?: PageData[] };
+export type UnderviserPagesManagerProps = { onBack: () => void; initialPages?: PageData[]; showRoomsDashboard?: boolean };
 
 function sanitizePages(inputPages: any[]): any[] {
   return (inputPages || []).map(page => {
@@ -122,7 +124,7 @@ function sanitizePages(inputPages: any[]): any[] {
   });
 }
 
-const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack, initialPages = [] }) => {
+const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack, initialPages = [], showRoomsDashboard = false }) => {
 
   const [pages, setPages] = useState<PageData[]>(initialPages);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -130,6 +132,13 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
   const [myRooms, setMyRooms] = useState<any[]>([]);
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [editRoomId, setEditRoomId] = useState<string | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
+  const [showLivePanel, setShowLivePanel] = useState(false);
+  const [roomName, setRoomName] = useState<string>('');
+  // Ensure live panel doesn't block preview interactions
+  useEffect(() => {
+    if (previewMode) setShowLivePanel(false);
+  }, [previewMode]);
 
   // --- Teacher live dashboard logic ---
   const [studentList, setStudentList] = useState<any[]>([]);
@@ -185,6 +194,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
       const snap = await getDoc(docRef);
       setStarted(Boolean(snap.get('started')));
       setRoomCode(snap.get('roomCode'));
+      setRoomName(snap.get('name') || '');
     };
     fetchStartedAndCode();
   }, [roomDocId]);
@@ -287,16 +297,17 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
     }
     const roomsCol = collection(db, 'EscapeRooms');
     const cleanPages = sanitizePages(pages);
+    const nameToSave = roomName.trim() || 'Unavngivet rum';
     if (editRoomId) {
       // Update existing room: don't update roomCode or createdAt
       await updateDoc(doc(roomsCol, editRoomId), {
         pages: cleanPages,
         ownerId: user.uid,
-        name: cleanPages[0]?.title || 'Untitled Room',
+        name: nameToSave,
         isPublished: false
         // DO NOT overwrite roomCode or createdAt here!
       });
-      alert('Room updated.');
+      alert('Rum opdateret.');
     } else {
       // New room: generate roomCode ONCE
       const code = Math.floor(1000 + Math.random() * 9000);
@@ -305,17 +316,17 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
         ownerId: user.uid,
         createdAt: serverTimestamp(),
         isPublished: false,
-        name: cleanPages[0]?.title || 'Untitled Room',
+        name: nameToSave,
         roomCode: code
       });
       setEditRoomId(docRef.id);
-      alert('Rum gemt! Join koden for dette rum er: ' + code);
+      alert('Rummet er gemt! Rumkoden er: ' + code);
     }
   };
 
   // Room delete (for teacher's rooms list)
   const handleDeleteRoom = async (roomId: string) => {
-    if (!window.confirm('Er du sikker på, at du vil slette dette rum og alle elevers data?')) return;
+    if (!window.confirm('Are you sure you want to delete this room and all student data?')) return;
     // Delete all Students in subcollection
     const studentsCol = collection(db, 'EscapeRooms', roomId, 'Students');
     const snap = await getDocs(studentsCol);
@@ -329,41 +340,15 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
 
   return (
     <div className="uv-root">
-      {roomDocId && (
-        <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1100, background: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 12px #0002', padding: 14, minWidth: 220 }}>
-          {!started ? (
-            <>
-              <strong>Rum er ikke live endnu</strong>
-              <div style={{ marginTop: 12, marginBottom: 6, color:'#888', fontSize:14 }}>Elever kan ikke deltage før du starter det.</div>
-              <button className="uv-btn primary" style={{width:'100%'}} onClick={handleStartRoom}>Start Rum</button>
-            </>
-          ) : (
-            <>
-              <strong>Deltagende elever ({studentList.length}):</strong>
-              <ul style={{ margin: 0, padding: 0, listStyle: 'none', maxHeight: 220, overflowY: 'auto' }}>
-                {studentList.length === 0 && <li style={{ color:'#888', fontSize: 13 }}>Ingen elever endnu</li>}
-                {studentList.map(s => (
-                  <li key={s.nickname} style={{ fontSize: 15, padding: '2px 0' }}>{s.nickname} <span style={{ color: '#555', fontSize: 13 }}> {s.progress+1 || 1}/{pages.length} pages </span></li>
-                ))}
-              </ul>
-              {/* Show room join code if editing a real room */}
-              {roomCode && (
-                <div style={{fontWeight:600,marginBottom:8}}>Join kode: <span style={{fontFamily:'monospace',fontSize:18,letterSpacing:1}}>{roomCode}</span></div>
-              )}
-              <button className="uv-btn" style={{width:'100%', marginTop: 12, background:'var(--feedback-incorrect-bg)', color:'var(--feedback-incorrect-text)'}} onClick={handleCloseRoom}>Luk Rum</button>
-            </>
-          )}
-        </div>
-      )}
-      {user && (
+      {user && showRoomsDashboard && (
         <div style={{background:'#f1f5f9',borderRadius:8,padding:16,marginBottom:18}}>
-          <h3>Dine gemte Rum</h3>
+          <h3>Dine gemte rum</h3>
           {loadingRooms ? (<div>Indlæser rum...</div>) : myRooms.length === 0 ? (<div>Ingen rum endnu.</div>) : (
             <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
               {myRooms.map(r => (
-                <div key={r.id} style={{border:'1px solid #aaa',borderRadius:8,padding:12,minWidth:240}}>
-                  <div><strong>{r.name || 'Untitled Room'}</strong></div>
-                  <div style={{fontSize:13}}>Rum kode: {r.roomCode}</div>
+                <div key={r.id} style={{border:'1px solid var(--border)',borderRadius:8,padding:12,minWidth:240}}>
+                  <div><strong>{r.name || 'Unavngivet rum'}</strong></div>
+                  <div style={{fontSize:13}}>Rumkode: {r.roomCode}</div>
                   <div style={{fontSize:13}}>{r.pages?.length} sider</div>
                   <button
                     className="uv-btn"
@@ -371,9 +356,9 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
                     onClick={()=>{
                       setPages(r.pages || []);
                     }}>
-                    Rediger/Fortryd
+                    Rediger/Fortsæt
                   </button>
-                  <button className="uv-btn" onClick={()=>handleDeleteRoom(r.id)} style={{marginTop:6,marginLeft:8,background:'var(--feedback-incorrect-bg)',color:'var(--feedback-incorrect-text)'}}>Delete</button>
+                  <button className="uv-btn" onClick={()=>handleDeleteRoom(r.id)} style={{marginTop:6,marginLeft:8,background:'var(--feedback-incorrect-bg)',color:'var(--feedback-incorrect-text)'}}>Slet</button>
                 </div>
               ))}
             </div>
@@ -386,89 +371,111 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
           selectedId={selectedId}
           onSelect={id => setSelectedId(id)}
           onReorder={(newOrder) => setPages(newOrder)}
+          roomName={roomName}
+          onChangeRoomName={setRoomName}
         />
       )}
       <div className="uv-main">
         <div className="uv-topbar">
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button className="uv-btn" onClick={onBack}>Tilbage</button>
-            <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Skjul Menu' : 'Vis Menu'}</button>
+            <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Skjul menu' : 'Vis menu'}</button>
+            {/* Preview toggle */}
+            <button className="uv-btn" style={{ marginLeft: 8 }} onClick={() => setPreviewMode(p => !p)}>
+              {previewMode ? 'Afslut forhåndsvisning' : 'Forhåndsvis'}
+            </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <label style={{ color: 'var(--text)', fontSize: 14 }}>Template:</label>
+            <label style={{ color: 'var(--text)', fontSize: 14 }}>Skabelon:</label>
             <select className="uv-input" value={templateType} onChange={e => setTemplateType(e.target.value as PageType)}>
               <option value="multipleChoice">Multiple Choice</option>
               <option value="inputAnswer">Input Svar</option>
               <option value="progressiveQuestions">Progressive Spørgsmål</option>
               <option value="dragAndDrop">Drag and Drop</option>
             </select>
-            <button className="uv-btn primary" onClick={handleAddPage}>+ Tilføj Side</button>
+            <button className="uv-btn primary" onClick={handleAddPage}>+ Tilføj side</button>
+            <button className="uv-btn" onClick={() => setShowLivePanel(true)} title={!roomDocId ? 'Gem for at aktivere live-rum' : (started ? 'Live-rum er aktivt' : 'Åbn live-rum panel')}>
+              Live-rum
+              <span style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                display: 'inline-block',
+                marginLeft: 6,
+                background: started ? 'var(--status-on)' : 'var(--status-off)'
+              }} />
+            </button>
           </div>
         </div>
-        <div className="uv-content">
-          {selectedPage ? (
-            <>
-              <div style={{ display: 'flex', width: '100%', marginBottom: 16 }}>
-                <div style={{ flex: 1 }} />
-                <button
-                  className="uv-btn"
-                  style={{ background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none', fontWeight: 600, padding: '6px 16px' }}
-                  title="Delete this page"
-                  onClick={() => {
-                    setPages(pages => pages.filter(page => page.id !== selectedPage.id));
-                    setSelectedId(null);
-                  }}
-                >
-                  Slet Side
-                </button>
-              </div>
-              {selectedPage.type === 'multipleChoice' ? (
-                <MultipleChoiceEditor page={selectedPage} onChange={handleChange} />
-              ) : selectedPage.type === 'inputAnswer' ? (
-                <InputAnswerEditor page={selectedPage} onChange={handleChange} />
-              ) : selectedPage.type === 'progressiveQuestions' ? (
-                <ProgressiveQuestionsEditor page={selectedPage} onChange={handleChange} />
-              ) : selectedPage.type === 'dragAndDrop' ? (
-                <DragAndDropEditor page={selectedPage} onChange={handleChange} />
-              ) : null}
-            </>
-          ) : (
-            <div className="uv-empty">
-              <h2>Ingen side valgt</h2>
-              <p>Opret en side ved hjælp af kontrollerne i top-højre hjørne. Du kan også åbne venstre menu for at vælge en eksisterende side.</p>
-              <div style={{ marginTop: 12 }}>
-                <button className="uv-btn primary" onClick={handleAddPage}>Create {templateType === 'multipleChoice' ? 'Multiple Choice' : templateType === 'inputAnswer' ? 'Input Answer' : templateType === 'progressiveQuestions' ? 'Progressive Questions' : 'Drag and Drop'}</button>
-              </div>
-              {pages.length > 0 && (
-                <div style={{ marginTop: 20 }}>
-                  <h3>Your pages</h3>
-                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    {pages.map(p => (
-                      <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
-                        <div onClick={() => setSelectedId(p.id)} style={{ cursor: 'pointer' }}>
-                          <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || 'unavngivet'}</strong>
-                          <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
-                        </div>
-                        <button
-                          className="uv-btn"
-                          style={{ position: 'absolute', top: 8, right: 8, padding: '2px 8px', fontSize: 13, background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none' }}
-                          title="Delete page"
-                          onClick={e => {
-                            e.stopPropagation();
-                            setPages(pages => pages.filter(page => page.id !== p.id));
-                            if (selectedId === p.id) setSelectedId(null);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+        {/* Show RoomViewer in preview mode if requested */}
+        {previewMode ? (
+          <RoomViewer onBack={() => setPreviewMode(false)} questions={pages} />
+        ) : (
+          <div className="uv-content">
+            {selectedPage ? (
+              <>
+                <div style={{ display: 'flex', width: '100%', marginBottom: 16 }}>
+                  <div style={{ flex: 1 }} />
+                  <button
+                    className="uv-btn"
+                    style={{ background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none', fontWeight: 600, padding: '6px 16px' }}
+                    title="Slet denne side"
+                    onClick={() => {
+                      setPages(pages => pages.filter(page => page.id !== selectedPage.id));
+                      setSelectedId(null);
+                    }}
+                  >
+                    Slet side
+                  </button>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
+                {selectedPage.type === 'multipleChoice' ? (
+                  <MultipleChoiceEditor page={selectedPage} onChange={handleChange} />
+                ) : selectedPage.type === 'inputAnswer' ? (
+                  <InputAnswerEditor page={selectedPage} onChange={handleChange} />
+                ) : selectedPage.type === 'progressiveQuestions' ? (
+                  <ProgressiveQuestionsEditor page={selectedPage} onChange={handleChange} />
+                ) : selectedPage.type === 'dragAndDrop' ? (
+                  <DragAndDropEditor page={selectedPage} onChange={handleChange} />
+                ) : null}
+              </>
+            ) : (
+              <div className="uv-empty">
+                <h2>Ingen side valgt</h2>
+                <p>Opret en side med kontrollerne øverst til højre. Du kan også åbne menuen til venstre for at vælge en eksisterende side.</p>
+                <div style={{ marginTop: 12 }}>
+                  <button className="uv-btn primary" onClick={handleAddPage}>Opret {templateType === 'multipleChoice' ? 'Multiple Choice' : templateType === 'inputAnswer' ? 'Input Answer' : templateType === 'progressiveQuestions' ? 'Progressive Questions' : 'Drag and Drop'}</button>
+                </div>
+                {pages.length > 0 && (
+                  <div style={{ marginTop: 20 }}>
+                    <h3>Dine sider</h3>
+                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+                      {pages.map(p => (
+                        <div key={p.id} className="uv-page-card" style={{ position: 'relative', paddingRight: 36 }}>
+                          <div onClick={() => setSelectedId(p.id)} style={{ cursor: 'pointer' }}>
+                            <strong style={{ display: 'block', marginBottom: 6 }}>{(p as any).title || `Page ${p.id}`}</strong>
+                            <small style={{ color: 'var(--text-secondary)' }}>{p.type}</small>
+                          </div>
+                          <button
+                            className="uv-btn"
+                            style={{ position: 'absolute', top: 8, right: 8, padding: '2px 8px', fontSize: 13, background: 'var(--feedback-incorrect-bg)', color: 'var(--feedback-incorrect-text)', border: 'none' }}
+                            title="Slet side"
+                            onClick={e => {
+                              e.stopPropagation();
+                              setPages(pages => pages.filter(page => page.id !== p.id));
+                              if (selectedId === p.id) setSelectedId(null);
+                            }}
+                          >
+                            Slet
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <button
         className="uv-btn primary"
@@ -476,8 +483,21 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
         title="Gem rum"
         onClick={handleSaveRoom}
       >
-        {editRoomId ? 'Update' : 'Save'} Room
+        {editRoomId ? 'Opdater' : 'Gem'} rum
       </button>
+
+      {/* Right-side Live Room panel / Drawer */}
+      <LiveRoomPanel
+        visible={showLivePanel}
+        hasRoomId={!!roomDocId}
+        started={started}
+        roomCode={roomCode}
+        studentList={studentList as any}
+        pagesLength={pages.length}
+        onStart={handleStartRoom}
+        onClose={handleCloseRoom}
+        onDismiss={() => setShowLivePanel(false)}
+      />
     </div>
   );
 };

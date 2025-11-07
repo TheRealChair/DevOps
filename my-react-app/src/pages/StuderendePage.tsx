@@ -9,7 +9,7 @@ import '../design/colors.css';
 import '../design/App.css';
 import '../design/components.css';
 import { db } from '../services/firebase';
-import { collection, query, where, getDocs, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 
 // Props:

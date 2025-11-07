@@ -12,7 +12,17 @@ export interface HomePageProps {
 
 const HomePage: React.FC<HomePageProps> = ({ onStuderendeClick, onUnderviserClick }) => {
   return (
-    <div className="frontpage-container" style={{ minHeight: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div
+      className="frontpage-container"
+      style={{
+        minHeight: 'calc(100vh - var(--topbar-h, 48px))',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
       <div
         style={{
           width: '260px',
