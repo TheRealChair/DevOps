@@ -47,28 +47,7 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
     setLocked(false);
   }, [page]);
 
-  // Manual check button (optional)
-  const handleCheck = () => {
-    if (disabled || locked) return;
-    if (allStepsCorrect && finalCorrect) {
-      setFeedback('Alle svar er korrekte!');
-      setLocked(true);
-      onAnswer(true);
-    } else if (!allStepsCorrect) {
-      setFeedback('Et eller flere svar er forkerte – prøv igen');
-      onAnswer(false);
-    } else {
-      setFeedback('Det endelige svar er forkert – prøv igen');
-      onAnswer(false);
-    }
-  };
-
-  const handleRetry = () => {
-    if (locked) return;
-    setAnswers(prev => prev.map((v, i) => (isStepCorrect(i) ? v : '')));
-    if (!finalCorrect) setFinal('');
-    setFeedback(null);
-  };
+  // No manual check or retry needed due to inline validation
 
   return (
     <div>
@@ -138,22 +117,7 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
           </div>
         )}
       </div>
-      {/* Check answers button */}
-      {!locked && (
-        <button className="stud-btn" onClick={handleCheck} disabled={disabled} style={{ width: '100%', marginTop: 16 }}>
-          Tjek
-        </button>
-      )}
-      {/* Retry button */}
-      {!locked && (feedback || (!allStepsCorrect || (!finalCorrect && final.length > 0))) && (
-        <button
-          className="stud-btn"
-          onClick={handleRetry}
-          style={{ width: '100%', marginTop: 8, background: 'var(--hover-bg)' }}
-        >
-          Prøv igen
-        </button>
-      )}
+      {/* Check and retry buttons fjernet – validering sker løbende */}
       {/* Feedback message */}
       {feedback && (
         <div style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback.includes('korrekt') ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>
