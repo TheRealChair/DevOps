@@ -86,7 +86,25 @@ const StuderendePage: React.FC<StuderendePageProps> = ({ onBack }) => {
     const nickQ = query(studentsCol, where('nickname', '==', nickname.trim()));
     const nickSnap = await getDocs(nickQ);
     if (!nickSnap.empty) {
-      alert('That nickname is already taken in this room!');
+      // Reuse existing student document so the student can resume progress from another device
+      const existing = nickSnap.docs[0];
+      const existingId = existing.id;
+      try {
+        await setDoc(doc(studentsCol, existingId), {
+          // Keep nickname and progress, just update lastSeen
+          nickname: nickname.trim(),
+          progress: existing.data().progress ?? 0,
+          joinedAt: existing.data().joinedAt ?? serverTimestamp(),
+          lastSeen: serverTimestamp(),
+        }, { merge: true });
+      } catch (e) {
+        console.warn('Kunne ikke opdatere eksisterende elevdoc:', e);
+      }
+      setDemoQuestions(pendingRoom.pages);
+      setShowDemo(true);
+      setNicknamePrompt(false);
+      setStudentId(existingId);
+      setRoomId(pendingRoom.id);
       return;
     }
     // Assign random ID for this user (could be used for session)
@@ -95,6 +113,7 @@ const StuderendePage: React.FC<StuderendePageProps> = ({ onBack }) => {
       nickname: nickname.trim(),
       progress: 0,
       joinedAt: serverTimestamp(),
+      lastSeen: serverTimestamp(),
     });
     // Debug log for loaded room
     console.log('Pending room at join', pendingRoom);

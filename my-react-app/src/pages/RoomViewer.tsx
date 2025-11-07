@@ -10,7 +10,7 @@ import '../design/colors.css';
 import '../design/App.css';
 import '../design/components.css';
 import { db } from '../services/firebase';
-import { doc, onSnapshot, DocumentSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, DocumentSnapshot, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
 // Import questions from JSON
 import questionsData from '../data/questions.json';
@@ -39,6 +39,7 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsed, setElapsed] = useState<number>(0);
   const [kickedOut, setKickedOut] = useState(false);
+  const [kickReason, setKickReason] = useState<string | null>(null);
 
   // Listen to room status and student document in real-time (only for real rooms, not preview/demo)
   useEffect(() => {
@@ -49,6 +50,7 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
     const unsubscribeRoom = onSnapshot(roomRef, (snap: DocumentSnapshot) => {
       if (!snap.exists()) {
         // Room was deleted
+        setKickReason('room-deleted');
         setKickedOut(true);
         return;
       }
@@ -56,6 +58,7 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
       const roomData = snap.data();
       if (!roomData?.started) {
         // Room was closed
+        setKickReason('room-closed');
         setKickedOut(true);
       }
     }, (error) => {
@@ -67,8 +70,17 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
       const studentRef = doc(db, 'EscapeRooms', roomId, 'Students', studentId);
       const unsubscribeStudent = onSnapshot(studentRef, (snap: DocumentSnapshot) => {
         if (!snap.exists()) {
-          // Student was removed
-          setKickedOut(true);
+          // Student was removed. If we've already completed, ignore this so the student can see the summary.
+          if (!completed) {
+            setKickReason('student-removed');
+            setKickedOut(true);
+          }
+          return;
+        }
+        // Sync progress from Firestore so re-joins on another device resume where they left off
+        const data = snap.data() as any;
+        if (typeof data?.progress === 'number') {
+          setPageIdx(prev => (prev !== data.progress ? data.progress : prev));
         }
       }, (error) => {
         console.error('Error listening to student:', error);
@@ -83,15 +95,18 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
     return () => {
       unsubscribeRoom();
     };
-  }, [roomId, studentId, previewAsStudent]);
+  }, [roomId, studentId, previewAsStudent, completed]);
 
   // Handle being kicked out
   useEffect(() => {
     if (kickedOut) {
-      alert('Rummet er blevet lukket. Du bliver nu sendt tilbage.');
+      const msg = kickReason === 'student-removed'
+        ? 'Du er blevet fjernet fra rummet.'
+        : 'Rummet er blevet lukket. Du bliver nu sendt tilbage.';
+      alert(msg);
       onBack();
     }
-  }, [kickedOut, onBack]);
+  }, [kickedOut, kickReason, onBack]);
 
 
   useEffect(() => {
@@ -116,11 +131,36 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
   // Called when user reaches the last question and clicks 'Næste'
   const handleNext = () => {
     if (pageIdx < pages.length - 1) {
-      setPageIdx(i => i + 1);
+      // Advance to next page and persist progress to Firestore (so teacher sees it live)
+      setPageIdx(i => {
+        const nextIdx = i + 1;
+        // Persist progress only for real room sessions (not preview/demo)
+        if (!previewAsStudent && roomId && studentId) {
+          try {
+            const studentRef = doc(db, 'EscapeRooms', roomId, 'Students', studentId);
+            // Store current page index (0-based). Teacher UI adds +1 when showing.
+            updateDoc(studentRef, { progress: nextIdx, lastUpdated: serverTimestamp() }).catch(err => {
+              console.error('Kunne ikke opdatere elevens progress:', err);
+            });
+          } catch (err) {
+            console.error('Fejl ved progress update:', err);
+          }
+        }
+        return nextIdx;
+      });
     } else {
       // Only complete if all answers are correct
       if (answers.every(a => a === true)) {
         setCompleted(true);
+        // Remove the student document when they finish (requested behavior)
+        if (!previewAsStudent && roomId && studentId) {
+          const studentRef = doc(db, 'EscapeRooms', roomId, 'Students', studentId);
+          // Option 1: Delete the doc entirely so nickname disappears
+          deleteDoc(studentRef).catch(err => {
+            console.error('Kunne ikke slette elev dokument ved afslutning:', err);
+          });
+          // If you later want to keep stats instead of deleting, you could updateDoc with { completed: true, completedAt: serverTimestamp() }
+        }
       }
     }
   };
