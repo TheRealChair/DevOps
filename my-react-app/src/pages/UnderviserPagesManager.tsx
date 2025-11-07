@@ -12,7 +12,7 @@ import './underviser/underviser.css';
 import '../design/components.css';
 import LiveRoomPanel from './underviser/LiveRoomPanel';
 import { db } from '../services/firebase';
-import { addDoc, collection, getDocs, serverTimestamp, query, where, doc, updateDoc, deleteDoc, getDoc, onSnapshot, QuerySnapshot, QueryDocumentSnapshot } from 'firebase/firestore';
+import { addDoc, collection, getDocs, serverTimestamp, query, where, doc, updateDoc, deleteDoc, onSnapshot, QuerySnapshot, QueryDocumentSnapshot, DocumentSnapshot } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 export type PageType = 'multipleChoice' | 'inputAnswer' | 'progressiveQuestions' | 'dragAndDrop';
 export interface DragAndDropItem {
@@ -187,16 +187,19 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
   const [started, setStarted] = useState<boolean>(false);
   const [roomCode, setRoomCode] = useState<number|null>(null);
   useEffect(() => {
-    // Fetch started and roomCode from backend if doc loaded
+    // Listen to room status in real-time
     if (!roomDocId) return;
-    const fetchStartedAndCode = async () => {
-      const docRef = doc(db, 'EscapeRooms', roomDocId);
-      const snap = await getDoc(docRef);
-      setStarted(Boolean(snap.get('started')));
-      setRoomCode(snap.get('roomCode'));
-      setRoomName(snap.get('name') || '');
-    };
-    fetchStartedAndCode();
+    const roomRef = doc(db, 'EscapeRooms', roomDocId);
+    const unsubscribe = onSnapshot(roomRef, (snap: DocumentSnapshot) => {
+      if (snap.exists()) {
+        setStarted(Boolean(snap.get('started')));
+        setRoomCode(snap.get('roomCode'));
+        setRoomName(snap.get('name') || '');
+      }
+    }, (error) => {
+      console.error('Error listening to room:', error);
+    });
+    return () => unsubscribe();
   }, [roomDocId]);
 
   const handleStartRoom = async () => {

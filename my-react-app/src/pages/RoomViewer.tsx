@@ -9,6 +9,8 @@ import DragAndDropQuestion from './studerende/components/DragAndDropQuestion';
 import '../design/colors.css';
 import '../design/App.css';
 import '../design/components.css';
+import { db } from '../services/firebase';
+import { doc, onSnapshot, DocumentSnapshot } from 'firebase/firestore';
 
 // Import questions from JSON
 import questionsData from '../data/questions.json';
@@ -19,10 +21,12 @@ interface RoomViewerProps {
   onBack: () => void;
   questions?: PageData[];
   previewAsStudent?: boolean;
+  roomId?: string;
+  studentId?: string;
 }
 
 
-const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStudent }) => {
+const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStudent, roomId, studentId }) => {
   const [pageIdx, setPageIdx] = useState(0);
   // Derive pages from props with a fallback to demo data
   const pages: PageData[] = (questions && questions.length > 0)
@@ -34,6 +38,60 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
   // Timer state
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsed, setElapsed] = useState<number>(0);
+  const [kickedOut, setKickedOut] = useState(false);
+
+  // Listen to room status and student document in real-time (only for real rooms, not preview/demo)
+  useEffect(() => {
+    if (previewAsStudent || !roomId) return; // Don't listen for preview mode or demo rooms
+    
+    // Listen to room status
+    const roomRef = doc(db, 'EscapeRooms', roomId);
+    const unsubscribeRoom = onSnapshot(roomRef, (snap: DocumentSnapshot) => {
+      if (!snap.exists()) {
+        // Room was deleted
+        setKickedOut(true);
+        return;
+      }
+      
+      const roomData = snap.data();
+      if (!roomData?.started) {
+        // Room was closed
+        setKickedOut(true);
+      }
+    }, (error) => {
+      console.error('Error listening to room:', error);
+    });
+
+    // Listen to student document (to detect if student was removed)
+    if (studentId) {
+      const studentRef = doc(db, 'EscapeRooms', roomId, 'Students', studentId);
+      const unsubscribeStudent = onSnapshot(studentRef, (snap: DocumentSnapshot) => {
+        if (!snap.exists()) {
+          // Student was removed
+          setKickedOut(true);
+        }
+      }, (error) => {
+        console.error('Error listening to student:', error);
+      });
+
+      return () => {
+        unsubscribeRoom();
+        unsubscribeStudent();
+      };
+    }
+
+    return () => {
+      unsubscribeRoom();
+    };
+  }, [roomId, studentId, previewAsStudent]);
+
+  // Handle being kicked out
+  useEffect(() => {
+    if (kickedOut) {
+      alert('Rummet er blevet lukket. Du bliver nu sendt tilbage.');
+      onBack();
+    }
+  }, [kickedOut, onBack]);
 
 
   useEffect(() => {
