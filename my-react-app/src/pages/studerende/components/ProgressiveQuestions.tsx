@@ -20,33 +20,54 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
   const [answers, setAnswers] = React.useState<string[]>(Array(page.questions.length).fill(''));
   // State: final answer input value
   const [final, setFinal] = React.useState('');
-  // State: feedback message after checking answers
+  // State: feedback message (optional summary)
   const [feedback, setFeedback] = React.useState<string | null>(null);
   // Lock only when the entire sequence including final answer is correct
   const [locked, setLocked] = React.useState(false);
+  // Helper to normalize
+  const norm = (s: string) => s.trim().toLowerCase();
+  const isStepCorrect = (idx: number) => norm(answers[idx] || '') === norm(page.questions[idx].answer || '');
+  const allStepsCorrect = page.questions.every((_, i) => isStepCorrect(i));
+  const finalCorrect = norm(final || '') === norm(page.finalAnswer || '');
 
-  // Handle check button click
-  const handleCheck = () => {
-    if (disabled || locked) return; // Prevent when disabled or already fully correct
-    let allCorrect = true;
-    // Check each progressive question
-    for (let i = 0; i < page.questions.length; i++) {
-      if (answers[i].trim().toLowerCase() !== page.questions[i].answer.trim().toLowerCase()) {
-        allCorrect = false;
-        break;
-      }
-    }
-    // Check final answer
-    const finalCorrect = final.trim().toLowerCase() === page.finalAnswer.trim().toLowerCase();
-    if (allCorrect && finalCorrect) {
-      setFeedback('All answers correct!');
+  // Auto complete when everything is correct (no need to press Tjek)
+  React.useEffect(() => {
+    if (!disabled && !locked && allStepsCorrect && finalCorrect) {
+      setFeedback('Alle svar er korrekte!');
       setLocked(true);
-    } else if (!allCorrect) {
-      setFeedback('One or more answers are incorrect – adjust og prøv igen');
-    } else {
-      setFeedback('Final answer is incorrect – prøv igen');
+      onAnswer(true);
     }
-    onAnswer(allCorrect && finalCorrect);
+  }, [allStepsCorrect, finalCorrect, disabled, locked, onAnswer]);
+
+  // Reset on page change
+  React.useEffect(() => {
+    setAnswers(Array(page.questions.length).fill(''));
+    setFinal('');
+    setFeedback(null);
+    setLocked(false);
+  }, [page]);
+
+  // Manual check button (optional)
+  const handleCheck = () => {
+    if (disabled || locked) return;
+    if (allStepsCorrect && finalCorrect) {
+      setFeedback('Alle svar er korrekte!');
+      setLocked(true);
+      onAnswer(true);
+    } else if (!allStepsCorrect) {
+      setFeedback('Et eller flere svar er forkerte – prøv igen');
+      onAnswer(false);
+    } else {
+      setFeedback('Det endelige svar er forkert – prøv igen');
+      onAnswer(false);
+    }
+  };
+
+  const handleRetry = () => {
+    if (locked) return;
+    setAnswers(prev => prev.map((v, i) => (isStepCorrect(i) ? v : '')));
+    if (!finalCorrect) setFinal('');
+    setFeedback(null);
   };
 
   return (
@@ -57,27 +78,37 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
       {page.imageUrl && <img src={page.imageUrl} alt="" style={{ maxWidth: 300, marginBottom: 12 }} />}
       {/* Render each progressive question */}
       {page.questions.map((q, idx) => {
-        // Only enable if previous answer is correct
-        const prevCorrect = idx === 0 || answers[idx - 1]?.trim().toLowerCase() === page.questions[idx - 1].answer.trim().toLowerCase();
-        const isDisabled = disabled || feedback !== null || !prevCorrect;
+        const prevCorrect = idx === 0 || isStepCorrect(idx - 1);
+        const isDisabled = disabled || locked || !prevCorrect;
+        const value = answers[idx] || '';
+        const showState = value.length > 0;
+        const correct = showState && isStepCorrect(idx);
         return (
           <div key={q.id} style={{ marginBottom: 14 }}>
-            {/* Question prompt */}
             <div style={{ fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 4 }}>{q.prompt}</div>
-            {/* Input field for answer */}
             <input
               className="stud-input"
               type="text"
-              value={answers[idx] || ''}
+              value={value}
               onChange={e => {
                 const arr = [...answers];
                 arr[idx] = e.target.value;
                 setAnswers(arr);
+                if (feedback) setFeedback(null); // clear summary feedback while editing
               }}
-              disabled={isDisabled || locked}
+              disabled={isDisabled}
               placeholder="Svar..."
-              style={{ width: '100%' }}
+              style={{
+                width: '100%',
+                borderColor: showState ? (correct ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)') : undefined,
+                boxShadow: 'none'
+              }}
             />
+            {showState && (
+              <div style={{ marginTop: 4, fontSize: 12, color: correct ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>
+                {correct ? '✔️ Rigtigt' : '✖️ Forkert'}
+              </div>
+            )}
           </div>
         );
       })}
@@ -88,18 +119,47 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
           className="stud-input"
           type="text"
           value={final}
-          onChange={e => setFinal(e.target.value)}
-          disabled={disabled || locked || answers.length === 0 || answers[answers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()}
+          onChange={e => {
+            setFinal(e.target.value);
+            if (feedback) setFeedback(null);
+          }}
+          disabled={disabled || locked || answers.length === 0 || !isStepCorrect(page.questions.length - 1)}
           placeholder="Endeligt svar..."
-          style={{ width: '100%', marginTop: 4 }}
+          style={{
+            width: '100%',
+            marginTop: 4,
+            borderColor: final.length > 0 ? (finalCorrect ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)') : undefined,
+            boxShadow: 'none'
+          }}
         />
+        {final.length > 0 && (
+          <div style={{ marginTop: 4, fontSize: 12, color: finalCorrect ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>
+            {finalCorrect ? '✔️ Rigtigt' : '✖️ Forkert'}
+          </div>
+        )}
       </div>
       {/* Check answers button */}
-      <button className="stud-btn" onClick={handleCheck} disabled={disabled || locked} style={{ width: '100%', marginTop: 16 }}>
-        Tjek
-      </button>
+      {!locked && (
+        <button className="stud-btn" onClick={handleCheck} disabled={disabled} style={{ width: '100%', marginTop: 16 }}>
+          Tjek
+        </button>
+      )}
+      {/* Retry button */}
+      {!locked && (feedback || (!allStepsCorrect || (!finalCorrect && final.length > 0))) && (
+        <button
+          className="stud-btn"
+          onClick={handleRetry}
+          style={{ width: '100%', marginTop: 8, background: 'var(--hover-bg)' }}
+        >
+          Prøv igen
+        </button>
+      )}
       {/* Feedback message */}
-      {feedback && <div style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback === 'All answers correct!' || feedback === 'All answers correct!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>{feedback}</div>}
+      {feedback && (
+        <div style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback.includes('korrekt') ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}>
+          {feedback}
+        </div>
+      )}
     </div>
   );
 };
