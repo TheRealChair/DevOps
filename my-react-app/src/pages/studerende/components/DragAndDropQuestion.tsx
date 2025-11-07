@@ -20,16 +20,19 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
   const [order, setOrder] = React.useState<number[]>([...page.correctOrder].sort(() => Math.random() - 0.5));
   // State: feedback message after checking answer
   const [feedback, setFeedback] = React.useState<string | null>(null);
+  // Lock only when the order is correct
+  const [locked, setLocked] = React.useState(false);
 
   // Reset order and feedback when page changes
   React.useEffect(() => {
     setOrder([...page.correctOrder].sort(() => Math.random() - 0.5));
     setFeedback(null);
+    setLocked(false);
   }, [page]);
 
   // Move item up or down in the order
   const handleMove = (idx: number, dir: 'op' | 'ned') => {
-    if (disabled || feedback !== null) return; // Prevent moves if disabled or after answer
+  if (disabled || locked) return; // Prevent moves if disabled or after correct answer
     const arr = [...order];
     if (dir === 'op' && idx > 0) {
       // Swap with previous item
@@ -43,9 +46,10 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
 
   // Check if current order matches correct order
   const handleCheck = () => {
-    if (disabled || feedback !== null) return; // Prevent multiple checks
+    if (disabled || locked) return; // Prevent multiple checks when already correct
     const correct = page.correctOrder.every((id: number, idx: number) => order[idx] === id);
-    setFeedback(correct ? 'Korrekt rækkefølge!' : 'Forkert rækkefølge.');
+    setFeedback(correct ? 'Korrekt rækkefølge!' : 'Forkert rækkefølge – prøv igen.');
+    if (correct) setLocked(true);
     onAnswer(correct);
   };
 
@@ -77,7 +81,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
               <button
                 className="arrow-btn"
                 onClick={() => handleMove(idx, 'op')}
-                disabled={idx === 0 || feedback !== null}
+                disabled={idx === 0 || locked}
                 style={{ marginLeft: 8 }}
               >
                 ↑
@@ -86,7 +90,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
               <button
                 className="arrow-btn"
                 onClick={() => handleMove(idx, 'ned')}
-                disabled={idx === order.length - 1 || feedback !== null}
+                disabled={idx === order.length - 1 || locked}
                 style={{ marginLeft: 4 }}
               >
                 ↓
@@ -99,7 +103,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
       <button
         className="stud-btn"
         onClick={handleCheck}
-        disabled={disabled || feedback !== null}
+        disabled={disabled || locked}
         style={{ width: '100%', marginTop: 12 }}
       >
         Check

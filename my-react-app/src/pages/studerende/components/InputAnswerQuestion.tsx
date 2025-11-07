@@ -20,12 +20,15 @@ const InputAnswerQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
   const [value, setValue] = React.useState('');
   // State: feedback message after checking answer
   const [feedback, setFeedback] = React.useState<string | null>(null);
+  // Lock interaction only when the correct answer has been provided
+  const [locked, setLocked] = React.useState(false);
 
   // Handle check button click
   const handleCheck = () => {
-    if (disabled || feedback !== null) return; // Prevent multiple checks or if disabled
+    if (disabled || locked) return; // Prevent when disabled or already correct
     const correct = value.trim().toLowerCase() === page.answer.trim().toLowerCase();
-    setFeedback(correct ? 'Korrekt!' : 'Forkert');
+    setFeedback(correct ? 'Korrekt!' : 'Forkert – prøv igen');
+    if (correct) setLocked(true);
     onAnswer(correct);
   };
 
@@ -40,13 +43,16 @@ const InputAnswerQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
         className="stud-input"
         type="text"
         value={value}
-        onChange={e => setValue(e.target.value)}
-        disabled={disabled || feedback !== null}
+        onChange={e => {
+          setValue(e.target.value);
+          if (!locked && feedback) setFeedback(null); // clear feedback while retrying
+        }}
+        disabled={disabled || locked}
   placeholder="Dit svar..."
         style={{ width: '100%', marginBottom: 10 }}
       />
       {/* Check answer button */}
-      <button className="stud-btn" onClick={handleCheck} disabled={disabled || feedback !== null} style={{ width: '100%', marginBottom: 8 }}>
+      <button className="stud-btn" onClick={handleCheck} disabled={disabled || locked} style={{ width: '100%', marginBottom: 8 }}>
         Tjek
       </button>
   {/* Feedback message */}

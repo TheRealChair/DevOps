@@ -20,14 +20,18 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
   const [selected, setSelected] = React.useState<number | null>(null);
   // State: feedback message after checking answer
   const [feedback, setFeedback] = React.useState<string | null>(null);
+  // Lock interaction only when the correct answer has been chosen
+  const [locked, setLocked] = React.useState(false);
 
   // Handle option click
   const handleClick = (optId: number) => {
-    if (disabled || selected !== null) return; // Prevent multiple answers or if disabled
+    if (disabled || locked) return; // Prevent when disabled or already correct
     setSelected(optId);
     const correct = page.options.find(o => o.id === optId)?.correct;
-  setFeedback(correct ? 'Korrekt!' : 'Forkert');
-    onAnswer(!!correct);
+    const isCorrect = !!correct;
+    setFeedback(isCorrect ? 'Korrekt!' : 'Forkert – prøv igen');
+    if (isCorrect) setLocked(true);
+    onAnswer(isCorrect);
   };
 
   return (
@@ -48,7 +52,7 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
             key={opt.id}
             className={optionClass}
             onClick={() => handleClick(opt.id)}
-            disabled={disabled || selected !== null}
+            disabled={disabled || locked}
           >
             {opt.text}
           </button>

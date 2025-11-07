@@ -22,10 +22,12 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
   const [final, setFinal] = React.useState('');
   // State: feedback message after checking answers
   const [feedback, setFeedback] = React.useState<string | null>(null);
+  // Lock only when the entire sequence including final answer is correct
+  const [locked, setLocked] = React.useState(false);
 
   // Handle check button click
   const handleCheck = () => {
-    if (disabled || feedback !== null) return; // Prevent multiple checks or if disabled
+    if (disabled || locked) return; // Prevent when disabled or already fully correct
     let allCorrect = true;
     // Check each progressive question
     for (let i = 0; i < page.questions.length; i++) {
@@ -36,9 +38,14 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
     }
     // Check final answer
     const finalCorrect = final.trim().toLowerCase() === page.finalAnswer.trim().toLowerCase();
-    if (allCorrect && finalCorrect) setFeedback('All answers correct!');
-    else if (!allCorrect) setFeedback('One or more answers are incorrect.');
-    else setFeedback('Final answer is incorrect.');
+    if (allCorrect && finalCorrect) {
+      setFeedback('All answers correct!');
+      setLocked(true);
+    } else if (!allCorrect) {
+      setFeedback('One or more answers are incorrect – adjust og prøv igen');
+    } else {
+      setFeedback('Final answer is incorrect – prøv igen');
+    }
     onAnswer(allCorrect && finalCorrect);
   };
 
@@ -67,7 +74,7 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
                 arr[idx] = e.target.value;
                 setAnswers(arr);
               }}
-              disabled={isDisabled}
+              disabled={isDisabled || locked}
               placeholder="Svar..."
               style={{ width: '100%' }}
             />
@@ -82,13 +89,13 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
           type="text"
           value={final}
           onChange={e => setFinal(e.target.value)}
-          disabled={disabled || feedback !== null || answers.length === 0 || answers[answers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()}
+          disabled={disabled || locked || answers.length === 0 || answers[answers.length - 1]?.trim().toLowerCase() !== page.questions[page.questions.length - 1].answer.trim().toLowerCase()}
           placeholder="Endeligt svar..."
           style={{ width: '100%', marginTop: 4 }}
         />
       </div>
       {/* Check answers button */}
-      <button className="stud-btn" onClick={handleCheck} disabled={disabled || feedback !== null} style={{ width: '100%', marginTop: 16 }}>
+      <button className="stud-btn" onClick={handleCheck} disabled={disabled || locked} style={{ width: '100%', marginTop: 16 }}>
         Tjek
       </button>
       {/* Feedback message */}
