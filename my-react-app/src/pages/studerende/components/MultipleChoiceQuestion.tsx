@@ -40,7 +40,7 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
       <h3>{page.title}</h3>
       {/* Optional image */}
       {page.imageUrl && <img src={page.imageUrl} alt="" style={{ maxWidth: 300, marginBottom: 12 }} />}
-      {/* Render options as buttons */}
+      {/* Render options as buttons (with optional image) */}
       {page.options.map(opt => {
         const isSelected = selected === opt.id;
         const isCorrect = !!opt.correct;
@@ -53,8 +53,17 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
             className={optionClass}
             onClick={() => handleClick(opt.id)}
             disabled={disabled || locked}
+            style={{ display: 'flex', alignItems: 'center', gap: 10, textAlign: 'left' }}
           >
-            {opt.text}
+            {opt.imageUrl && (
+              <img
+                src={opt.imageUrl}
+                alt={opt.text || 'option image'}
+                style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border)' }}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+              />
+            )}
+            <span style={{ flex: 1 }}>{opt.text}</span>
           </button>
         );
       })}

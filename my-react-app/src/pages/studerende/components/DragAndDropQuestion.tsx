@@ -63,7 +63,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
   <div style={{ marginBottom: 16, color: 'var(--primary)', fontWeight: 600, fontSize: 16 }}>
         Arrange the items in the correct order:
       </div>
-      {/* List of draggable items */}
+      {/* List of draggable items with optional item images */}
       <ol style={{ padding: 0, listStyle: 'none', width: '100%' }}>
         {order.map((itemId, idx) => {
           const item = page.items.find(i => i.id === itemId); // Find item data by id
@@ -71,10 +71,19 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
           return (
             <li
               key={itemId}
-              style={{ marginBottom: 10, border: '1px solid var(--border)', borderRadius: 8, padding: 10, display: 'flex', alignItems: 'center', background: 'var(--hover-bg)' }}
+              style={{ marginBottom: 10, border: '1px solid var(--border)', borderRadius: 8, padding: 10, display: 'flex', alignItems: 'center', gap: 10, background: 'var(--hover-bg)' }}
             >
               {/* Item position number */}
               <span style={{ fontWeight: 600, marginRight: 12, color: 'var(--primary)' }}>#{idx + 1}</span>
+              {/* Item optional image */}
+              {item.imageUrl && (
+                <img
+                  src={item.imageUrl}
+                  alt={item.label || 'item'}
+                  style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)' }}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                />
+              )}
               {/* Item label */}
               <span style={{ flex: 1 }}>{item.label}</span>
               {/* Move up button */}
