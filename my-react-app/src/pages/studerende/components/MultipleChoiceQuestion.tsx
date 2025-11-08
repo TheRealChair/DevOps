@@ -44,6 +44,7 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
       {page.options.map(opt => {
         const isSelected = selected === opt.id;
         const isCorrect = !!opt.correct;
+        const hasImage = !!opt.imageUrl;
         let optionClass = 'stud-btn-option';
         if (isSelected && isCorrect) optionClass += ' selected-correct';
         else if (isSelected && !isCorrect) optionClass += ' selected-incorrect';
@@ -53,9 +54,15 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
             className={optionClass}
             onClick={() => handleClick(opt.id)}
             disabled={disabled || locked}
-            style={{ display: 'flex', alignItems: 'center', gap: 10, textAlign: 'left' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: hasImage ? 'flex-start' : 'center',
+              gap: hasImage ? 10 : 0,
+              textAlign: 'center'
+            }}
           >
-            {opt.imageUrl && (
+            {hasImage && (
               <img
                 src={opt.imageUrl}
                 alt={opt.text || 'option image'}
@@ -63,7 +70,7 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
               />
             )}
-            <span style={{ flex: 1 }}>{opt.text}</span>
+            <span style={{ flex: hasImage ? 1 : 'unset', width: hasImage ? 'auto' : '100%' }}>{opt.text}</span>
           </button>
         );
       })}
