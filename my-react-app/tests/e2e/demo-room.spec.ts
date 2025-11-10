@@ -1,4 +1,5 @@
-import { test, expect, Page, Locator } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 async function goToStudentsAndEnterDemo(page: Page) {
   await page.goto('/');
@@ -39,7 +40,6 @@ async function answerProgressive(page: Page, steps: string[], final: string) {
 
 async function answerDragAndDrop(page: Page, expectedLabels: string[]) {
   // Items are now drag-and-drop only (no arrow buttons)
-  // We'll use the Playwright drag-and-drop API
   const items = page.locator('ol >> li');
   
   // Helper to get current order
@@ -55,21 +55,47 @@ async function answerDragAndDrop(page: Page, expectedLabels: string[]) {
     return labels;
   };
 
-  // Drag items to correct positions
-  for (let targetIdx = 0; targetIdx < expectedLabels.length; targetIdx++) {
-    const current = await getCurrent();
-    const wantedLabel = expectedLabels[targetIdx];
-    const currentIdx = current.indexOf(wantedLabel);
+  // Use low-level mouse events for drag and drop
+  const dragItem = async (fromIndex: number, toIndex: number) => {
+    const fromItem = items.nth(fromIndex);
+    const toItem = items.nth(toIndex);
     
-    if (currentIdx !== targetIdx && currentIdx !== -1) {
-      // Drag from currentIdx to targetIdx
-      await items.nth(currentIdx).dragTo(items.nth(targetIdx));
-      // Small delay for DOM to update
-      await page.waitForTimeout(100);
+    const fromBox = await fromItem.boundingBox();
+    const toBox = await toItem.boundingBox();
+    
+    if (!fromBox || !toBox) return;
+    
+    // Simulate drag: mousedown on source, move to target, mouseup
+    await page.mouse.move(fromBox.x + fromBox.width / 2, fromBox.y + fromBox.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(100);
+    await page.mouse.move(toBox.x + toBox.width / 2, toBox.y + toBox.height / 2, { steps: 5 });
+    await page.waitForTimeout(100);
+    await page.mouse.up();
+    await page.waitForTimeout(300);
+  };
+
+  // Sort items into correct order
+  for (let attempts = 0; attempts < 15; attempts++) {
+    const current = await getCurrent();
+    const isCorrect = current.every((label, idx) => label === expectedLabels[idx]);
+    if (isCorrect) break;
+    
+    // Find and move first misplaced item
+    for (let targetIdx = 0; targetIdx < expectedLabels.length; targetIdx++) {
+      if (current[targetIdx] !== expectedLabels[targetIdx]) {
+        const neededLabel = expectedLabels[targetIdx];
+        const currentIdx = current.findIndex(label => label === neededLabel);
+        if (currentIdx !== -1 && currentIdx !== targetIdx) {
+          await dragItem(currentIdx, targetIdx);
+          break;
+        }
+      }
     }
   }
   
   await page.getByRole('button', { name: /^Check$/ }).click();
+  await page.waitForTimeout(500);
   await expect(page.getByText(/Korrekt rækkefølge!/i)).toBeVisible();
 }
 
