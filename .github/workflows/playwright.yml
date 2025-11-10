@@ -9,6 +9,9 @@ on:
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    env:
+      E2E_TEACHER_EMAIL: ${{ secrets.E2E_TEACHER_EMAIL }}
+      E2E_TEACHER_PASSWORD: ${{ secrets.E2E_TEACHER_PASSWORD }}
 
     defaults:
       run:
