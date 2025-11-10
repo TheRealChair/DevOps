@@ -37,54 +37,38 @@ async function answerProgressive(page: Page, steps: string[], final: string) {
   await expect(nextBtn).toBeEnabled();
 }
 
-async function reorderListTo(page: Page, expectedLabels: string[]) {
-  // Items are rendered in an <ol> where each <li> contains: '#n', label, ↑ ↓ buttons
+async function answerDragAndDrop(page: Page, expectedLabels: string[]) {
+  // Items are now drag-and-drop only (no arrow buttons)
+  // We'll use the Playwright drag-and-drop API
   const items = page.locator('ol >> li');
-  const upButton = (idx: number) => items.nth(idx).getByRole('button', { name: '↑' });
-  const downButton = (idx: number) => items.nth(idx).getByRole('button', { name: '↓' });
-
+  
+  // Helper to get current order
   const getCurrent = async (): Promise<string[]> => {
     const count = await items.count();
     const labels: string[] = [];
     for (let i = 0; i < count; i++) {
       const txt = await items.nth(i).innerText();
-      const cleaned = txt.replace(/^#\d+\s*/, '').replace(/[↑↓]/g, '').trim();
+      // Remove position number (#1, #2, etc.)
+      const cleaned = txt.replace(/^#\d+\s*/, '').trim();
       labels.push(cleaned);
     }
     return labels;
   };
 
-  // Limit iterations to avoid infinite loops if DOM changes
-  for (let guard = 0; guard < 50; guard++) {
+  // Drag items to correct positions
+  for (let targetIdx = 0; targetIdx < expectedLabels.length; targetIdx++) {
     const current = await getCurrent();
-    if (current.length !== expectedLabels.length) {
-      throw new Error(`Unexpected list length. expected=${expectedLabels.length} got=${current.length}`);
-    }
-    if (current.every((l, i) => l === expectedLabels[i])) break;
-
-    // Find first mismatch and move the needed item toward that index
-    let i = current.findIndex((l, idx) => l !== expectedLabels[idx]);
-    if (i === -1) break;
-    const want = expectedLabels[i];
-    const j = current.findIndex(l => l === want);
-    if (j === -1) throw new Error(`Label '${want}' not found in current list`);
-
-    if (j > i) {
-      // Move item up (j - i) times
-      for (let k = 0; k < j - i; k++) {
-        await upButton(j - k).click();
-      }
-    } else if (j < i) {
-      // Move item down (i - j) times
-      for (let k = 0; k < i - j; k++) {
-        await downButton(j + k).click();
-      }
+    const wantedLabel = expectedLabels[targetIdx];
+    const currentIdx = current.indexOf(wantedLabel);
+    
+    if (currentIdx !== targetIdx && currentIdx !== -1) {
+      // Drag from currentIdx to targetIdx
+      await items.nth(currentIdx).dragTo(items.nth(targetIdx));
+      // Small delay for DOM to update
+      await page.waitForTimeout(100);
     }
   }
-}
-
-async function answerDragAndDropByArrows(page: Page, expectedLabels: string[]) {
-  await reorderListTo(page, expectedLabels);
+  
   await page.getByRole('button', { name: /^Check$/ }).click();
   await expect(page.getByText(/Korrekt rækkefølge!/i)).toBeVisible();
 }
@@ -148,7 +132,7 @@ test('demo room walkthrough – student flow to completion', async ({ page }) =>
 
   // 6) dragAndDrop – Order by atomic number: Hydrogen, Helium, Lithium, Beryllium
   await waitForQuestionReady(page, 'dnd');
-  await answerDragAndDropByArrows(page, [
+  await answerDragAndDrop(page, [
     'Hydrogen (H)',
     'Helium (He)',
     'Lithium (Li)',
@@ -173,7 +157,7 @@ test('demo room walkthrough – student flow to completion', async ({ page }) =>
 
   // 10) dragAndDrop – Sequence of process
   await waitForQuestionReady(page, 'dnd');
-  await answerDragAndDropByArrows(page, [
+  await answerDragAndDrop(page, [
     'Reaktanter blandes',
     'Reaktionen sker',
     'Produkter dannes',
