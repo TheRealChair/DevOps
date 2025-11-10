@@ -22,6 +22,9 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
   const [feedback, setFeedback] = React.useState<string | null>(null);
   // Lock only when the order is correct
   const [locked, setLocked] = React.useState(false);
+  // Drag state
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null);
 
   // Reset order and feedback when page changes
   React.useEffect(() => {
@@ -53,6 +56,46 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
     onAnswer(correct);
   };
 
+  // Drag handlers
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    if (disabled || locked) return;
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', index.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const newOrder = [...order];
+    const [removed] = newOrder.splice(draggedIndex, 1);
+    newOrder.splice(dropIndex, 0, removed);
+    setOrder(newOrder);
+
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
   return (
     <div>
       {/* Question title */}
@@ -68,10 +111,31 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
         {order.map((itemId, idx) => {
           const item = page.items.find(i => i.id === itemId); // Find item data by id
           if (!item) return null;
+          const isDragging = draggedIndex === idx;
+          const isDragOver = dragOverIndex === idx;
           return (
             <li
               key={itemId}
-              style={{ marginBottom: 10, border: '1px solid var(--border)', borderRadius: 8, padding: 10, display: 'flex', alignItems: 'center', gap: 10, background: 'var(--hover-bg)' }}
+              draggable={!disabled && !locked}
+              onDragStart={(e) => handleDragStart(e, idx)}
+              onDragOver={(e) => handleDragOver(e, idx)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, idx)}
+              onDragEnd={handleDragEnd}
+              style={{
+                marginBottom: 10,
+                border: '1px solid var(--border)',
+                borderRadius: 8,
+                padding: 10,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                background: isDragOver ? 'var(--primary)' : 'var(--hover-bg)',
+                opacity: isDragging ? 0.5 : 1,
+                cursor: (!disabled && !locked) ? 'grab' : 'default',
+                transition: 'background 0.2s, opacity 0.2s',
+                userSelect: 'none'
+              }}
             >
               {/* Item position number */}
               <span style={{ fontWeight: 600, marginRight: 12, color: 'var(--primary)' }}>#{idx + 1}</span>

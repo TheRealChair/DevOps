@@ -24,11 +24,37 @@ const ProgressiveQuestions: React.FC<Props> = ({ page, onAnswer, disabled }) => 
   const [feedback, setFeedback] = React.useState<string | null>(null);
   // Lock only when the entire sequence including final answer is correct
   const [locked, setLocked] = React.useState(false);
-  // Helper to normalize
+  
+  // Helper to normalize text
   const norm = (s: string) => s.trim().toLowerCase();
-  const isStepCorrect = (idx: number) => norm(answers[idx] || '') === norm(page.questions[idx].answer || '');
+  
+  // Helper to check if answer matches with support for numerical intervals
+  // Supports formats like "42±1" or "42+/-1" meaning 41-43 is accepted
+  const isAnswerCorrect = (userAnswer: string, correctAnswer: string): boolean => {
+    const userNorm = norm(userAnswer);
+    const correctNorm = norm(correctAnswer);
+    
+    // First try exact match (for text answers)
+    if (userNorm === correctNorm) return true;
+    
+    // Try to parse as numerical interval: "value±tolerance" or "value+/-tolerance"
+    const intervalMatch = correctNorm.match(/^([+-]?\d+(?:[.,]\d+)?)\s*[±+\/-]+\s*(\d+(?:[.,]\d+)?)$/);
+    if (intervalMatch) {
+      const centerValue = parseFloat(intervalMatch[1].replace(',', '.'));
+      const tolerance = parseFloat(intervalMatch[2].replace(',', '.'));
+      const userValue = parseFloat(userNorm.replace(',', '.'));
+      
+      if (!isNaN(centerValue) && !isNaN(tolerance) && !isNaN(userValue)) {
+        return userValue >= (centerValue - tolerance) && userValue <= (centerValue + tolerance);
+      }
+    }
+    
+    return false;
+  };
+  
+  const isStepCorrect = (idx: number) => isAnswerCorrect(answers[idx] || '', page.questions[idx].answer || '');
   const allStepsCorrect = page.questions.every((_, i) => isStepCorrect(i));
-  const finalCorrect = norm(final || '') === norm(page.finalAnswer || '');
+  const finalCorrect = isAnswerCorrect(final || '', page.finalAnswer || '');
 
   // Auto complete when everything is correct (no need to press Tjek)
   React.useEffect(() => {

@@ -24,11 +24,12 @@ interface RoomViewerProps {
   previewAsStudent?: boolean;
   roomId?: string;
   studentId?: string;
+  initialPageIndex?: number; // Start preview at specific page index
 }
 
 
-const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStudent, roomId, studentId }) => {
-  const [pageIdx, setPageIdx] = useState(0);
+const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStudent, roomId, studentId, initialPageIndex }) => {
+  const [pageIdx, setPageIdx] = useState(initialPageIndex || 0);
   // Derive pages from props with a fallback to demo data
   const pages: PageData[] = (questions && questions.length > 0)
     ? questions
@@ -80,8 +81,13 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
         }
         // Sync progress from Firestore so re-joins on another device resume where they left off
         const data = snap.data() as any;
-        if (typeof data?.progress === 'number') {
+        // Only sync progress if not completed locally (prevent overwriting completion state)
+        if (typeof data?.progress === 'number' && !completed) {
           setPageIdx(prev => (prev !== data.progress ? data.progress : prev));
+        }
+        // If the student is marked as completed in Firestore, set local completed state
+        if (data?.completed && !completed) {
+          setCompleted(true);
         }
       }, (error) => {
         console.error('Error listening to student:', error);
@@ -114,10 +120,13 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
     if (questions) {
       console.log("RoomViewer loading questions:", questions);
     }
-    setAnswers(Array(pages.length).fill(null));
-    setStartTime(Date.now());
-    setElapsed(0);
-    setPageIdx(0);
+    // Only reset state if not completed (prevent losing completion state on data updates)
+    if (!completed) {
+      setAnswers(Array(pages.length).fill(null));
+      setStartTime(Date.now());
+      setElapsed(0);
+      setPageIdx(0);
+    }
   }, [questions, pages.length]);
 
   // Timer effect

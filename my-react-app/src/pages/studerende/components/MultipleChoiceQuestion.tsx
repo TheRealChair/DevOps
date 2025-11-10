@@ -22,17 +22,51 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
   const [feedback, setFeedback] = React.useState<string | null>(null);
   // Lock interaction only when the correct answer has been chosen
   const [locked, setLocked] = React.useState(false);
+  // Cooldown state: timestamp when cooldown ends, or null if no cooldown active
+  const [cooldownUntil, setCooldownUntil] = React.useState<number | null>(null);
+  // Cooldown timer state for display
+  const [cooldownSeconds, setCooldownSeconds] = React.useState(0);
+  
+  // Cooldown duration in seconds (can be adjusted by teacher later)
+  const COOLDOWN_DURATION = 15;
 
   // Handle option click
   const handleClick = (optId: number) => {
-    if (disabled || locked) return; // Prevent when disabled or already correct
+    if (disabled || locked || cooldownUntil !== null) return; // Prevent during cooldown
     setSelected(optId);
     const correct = page.options.find(o => o.id === optId)?.correct;
     const isCorrect = !!correct;
     setFeedback(isCorrect ? 'Korrekt!' : 'Forkert – prøv igen');
-    if (isCorrect) setLocked(true);
+    
+    if (isCorrect) {
+      setLocked(true);
+    } else {
+      // Start cooldown on wrong answer
+      const cooldownEnd = Date.now() + (COOLDOWN_DURATION * 1000);
+      setCooldownUntil(cooldownEnd);
+      setCooldownSeconds(COOLDOWN_DURATION);
+    }
+    
     onAnswer(isCorrect);
   };
+  
+  // Cooldown timer effect
+  React.useEffect(() => {
+    if (cooldownUntil === null) return;
+    
+    const interval = setInterval(() => {
+      const remaining = Math.ceil((cooldownUntil - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setCooldownUntil(null);
+        setCooldownSeconds(0);
+        setFeedback(null); // Clear feedback when cooldown ends
+      } else {
+        setCooldownSeconds(remaining);
+      }
+    }, 100); // Check every 100ms for smooth countdown
+    
+    return () => clearInterval(interval);
+  }, [cooldownUntil]);
 
   return (
     <div>
@@ -87,6 +121,11 @@ const MultipleChoiceQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) =
           }}
         >
           {feedback}
+          {cooldownUntil !== null && (
+            <div style={{ marginTop: 8, fontSize: 14 }}>
+              Vent {cooldownSeconds} sekunder før næste forsøg...
+            </div>
+          )}
         </div>
       )}
     </div>

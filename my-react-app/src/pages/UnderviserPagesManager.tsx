@@ -133,6 +133,7 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [editRoomId, setEditRoomId] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
+  const [previewStartIndex, setPreviewStartIndex] = useState(0);
   const [showLivePanel, setShowLivePanel] = useState(false);
   const [roomName, setRoomName] = useState<string>('');
   // Ensure live panel doesn't block preview interactions
@@ -384,7 +385,14 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
             <button className="uv-btn" onClick={onBack}>Tilbage</button>
             <button className="uv-btn" onClick={() => setShowMenu(s => !s)}>{showMenu ? 'Skjul menu' : 'Vis menu'}</button>
             {/* Preview toggle */}
-            <button className="uv-btn" style={{ marginLeft: 8 }} onClick={() => setPreviewMode(p => !p)}>
+            <button className="uv-btn" style={{ marginLeft: 8 }} onClick={() => {
+              if (!previewMode && selectedId) {
+                // Find index of selected page to start preview there
+                const idx = pages.findIndex(p => p.id === selectedId);
+                setPreviewStartIndex(idx >= 0 ? idx : 0);
+              }
+              setPreviewMode(p => !p);
+            }}>
               {previewMode ? 'Afslut forhåndsvisning' : 'Forhåndsvis'}
             </button>
           </div>
@@ -412,7 +420,11 @@ const UnderviserPagesManager: React.FC<UnderviserPagesManagerProps> = ({ onBack,
         </div>
         {/* Show RoomViewer in preview mode if requested */}
         {previewMode ? (
-          <RoomViewer onBack={() => setPreviewMode(false)} questions={pages} />
+          <RoomViewer 
+            onBack={() => setPreviewMode(false)} 
+            questions={pages} 
+            initialPageIndex={previewStartIndex}
+          />
         ) : (
           <div className="uv-content">
             {selectedPage ? (
