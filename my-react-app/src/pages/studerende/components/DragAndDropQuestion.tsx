@@ -25,6 +25,13 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
   // Drag state
   const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null);
+  // Cooldown state: timestamp when cooldown ends, or null if no cooldown active
+  const [cooldownUntil, setCooldownUntil] = React.useState<number | null>(null);
+  // Cooldown timer state for display
+  const [cooldownSeconds, setCooldownSeconds] = React.useState(0);
+  
+  // Cooldown duration in seconds (can be adjusted by teacher later)
+  const COOLDOWN_DURATION = 15;
 
   // Reset order and feedback when page changes
   React.useEffect(() => {
@@ -32,27 +39,40 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
     setFeedback(null);
     setLocked(false);
   }, [page]);
-
-  // Move item up or down in the order
-  const handleMove = (idx: number, dir: 'op' | 'ned') => {
-  if (disabled || locked) return; // Prevent moves if disabled or after correct answer
-    const arr = [...order];
-    if (dir === 'op' && idx > 0) {
-      // Swap with previous item
-      [arr[idx - 1], arr[idx]] = [arr[idx], arr[idx - 1]];
-    } else if (dir === 'ned' && idx < arr.length - 1) {
-      // Swap with next item
-      [arr[idx + 1], arr[idx]] = [arr[idx], arr[idx + 1]];
-    }
-    setOrder(arr);
-  };
+  
+  // Cooldown timer effect
+  React.useEffect(() => {
+    if (cooldownUntil === null) return;
+    
+    const interval = setInterval(() => {
+      const remaining = Math.ceil((cooldownUntil - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setCooldownUntil(null);
+        setCooldownSeconds(0);
+        setFeedback(null); // Clear feedback when cooldown ends
+      } else {
+        setCooldownSeconds(remaining);
+      }
+    }, 100); // Check every 100ms for smooth countdown
+    
+    return () => clearInterval(interval);
+  }, [cooldownUntil]);
 
   // Check if current order matches correct order
   const handleCheck = () => {
-    if (disabled || locked) return; // Prevent multiple checks when already correct
+    if (disabled || locked || cooldownUntil !== null) return; // Prevent during cooldown
     const correct = page.correctOrder.every((id: number, idx: number) => order[idx] === id);
     setFeedback(correct ? 'Korrekt rækkefølge!' : 'Forkert rækkefølge – prøv igen.');
-    if (correct) setLocked(true);
+    
+    if (correct) {
+      setLocked(true);
+    } else {
+      // Start cooldown on wrong answer
+      const cooldownEnd = Date.now() + (COOLDOWN_DURATION * 1000);
+      setCooldownUntil(cooldownEnd);
+      setCooldownSeconds(COOLDOWN_DURATION);
+    }
+    
     onAnswer(correct);
   };
 
@@ -104,7 +124,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
       {page.imageUrl && <img src={page.imageUrl} alt="" style={{ maxWidth: 300, marginBottom: 12 }} />}
       {/* Instructions */}
   <div style={{ marginBottom: 16, color: 'var(--primary)', fontWeight: 600, fontSize: 16 }}>
-        Arrange the items in the correct order:
+        Rangere disse elementer i den korrekte rækkefølge:
       </div>
       {/* List of draggable items with optional item images */}
       <ol style={{ padding: 0, listStyle: 'none', width: '100%' }}>
@@ -150,24 +170,6 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
               )}
               {/* Item label */}
               <span style={{ flex: 1 }}>{item.label}</span>
-              {/* Move up button */}
-              <button
-                className="arrow-btn"
-                onClick={() => handleMove(idx, 'op')}
-                disabled={idx === 0 || locked}
-                style={{ marginLeft: 8 }}
-              >
-                ↑
-              </button>
-              {/* Move down button */}
-              <button
-                className="arrow-btn"
-                onClick={() => handleMove(idx, 'ned')}
-                disabled={idx === order.length - 1 || locked}
-                style={{ marginLeft: 4 }}
-              >
-                ↓
-              </button>
             </li>
           );
         })}
@@ -176,7 +178,7 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
       <button
         className="stud-btn"
         onClick={handleCheck}
-        disabled={disabled || locked}
+        disabled={disabled || locked || cooldownUntil !== null}
         style={{ width: '100%', marginTop: 12 }}
       >
         Check
@@ -187,6 +189,11 @@ const DragAndDropQuestion: React.FC<Props> = ({ page, onAnswer, disabled }) => {
           style={{ marginTop: 10, fontWeight: 600, fontSize: 16, color: feedback === 'Korrekt rækkefølge!' ? 'var(--feedback-correct-text)' : 'var(--feedback-incorrect-text)' }}
         >
           {feedback}
+          {cooldownUntil !== null && (
+            <div style={{ marginTop: 8, fontSize: 14 }}>
+              Vent {cooldownSeconds} sekunder før næste forsøg...
+            </div>
+          )}
         </div>
       )}
     </div>

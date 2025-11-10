@@ -34,6 +34,8 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
   const pages: PageData[] = (questions && questions.length > 0)
     ? questions
     : (questionsData as PageData[]);
+  // Track if we've initialized - to prevent resetting pageIdx after initial load
+  const [hasInitialized, setHasInitialized] = useState(false);
   const [completed, setCompleted] = useState(false);
   // Track answers and correctness
   const [answers, setAnswers] = useState<(boolean | null)[]>([]);
@@ -121,11 +123,18 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
       console.log("RoomViewer loading questions:", questions);
     }
     // Only reset state if not completed (prevent losing completion state on data updates)
-    if (!completed) {
+    // And only reset if already initialized (don't override initialPageIndex on first load)
+    if (!completed && hasInitialized) {
       setAnswers(Array(pages.length).fill(null));
       setStartTime(Date.now());
       setElapsed(0);
       setPageIdx(0);
+    }
+    if (!hasInitialized) {
+      setAnswers(Array(pages.length).fill(null));
+      setStartTime(Date.now());
+      setElapsed(0);
+      setHasInitialized(true);
     }
   }, [questions, pages.length]);
 
