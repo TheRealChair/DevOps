@@ -94,7 +94,7 @@ async function waitForQuestionReady(page: Page, cue: 'mc' | 'input' | 'progressi
       await expect(page.getByPlaceholder('Svar...').first()).toBeVisible();
       break;
     case 'dnd':
-      await expect(page.getByText('Arrange the items in the correct order:')).toBeVisible();
+      await expect(page.getByText('Rangere disse elementer i den korrekte rækkefølge:')).toBeVisible();
       break;
   }
 }
