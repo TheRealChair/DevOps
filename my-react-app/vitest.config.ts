@@ -7,5 +7,7 @@ export default defineConfig({
     globals: true, // gør describe/it/expect globale
     environment: 'jsdom', // simulerer browser
     setupFiles: './src/setupTests.ts', // optional, til global opsætning
+    include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    exclude: ['tests/e2e/**', 'node_modules/**', 'dist/**'],
   },
 })

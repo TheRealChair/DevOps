@@ -46,7 +46,9 @@ const TopBar: React.FC = () => {
       if (stored === 'dark') return true;
       if (stored === 'light') return false;
     } catch {}
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return (typeof window !== 'undefined' && typeof window.matchMedia === 'function')
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches
+      : false;
   });
 
   React.useEffect(() => {
