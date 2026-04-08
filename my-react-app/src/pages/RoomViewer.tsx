@@ -284,16 +284,16 @@ const RoomViewer: React.FC<RoomViewerProps> = ({ onBack, questions, previewAsStu
         />
         {/* Render modular question components based on type */}
         {page.type === 'multipleChoice' && (
-          <MultipleChoiceQuestion page={page} onAnswer={handleAnswer} />
+          <MultipleChoiceQuestion key={page.id} page={page} onAnswer={handleAnswer} />
         )}
         {page.type === 'inputAnswer' && (
-          <InputAnswerQuestion page={page} onAnswer={handleAnswer} />
+          <InputAnswerQuestion key={page.id} page={page} onAnswer={handleAnswer} />
         )}
         {page.type === 'progressiveQuestions' && (
-          <ProgressiveQuestions page={page} onAnswer={handleAnswer} />
+          <ProgressiveQuestions key={page.id} page={page} onAnswer={handleAnswer} />
         )}
         {page.type === 'dragAndDrop' && (
-          <DragAndDropQuestion page={page} onAnswer={handleAnswer} />
+          <DragAndDropQuestion key={page.id} page={page} onAnswer={handleAnswer} />
         )}
         <div style={{ marginTop: 32, display: 'flex', gap: 12, width: '100%' }}>
           <button className="stud-btn" onClick={onBack} style={{ flex: 1 }}>Tilbage</button>
